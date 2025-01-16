@@ -32,6 +32,12 @@ div.tagline {
   width: 100%;
   text-align: left;
 }
+@media (max-width: 800px) {
+  div.tagline {
+    text-align: center;
+  }
+}
+
 div.description {
   display: none;
 }
