@@ -9,6 +9,7 @@ body {
   overflow: hidden;
   color: #ababab;
 }
+
 body::before {
   content: "";
   position: absolute;
@@ -21,17 +22,20 @@ body::before {
   opacity: 0.25;
   z-index: -1;
 }
+
 img.logo {
   width: 100%;
   height: auto;
   max-width: 100%;
 }
+
 div.tagline {
   margin-top: 0.5em;
   font-family: Georgia, serif;
   width: 100%;
   text-align: left;
 }
+
 @media (max-width: 800px) {
   div.tagline {
     text-align: center;
@@ -41,6 +45,7 @@ div.tagline {
 div.description {
   display: none;
 }
+
 footer {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.25);
@@ -49,10 +54,12 @@ footer {
   position: fixed;
   bottom: 0;
 }
+
 footer div.content {
   text-align: center;
   padding: 0.75em;
 }
+
 footer div.content a {
   color: inherit;
   text-decoration: underline;
