@@ -1,4 +1,4 @@
-# zenOSmosis | Impactful Software Projects
+# zenOSmosis | Software with an Impact
 
 This is a static HTML project hosted on [GitHub Pages](https://pages.github.com/) as a simple landing page for [zenOSmosis](https://zenosmosis.com), which typically contributes to open-source projects.
 
