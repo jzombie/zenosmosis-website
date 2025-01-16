@@ -22,7 +22,7 @@
         height: 100vh;
         margin: 1em;
         overflow: hidden;
-        color: #c7c7c7;
+        color: #ababab;
       }
       body::before {
         content: "";
@@ -43,17 +43,24 @@
         max-width: 100%;
       }
       div.tagline {
+        margin-top: 0.5em;
         font-family: Georgia, serif;
         width: 100%;
         text-align: left;
       }
       footer {
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.25);
         font-family: Verdana, Geneva, sans-serif;
         font-size: 0.8em;
         position: fixed;
-        bottom: 1em;
+        bottom: 0;
       }
-      footer a {
+      footer div.content {
+        text-align: center;
+        padding: 0.75em;
+      }
+      footer div.content a {
         color: inherit;
         text-decoration: underline;
       }
@@ -63,14 +70,16 @@
     <img src="assets/zenOSmosis-logo.svg" alt="zenOSmosis Logo" class="logo" />
     <div class="tagline">zenOSmosis | Software with an Impact</div>
     <footer>
-      415-562-7140 |
-      <a
-        href="https://www.linkedin.com/in/jeremyharrisconsultant/"
-        target="_blank"
-        >LinkedIn</a
-      >
-      | <a href="https://github.com/jzombie">GitHub</a> |
-      <a href="mailto:info@zenosmosis.com">Email</a>
+      <div class="content">
+        415-562-7140 |
+        <a
+          href="https://www.linkedin.com/in/jeremyharrisconsultant/"
+          target="_blank"
+          >LinkedIn</a
+        >
+        | <a href="https://github.com/jzombie">GitHub</a> |
+        <a href="mailto:info@zenosmosis.com">Email</a>
+      </div>
     </footer>
 
     <!-- Google tag (gtag.js) -->
