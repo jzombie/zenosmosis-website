@@ -1,0 +1,53 @@
+body {
+  background-color: #23201f;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 1em;
+  overflow: hidden;
+  color: #ababab;
+}
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("assets/discovery-launch-liftoff.jpg") no-repeat center center;
+  background-size: cover;
+  opacity: 0.25;
+  z-index: -1;
+}
+img.logo {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+div.tagline {
+  margin-top: 0.5em;
+  font-family: Georgia, serif;
+  width: 100%;
+  text-align: left;
+}
+div.description {
+  display: none;
+}
+footer {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 0.8em;
+  position: fixed;
+  bottom: 0;
+}
+footer div.content {
+  text-align: center;
+  padding: 0.75em;
+}
+footer div.content a {
+  color: inherit;
+  text-decoration: underline;
+}
