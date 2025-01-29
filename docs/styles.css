@@ -30,6 +30,21 @@ img.logo {
   max-width: 100%;
 }
 
+/* Apply the fade-in effect only when JS updates the class */
+img.logo.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 div.tagline {
   margin-top: 0.5em;
   font-family: Georgia, serif;

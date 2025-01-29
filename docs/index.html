@@ -65,6 +65,21 @@
       </div>
     </footer>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const logo = document.querySelector("img.logo");
+        if (logo) {
+          if (logo.complete) {
+            logo.classList.add("fade-in");
+          } else {
+            logo.addEventListener("load", () => {
+              logo.classList.add("fade-in");
+            });
+          }
+        }
+      });
+    </script>
+
     <!-- Google tag (gtag.js) -->
     <script
       async
