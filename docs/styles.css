@@ -30,8 +30,13 @@ img.logo {
   max-width: 100%;
 }
 
+/* Prevent initial pop-in */
+img.logo.js {
+  opacity: 0;
+}
+
 /* Apply the fade-in effect only when JS updates the class */
-img.logo.fade-in {
+img.logo.js.fade-in {
   opacity: 0;
   animation: fadeIn 1s ease-in-out forwards;
 }
