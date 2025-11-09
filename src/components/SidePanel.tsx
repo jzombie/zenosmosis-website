@@ -101,7 +101,7 @@ export function SidePanel() {
           <>
             <h3>{stats.user.name}</h3>
             <div className="activity-section">
-              <h4>Recent Activity</h4>
+              <h4>Recent Open-Source Activity</h4>
               {stats.recentActivity.length > 0 ? (
                 <ul className="activity-list">
                   {stats.recentActivity.map((activity) => {
