@@ -371,6 +371,14 @@
   }
 }
 
+@media (min-width: 769px) {
+  .side-panel {
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+  }
+}
+
 @media (max-width: 768px) {
   .side-panel {
     position: fixed;
