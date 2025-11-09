@@ -32,6 +32,18 @@ export interface GitHubHighlight {
   href?: string;
 }
 
+export interface GitHubLanguageSlice {
+  language: string;
+  bytes: number;
+}
+
+export interface GitHubContributorStat {
+  login: string;
+  commits: number;
+  avatarUrl: string;
+  profileUrl: string;
+}
+
 export interface GitHubStats {
   user: {
     login: string;
@@ -43,6 +55,8 @@ export interface GitHubStats {
     public_gists: number;
   };
   highlights: GitHubHighlight[];
+  languageDistribution: GitHubLanguageSlice[];
+  topContributors: GitHubContributorStat[];
   recentActivity: GitHubActivityItem[];
 }
 
@@ -144,27 +158,95 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
     let totalForks = 0;
     let totalOpenIssues = 0;
     let starredRepoCount = 0;
-    const languageCounts = new Map<string, number>();
+
+    const prioritizedRepos: any[] = [];
+    const languageTotals = new Map<string, number>();
+    const contributorTotals = new Map<string, GitHubContributorStat>();
 
     if (Array.isArray(repos)) {
+      const reposForPrioritization = repos
+        .filter((repo: any) => !repo?.fork)
+        .sort(
+          (a: any, b: any) => (b?.stargazers_count ?? 0) - (a?.stargazers_count ?? 0)
+        );
+
+      prioritizedRepos.push(...reposForPrioritization.slice(0, 8));
+
       for (const repo of repos) {
         const stars = repo?.stargazers_count ?? 0;
         const forks = repo?.forks_count ?? 0;
         const openIssues = repo?.open_issues_count ?? 0;
-        const language = repo?.language;
 
         totalStars += stars;
         totalForks += forks;
         totalOpenIssues += openIssues;
         if (stars > 0) starredRepoCount += 1;
-        if (typeof language === 'string' && language.trim().length) {
-          languageCounts.set(language, (languageCounts.get(language) ?? 0) + 1);
-        }
       }
+
+      await Promise.all(
+        prioritizedRepos.map(async (repo: any) => {
+          await Promise.all([
+            (async () => {
+              if (typeof repo?.languages_url !== 'string') return;
+              try {
+                const languagesResponse = await fetch(repo.languages_url);
+                if (!languagesResponse.ok) return;
+                const languagesData = await languagesResponse.json();
+                for (const [language, bytes] of Object.entries(languagesData)) {
+                  if (typeof language !== 'string' || typeof bytes !== 'number') continue;
+                  languageTotals.set(language, (languageTotals.get(language) ?? 0) + bytes);
+                }
+              } catch (langError) {
+                console.warn('Failed to load language data for repo', repo?.name, langError);
+              }
+            })(),
+            (async () => {
+              if (typeof repo?.contributors_url !== 'string') return;
+              try {
+                const contributorsResponse = await fetch(`${repo.contributors_url}?per_page=10`);
+                if (!contributorsResponse.ok) return;
+                const contributorsData = await contributorsResponse.json();
+                if (!Array.isArray(contributorsData)) return;
+                for (const contributor of contributorsData) {
+                  const login = contributor?.login;
+                  if (typeof login !== 'string' || login === GITHUB_USERNAME) continue;
+                  const contributions = contributor?.contributions ?? 0;
+                  const existing = contributorTotals.get(login) ?? {
+                    login,
+                    commits: 0,
+                    avatarUrl: contributor?.avatar_url ?? '',
+                    profileUrl: contributor?.html_url ?? `https://github.com/${login}`,
+                  };
+                  existing.commits += contributions;
+                  if (!existing.avatarUrl && contributor?.avatar_url) {
+                    existing.avatarUrl = contributor.avatar_url;
+                  }
+                  if (!existing.profileUrl && contributor?.html_url) {
+                    existing.profileUrl = contributor.html_url;
+                  }
+                  contributorTotals.set(login, existing);
+                }
+              } catch (contribError) {
+                console.warn('Failed to load contributor data for repo', repo?.name, contribError);
+              }
+            })(),
+          ]);
+        })
+      );
     }
 
-    const sortedLanguages = Array.from(languageCounts.entries()).sort((a, b) => b[1] - a[1]);
-    const topLanguage = sortedLanguages[0];
+    const languageDistribution = Array.from(languageTotals.entries())
+      .map(([language, bytes]) => ({ language, bytes }))
+      .filter((slice) => slice.bytes > 0)
+      .sort((a, b) => b.bytes - a.bytes);
+
+    const totalLanguageBytes = languageDistribution.reduce((sum, slice) => sum + slice.bytes, 0);
+    const topLanguage = languageDistribution[0];
+
+    const topContributors = Array.from(contributorTotals.values())
+      .filter((contributor) => contributor.commits > 0)
+      .sort((a, b) => b.commits - a.commits)
+      .slice(0, 6);
 
     const highlights: GitHubHighlight[] = [
       {
@@ -184,15 +266,15 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       },
     ];
 
-    if (topLanguage) {
-      const [languageName, repoCount] = topLanguage;
+    if (topLanguage && totalLanguageBytes > 0) {
+      const languagePercentage = Math.round((topLanguage.bytes / totalLanguageBytes) * 100);
       highlights.push({
         label: 'Top Language',
-        value: languageName,
+        value: topLanguage.language,
         href: `https://github.com/search?q=user%3A${GITHUB_USERNAME}+language%3A${encodeURIComponent(
-          languageName
+          topLanguage.language
         )}&type=repositories`,
-        subtitle: `${repoCount.toLocaleString()} repos`,
+        subtitle: `${languagePercentage}% of sampled code`,
       });
     }
 
@@ -232,7 +314,9 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
         following: user.following,
         public_gists: user.public_gists,
       },
-      highlights,
+  highlights,
+  languageDistribution,
+  topContributors,
       recentActivity,
     };
   } catch (error) {

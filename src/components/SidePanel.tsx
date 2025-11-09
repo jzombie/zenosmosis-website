@@ -1,5 +1,9 @@
 import { useState, useEffect, type KeyboardEvent } from 'react';
 import { fetchGitHubStats, type GitHubStats } from '../services/githubApi';
+import { fetchCrateDownloadStats, type CrateDownloadSeries } from '../services/cratesApi';
+import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
+import { ContributorImpactChart } from './charts/ContributorImpactChart';
+import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
 import './SidePanel.css';
 
 export function SidePanel() {
@@ -7,6 +11,8 @@ export function SidePanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(true);
+  const [crateMetrics, setCrateMetrics] = useState<CrateDownloadSeries[]>([]);
+  const [crateError, setCrateError] = useState<string | null>(null);
 
   const openExternalLink = (targetUrl?: string) => {
     if (!targetUrl) return;
@@ -18,14 +24,38 @@ export function SidePanel() {
 
     async function loadStats() {
       try {
-        const data = await fetchGitHubStats();
-        if (mounted) {
-          setStats(data);
-          setLoading(false);
+        const [githubResult, crateResult] = await Promise.all([
+          fetchGitHubStats().catch((err) => {
+            console.error('Failed to load GitHub stats', err);
+            return null;
+          }),
+          fetchCrateDownloadStats().catch((err) => {
+            console.error('Failed to load crates.io stats', err);
+            return null;
+          }),
+        ]);
+
+        if (!mounted) {
+          return;
         }
-      } catch (err) {
-        if (mounted) {
+
+        if (githubResult) {
+          setStats(githubResult);
+          setError(null);
+        } else {
+          setStats(null);
           setError('Failed to load GitHub stats');
+        }
+
+        if (crateResult) {
+          setCrateMetrics(crateResult);
+          setCrateError(null);
+        } else {
+          setCrateMetrics([]);
+          setCrateError('Failed to load crates.io statistics');
+        }
+      } finally {
+        if (mounted) {
           setLoading(false);
         }
       }
@@ -107,6 +137,20 @@ export function SidePanel() {
               )}
             </div>
 
+            {stats.languageDistribution.length > 0 && (
+              <div className="chart-section">
+                <h4>Language Footprint</h4>
+                <LanguageDistributionChart data={stats.languageDistribution} />
+              </div>
+            )}
+
+            {stats.topContributors.length > 0 && (
+              <div className="chart-section">
+                <h4>Top Contributors</h4>
+                <ContributorImpactChart contributors={stats.topContributors} />
+              </div>
+            )}
+
             <div className="activity-section">
               <h4>Recent Activity</h4>
               {stats.recentActivity.length > 0 ? (
@@ -187,6 +231,17 @@ export function SidePanel() {
           </>
         )}
       </div>
+
+      {!loading && crateError && (
+        <div className="error-message">{crateError}</div>
+      )}
+
+      {!loading && crateMetrics.length > 0 && (
+        <div className="chart-section">
+          <h4>Crate Downloads</h4>
+          <CrateDownloadTrends data={crateMetrics} />
+        </div>
+      )}
     </aside>
     </>
   );
