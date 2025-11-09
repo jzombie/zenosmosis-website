@@ -6,6 +6,7 @@ export function SidePanel() {
   const [stats, setStats] = useState<GitHubStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -33,8 +34,17 @@ export function SidePanel() {
   }, []);
 
   return (
-    <aside className="side-panel">
-      <div className="side-panel-content">
+    <>
+      <button 
+        className="side-panel-toggle"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
+      >
+        {isOpen ? '✕' : '☰'}
+      </button>
+      
+      <aside className={`side-panel ${isOpen ? 'open' : 'closed'}`}>
+        <div className="side-panel-content">
         <h2 className="side-panel-title">GitHub Activity</h2>
         
         {loading && (
@@ -89,5 +99,6 @@ export function SidePanel() {
         )}
       </div>
     </aside>
+    </>
   );
 }

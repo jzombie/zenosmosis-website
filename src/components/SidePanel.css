@@ -8,6 +8,36 @@
   overflow-y: auto;
   animation: slideIn 0.4s ease-out;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.side-panel-toggle {
+  display: none; /* Hidden on desktop */
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.side-panel-toggle:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: scale(1.05);
+}
+
+.side-panel-toggle:active {
+  transform: scale(0.95);
 }
 
 @keyframes slideIn {
@@ -207,11 +237,25 @@
 }
 
 @media (max-width: 768px) {
+  .side-panel-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .side-panel {
     position: fixed;
     top: 0;
     right: 0;
     height: 100vh;
     z-index: 999;
+  }
+
+  .side-panel.closed {
+    transform: translateX(100%);
+  }
+
+  .side-panel.open {
+    transform: translateX(0);
   }
 }
