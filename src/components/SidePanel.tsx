@@ -40,7 +40,9 @@ export function SidePanel() {
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
       >
-        {isOpen ? '✕' : '☰'}
+        <span className={`toggle-icon ${isOpen ? 'close' : 'open'}`}>
+          {isOpen ? '✕' : '☰'}
+        </span>
       </button>
       
       <aside className={`side-panel ${isOpen ? 'open' : 'closed'}`}>

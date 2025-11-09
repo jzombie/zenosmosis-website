@@ -9,27 +9,50 @@
   animation: slideIn 0.4s ease-out;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
+  z-index: 1001; /* Above header so it doesn't show behind */
+}
+
+.side-panel-content {
+  padding: 1.5rem;
+  color: white;
 }
 
 .side-panel-toggle {
   display: none; /* Hidden on desktop */
   position: fixed;
-  top: 5rem;
+  top: 1rem; /* Same as header padding */
   right: 1rem;
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   font-size: 1.5rem;
+  line-height: 1;
   cursor: pointer;
-  z-index: 1001;
+  z-index: 1002;
   transition: all 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
+
+.toggle-icon {
+  display: block;
+}
+
+.toggle-icon.open {
+  margin-top: -4px; /* Adjust hamburger icon to be visually centered */
+}
+
+.toggle-icon.close {
+  margin-top: 0; /* X is naturally centered */
+}
+
 
 .side-panel-toggle:hover {
   background: rgba(0, 0, 0, 0.85);
@@ -49,11 +72,6 @@
     transform: translateX(0);
     opacity: 1;
   }
-}
-
-.side-panel-content {
-  padding: 6rem 1.5rem 2rem 1.5rem;
-  color: white;
 }
 
 .side-panel-title {
@@ -238,17 +256,7 @@
 
 @media (max-width: 768px) {
   .side-panel-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .side-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100vh;
-    z-index: 999;
+    display: flex; /* Override to show on mobile */
   }
 
   .side-panel.closed {
