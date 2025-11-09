@@ -255,6 +255,17 @@
 }
 
 @media (max-width: 768px) {
+  .side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    max-width: 90vw;
+    width: 320px;
+    min-width: 0;
+  }
+
   .side-panel-toggle {
     display: flex; /* Override to show on mobile */
   }
