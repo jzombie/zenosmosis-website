@@ -99,58 +99,7 @@ export function SidePanel() {
 
         {stats && !loading && (
           <>
-            <div className="stats-section">
-              <h3>{stats.user.name}</h3>
-              <p className="bio">{stats.user.bio}</p>
-              {stats.highlights.length > 0 && (
-                <div className="stats-grid">
-                  {stats.highlights.map((metric) => {
-                    const content = (
-                      <>
-                        <span className="stat-value">{metric.value}</span>
-                        <span className="stat-label">{metric.label}</span>
-                        {metric.subtitle && <span className="stat-subtitle">{metric.subtitle}</span>}
-                      </>
-                    );
-
-                    const isClickable = Boolean(metric.href);
-
-                    return (
-                      <div
-                        key={metric.label}
-                        className={`stat-item${isClickable ? ' clickable' : ''}`}
-                        role={isClickable ? 'button' : undefined}
-                        tabIndex={isClickable ? 0 : undefined}
-                        onClick={isClickable ? () => openExternalLink(metric.href) : undefined}
-                        onKeyDown={isClickable ? (event: KeyboardEvent<HTMLDivElement>) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            openExternalLink(metric.href);
-                          }
-                        } : undefined}
-                      >
-                        {content}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {stats.languageDistribution.length > 0 && (
-              <div className="chart-section">
-                <h4>Language Footprint</h4>
-                <LanguageDistributionChart data={stats.languageDistribution} />
-              </div>
-            )}
-
-            {stats.topContributors.length > 0 && (
-              <div className="chart-section">
-                <h4>Top Contributors</h4>
-                <ContributorImpactChart contributors={stats.topContributors} />
-              </div>
-            )}
-
+            <h3>{stats.user.name}</h3>
             <div className="activity-section">
               <h4>Recent Activity</h4>
               {stats.recentActivity.length > 0 ? (
@@ -228,6 +177,57 @@ export function SidePanel() {
                 <p className="no-activity">No recent activity</p>
               )}
             </div>
+
+            <div className="stats-section">
+              <p className="bio">{stats.user.bio}</p>
+              {stats.highlights.length > 0 && (
+                <div className="stats-grid">
+                  {stats.highlights.map((metric) => {
+                    const content = (
+                      <>
+                        <span className="stat-value">{metric.value}</span>
+                        <span className="stat-label">{metric.label}</span>
+                        {metric.subtitle && <span className="stat-subtitle">{metric.subtitle}</span>}
+                      </>
+                    );
+
+                    const isClickable = Boolean(metric.href);
+
+                    return (
+                      <div
+                        key={metric.label}
+                        className={`stat-item${isClickable ? ' clickable' : ''}`}
+                        role={isClickable ? 'button' : undefined}
+                        tabIndex={isClickable ? 0 : undefined}
+                        onClick={isClickable ? () => openExternalLink(metric.href) : undefined}
+                        onKeyDown={isClickable ? (event: KeyboardEvent<HTMLDivElement>) => {
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openExternalLink(metric.href);
+                          }
+                        } : undefined}
+                      >
+                        {content}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {stats.languageDistribution.length > 0 && (
+              <div className="chart-section">
+                <h4>Language Footprint</h4>
+                <LanguageDistributionChart data={stats.languageDistribution} />
+              </div>
+            )}
+
+            {stats.topContributors.length > 0 && (
+              <div className="chart-section">
+                <h4>Top Contributors</h4>
+                <ContributorImpactChart contributors={stats.topContributors} />
+              </div>
+            )}
           </>
         )}
       </div>
