@@ -2,11 +2,19 @@ import { defineConfig } from 'vite'
 import type { ModuleNode, Plugin, ViteDevServer } from 'vite'
 import react from '@vitejs/plugin-react'
 
-function injectProjectsPlugin(): Plugin {
+/**
+ * Dev-only helper that mirrors the production SSR build.
+ *
+ * When you open the dev server with JavaScript disabled, we still want to
+ * see the HTML that the production build would have emitted. This plugin
+ * renders the app through the SSR entry (`main-ssr.tsx`) and injects the
+ * resulting markup and styles into `index.html`.
+ */
+function injectSsrPlugin(): Plugin {
   let viteServer: ViteDevServer | undefined;
   
   return {
-    name: 'inject-projects',
+    name: 'inject-ssr',
     configureServer(server) {
       viteServer = server;
     },
@@ -17,7 +25,7 @@ function injectProjectsPlugin(): Plugin {
         return html; // Skip in production build
       }
       
-      const { renderProjectsToHTML } = await viteServer.ssrLoadModule('/src/entry-server.tsx');
+  const { renderProjectsToHTML } = await viteServer.ssrLoadModule('/src/main-ssr.tsx');
       const projectsHTML = renderProjectsToHTML();
 
       const transformedHtml = html.replace(
@@ -25,7 +33,7 @@ function injectProjectsPlugin(): Plugin {
         `<div id="root">${projectsHTML}</div>`
       );
 
-      const entryModule = await viteServer.moduleGraph.getModuleByUrl('/src/entry-server.tsx');
+  const entryModule = await viteServer.moduleGraph.getModuleByUrl('/src/main-ssr.tsx');
       const cssUrls = collectCssUrls(entryModule);
 
       if (!cssUrls.length) {
@@ -41,6 +49,12 @@ function injectProjectsPlugin(): Plugin {
   };
 }
 
+/**
+ * Walk the module graph starting at the SSR entry and collect every CSS
+ * dependency that the app uses. Vite treats CSS (and SCSS/SASS/etc.) as
+ * modules, so this approach automatically keeps the injected `<link>` tags
+ * in sync as you add more styles.
+ */
 function collectCssUrls(moduleNode: ModuleNode | undefined, seen = new Set<ModuleNode>()): string[] {
   if (!moduleNode) {
     return [];
@@ -82,5 +96,5 @@ function collectCssUrls(moduleNode: ModuleNode | undefined, seen = new Set<Modul
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), injectProjectsPlugin()],
+  plugins: [react(), injectSsrPlugin()],
 })

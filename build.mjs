@@ -14,7 +14,8 @@ async function buildProduction() {
       ssr: true,
       outDir: 'dist-ssr',
       rollupOptions: {
-        input: './src/entry-server.tsx',
+        // Point the SSR build at the shared SSR entry module.
+        input: './src/main-ssr.tsx',
       },
     },
   });
@@ -33,7 +34,8 @@ async function buildProduction() {
   console.log('Step 3: Injecting React SSR content into production HTML...');
   
   // Import the SSR module and render
-  const { renderProjectsToHTML } = await import('./dist-ssr/entry-server.js');
+  // Import the freshly built SSR bundle and render the app to an HTML string.
+  const { renderProjectsToHTML } = await import('./dist-ssr/main-ssr.js');
   
   // Read the built index.html
   const indexPath = join(__dirname, 'dist', 'index.html');
