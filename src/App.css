@@ -18,7 +18,6 @@
 
 .hero-intro {
   margin-top: 6rem;
-  margin-bottom: 3rem;
   max-width: 780px;
   text-align: center;
   color: rgba(255, 255, 255, 0.92);
@@ -47,8 +46,8 @@
   }
 
   .hero-intro {
-    margin-top: 5rem;
-    margin-bottom: 2.5rem;
+    margin-top: 4.5rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -59,8 +58,8 @@
   }
 
   .hero-intro {
-    margin-top: 4.5rem;
-    margin-bottom: 2rem;
+    margin-top: 4rem;
+    margin-bottom: 0.875rem;
     text-align: left;
   }
 }
