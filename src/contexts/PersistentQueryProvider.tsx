@@ -32,6 +32,7 @@ function createClient() {
 
 export function PersistentQueryProvider({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => createClient())
+  const [isRestoring, setIsRestoring] = useState(true)
 
   if (typeof window === 'undefined') {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -60,8 +61,9 @@ export function PersistentQueryProvider({ children }: { children: ReactNode }) {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{ persister, maxAge }}
+      onSuccess={() => setIsRestoring(false)}
     >
-      {children}
+      {isRestoring ? null : children}
     </PersistQueryClientProvider>
   )
 }
