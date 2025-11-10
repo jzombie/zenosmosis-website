@@ -1,3 +1,5 @@
+import { appConfig } from '../config/appConfig';
+
 export type GitHubActivityType = 'push' | 'pull_request';
 
 export interface GitHubActivityCommit {
@@ -60,8 +62,6 @@ export interface GitHubStats {
   recentActivity: GitHubActivityItem[];
 }
 
-const GITHUB_USERNAME = 'jzombie';
-
 function createResponseError(response: Response, endpoint: string) {
   const error: any = new Error(`GitHub request failed (${response.status}) for ${endpoint}`);
   error.status = response.status;
@@ -71,20 +71,28 @@ function createResponseError(response: Response, endpoint: string) {
 
 export async function fetchGitHubStats(): Promise<GitHubStats> {
   try {
+    const {
+      username: githubUsername,
+      recentActivityLimit,
+      eventsPerPage,
+      repoSampleSize,
+    } = appConfig.github;
     // Fetch user info
-    const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`);
+    const userResponse = await fetch(`https://api.github.com/users/${githubUsername}`);
     if (!userResponse.ok) {
       throw createResponseError(userResponse, 'users');
     }
     const user = await userResponse.json();
 
     // Fetch recent events (commits, pushes, PRs, etc.)
-    const eventsResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events?per_page=20`);
+    const eventsResponse = await fetch(
+      `https://api.github.com/users/${githubUsername}/events?per_page=${eventsPerPage}`
+    );
     const events = eventsResponse.ok ? await eventsResponse.json() : [];
 
     // Fetch repository summaries for aggregate stats
     const reposResponse = await fetch(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`
+      `https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=updated`
     );
     const repos = reposResponse.ok ? await reposResponse.json() : [];
 
@@ -106,7 +114,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
 
     if (Array.isArray(events)) {
       for (const event of events) {
-        if (recentActivity.length >= 6) {
+        if (recentActivity.length >= recentActivityLimit) {
           break;
         }
 
@@ -177,7 +185,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
           (a: any, b: any) => (b?.stargazers_count ?? 0) - (a?.stargazers_count ?? 0)
         );
 
-      prioritizedRepos.push(...reposForPrioritization.slice(0, 8));
+  prioritizedRepos.push(...reposForPrioritization.slice(0, repoSampleSize));
 
       for (const repo of repos) {
         const stars = repo?.stargazers_count ?? 0;
@@ -216,7 +224,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
                 if (!Array.isArray(contributorsData)) return;
                 for (const contributor of contributorsData) {
                   const login = contributor?.login;
-                  if (typeof login !== 'string' || login === GITHUB_USERNAME) continue;
+                  if (typeof login !== 'string' || login === githubUsername) continue;
                   const contributions = contributor?.contributions ?? 0;
                   const existing = contributorTotals.get(login) ?? {
                     login,
@@ -259,13 +267,13 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       {
         label: 'Repositories',
         value: user.public_repos.toLocaleString(),
-        href: `https://github.com/${GITHUB_USERNAME}?tab=repositories&type=source`,
+        href: `https://github.com/${githubUsername}?tab=repositories&type=source`,
         subtitle: 'Public projects',
       },
       {
         label: 'Total Stars',
         value: totalStars.toLocaleString(),
-        href: `https://github.com/${GITHUB_USERNAME}?tab=repositories&type=source`,
+        href: `https://github.com/${githubUsername}?tab=repositories&type=source`,
         subtitle:
           starredRepoCount > 0
             ? `Across ${starredRepoCount.toLocaleString()} repos`
@@ -278,7 +286,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       highlights.push({
         label: 'Top Language',
         value: topLanguage.language,
-        href: `https://github.com/search?q=user%3A${GITHUB_USERNAME}+language%3A${encodeURIComponent(
+        href: `https://github.com/search?q=user%3A${githubUsername}+language%3A${encodeURIComponent(
           topLanguage.language
         )}&type=repositories`,
         subtitle: `${languagePercentage}% of sampled code`,
@@ -289,7 +297,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       highlights.push({
         label: 'Public Gists',
         value: user.public_gists.toLocaleString(),
-        href: `https://gist.github.com/${GITHUB_USERNAME}`,
+        href: `https://gist.github.com/${githubUsername}`,
         subtitle: 'Code snippets & notes',
       });
     }
@@ -298,7 +306,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       highlights.push({
         label: 'Forks',
         value: totalForks.toLocaleString(),
-        href: `https://github.com/${GITHUB_USERNAME}?tab=repositories&type=source`,
+        href: `https://github.com/${githubUsername}?tab=repositories&type=source`,
         subtitle: 'Total across repos',
       });
     }

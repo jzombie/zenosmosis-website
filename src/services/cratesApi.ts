@@ -1,3 +1,5 @@
+import { appConfig } from '../config/appConfig';
+
 export interface CrateDownloadPoint {
   date: string;
   downloads: number;
@@ -11,10 +13,6 @@ export interface CrateDownloadSeries {
   daily: CrateDownloadPoint[];
 }
 
-const CRATES_USERNAME = 'jzombie';
-const MAX_CRATES = 4;
-const HISTORY_DAYS = 30;
-
 function createResponseError(response: Response, endpoint: string) {
   const error: any = new Error(`crates.io request failed (${response.status}) for ${endpoint}`);
   error.status = response.status;
@@ -24,14 +22,16 @@ function createResponseError(response: Response, endpoint: string) {
 
 export async function fetchCrateDownloadStats(): Promise<CrateDownloadSeries[]> {
   try {
-    const ownerResponse = await fetch(`https://crates.io/api/v1/owners/github/${CRATES_USERNAME}/crates`);
+    const { username, maxCrates, historyDays } = appConfig.crates;
+
+    const ownerResponse = await fetch(`https://crates.io/api/v1/owners/github/${username}/crates`);
     if (!ownerResponse.ok) {
       throw createResponseError(ownerResponse, 'owners');
     }
 
     const ownerData = await ownerResponse.json();
     const crates = Array.isArray(ownerData?.crates) ? ownerData.crates : [];
-    const selectedCrates = crates.slice(0, MAX_CRATES);
+  const selectedCrates = crates.slice(0, maxCrates);
 
     const series: CrateDownloadSeries[] = [];
 
@@ -49,7 +49,7 @@ export async function fetchCrateDownloadStats(): Promise<CrateDownloadSeries[]> 
 
         const downloadsData = await downloadsResponse.json();
         const dailyDownloads = Array.isArray(downloadsData?.downloads) ? downloadsData.downloads : [];
-        const trimmed = dailyDownloads.slice(-HISTORY_DAYS);
+        const trimmed = dailyDownloads.slice(-historyDays);
 
         const daily: CrateDownloadPoint[] = trimmed.map((entry: any) => ({
           date: typeof entry?.date === 'string' ? entry.date : '',

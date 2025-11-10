@@ -6,18 +6,21 @@ import {
   type DefaultOptions,
 } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
+import { appConfig } from '../config/appConfig'
+
+const queryCacheConfig = appConfig.queryCache
 
 const DEFAULT_OPTIONS: DefaultOptions = {
   queries: {
-    staleTime: 1000 * 60 * 15, // treat cached data as fresh for 15 minutes
-    gcTime: 1000 * 60 * 60, // garbage collect after 1 hour of inactivity
+    staleTime: queryCacheConfig.staleTimeMs,
+    gcTime: queryCacheConfig.gcTimeMs,
     retry: (failureCount, error: any) => {
       const status = typeof error?.status === 'number' ? error.status : error?.response?.status
       if (status === 403 || status === 429) {
         return false
       }
-      return failureCount < 2
+      return failureCount < queryCacheConfig.maxRetryAttempts
     },
     refetchOnWindowFocus: false,
   },
@@ -34,16 +37,24 @@ export function PersistentQueryProvider({ children }: { children: ReactNode }) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   }
 
-  const persister = useMemo(
-    () =>
-      createSyncStoragePersister({
-        storage: window.localStorage,
-        key: 'zenosmosis-query-cache',
-      }),
-    []
-  )
+  const persister = useMemo(() => {
+    const storage = {
+      getItem: async (key: string) => window.localStorage.getItem(key),
+      setItem: async (key: string, value: string) => {
+        window.localStorage.setItem(key, value)
+      },
+      removeItem: async (key: string) => {
+        window.localStorage.removeItem(key)
+      },
+    }
 
-  const maxAge = useMemo(() => 1000 * 60 * 60 * 12, []) // keep cached data for up to 12 hours
+    return createAsyncStoragePersister({
+      storage,
+      key: queryCacheConfig.storageKey,
+    })
+  }, [])
+
+  const maxAge = useMemo(() => queryCacheConfig.persistedMaxAgeMs, [])
 
   return (
     <PersistQueryClientProvider
