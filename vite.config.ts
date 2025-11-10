@@ -33,7 +33,7 @@ function injectSsrPlugin(): Plugin {
         `<div id="root">${projectsHTML}</div>`
       );
 
-  const entryModule = await viteServer.moduleGraph.getModuleByUrl('/src/main-ssr.tsx');
+    const entryModule = await viteServer.moduleGraph.getModuleByUrl('/src/main-ssr.tsx');
       const cssUrls = collectCssUrls(entryModule);
 
       if (!cssUrls.length) {
@@ -53,7 +53,8 @@ function injectSsrPlugin(): Plugin {
  * Walk the module graph starting at the SSR entry and collect every CSS
  * dependency that the app uses. Vite treats CSS (and SCSS/SASS/etc.) as
  * modules, so this approach automatically keeps the injected `<link>` tags
- * in sync as you add more styles.
+ * in sync as you add more styles. In dev this is what allows the page to
+ * stay fully styled even when JavaScript is disabled in the browser.
  */
 function collectCssUrls(moduleNode: ModuleNode | undefined, seen = new Set<ModuleNode>()): string[] {
   if (!moduleNode) {

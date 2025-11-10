@@ -1,73 +1,32 @@
-# React + TypeScript + Vite
+# zenOSmosis.dev
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Vite + React SPA that powers the zenOSmosis digital garden and project hub.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `npm install`
+- `npm run dev`
+- `npm run preview` – serve the production build locally
+- `npm run build` – production build used by the Netlify deploy pipeline
 
-## React Compiler
+### CSS while JavaScript is disabled
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The custom dev SSR plugin (`injectSsrPlugin` in `vite.config.ts`) renders the app through `main-ssr.tsx` and injects `<link>` tags for every discovered stylesheet. As a result, the dev server remains fully styled even when you disable JavaScript in the browser, matching the production build experience.
 
-## Expanding the ESLint configuration
+If you need to double-check the production output, run `npm run build && npm run preview` and test the preview server with JS disabled.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Project layout
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `src/App.tsx` – top-level layout (hero, project grid, sidebar) and CTA wiring
+- `src/components` – UI modules and charts; shared utilities such as `LinkOut` live here
+- `src/config/appConfig.ts` – single source of truth for profile metadata and external URLs
+- `src/services` – data fetching adapters for GitHub and crates.io
+- `src/utils/linking.ts` – centralised helpers for referrer-aware link generation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Linking policy
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Outbound links go through the `LinkOut` component so every call site explicitly declares whether to preserve the HTTP `Referer` header. Use `allowReferrer={true}` for your own properties (blog, GitHub profile, etc.) so SEO signals propagate, and `false` for third-party destinations that should not receive referrer data. Imperative openings inside the sidebar reuse the same policy via `openLink()` from the linking utility.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### SSR mirroring in dev
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+`vite.config.ts` registers a small dev-only plugin (`injectSsrPlugin`) that renders the app through `main-ssr.tsx` and walks the module graph with `collectCssUrls()`. This produces the same HTML/CSS shape that the production build emits, which is especially useful when previewing the site with JavaScript disabled.
