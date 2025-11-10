@@ -53,13 +53,12 @@
   border: 1px solid var(--zen-border);
   border-radius: 12px;
   padding: 1.5rem;
-  text-decoration: none;
-  color: var(--zenos-white-strong);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   transition: all 0.3s ease;
   box-shadow: 0 6px 14px var(--zenos-shadow-soft);
+  color: var(--zenos-white-strong);
 }
 
 .project-card:hover {
@@ -86,14 +85,42 @@
   flex: 1;
 }
 
-.github-link {
-  font-size: 0.9rem;
-  color: var(--zen-accent-amber);
-  font-weight: 500;
+.project-actions {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
-.project-card:hover .github-link {
+.project-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--zenos-border);
+  background:
+    linear-gradient(135deg, var(--zen-accent-amber-faint), transparent),
+    var(--zen-surface-chip);
+  color: var(--zenos-white-soft);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.project-action:hover {
+  background:
+    linear-gradient(135deg, var(--zen-accent-amber-soft), var(--zen-accent-coral-faint)),
+    var(--zen-surface-card-hover);
+  border-color: var(--zen-border-warm);
   color: var(--zenos-white-strong);
+  transform: translateY(-1px);
+}
+
+.project-action-icon {
+  width: 16px;
+  height: 16px;
 }
 
 @media (max-width: 768px) {

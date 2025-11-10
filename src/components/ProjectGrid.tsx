@@ -21,7 +21,7 @@ export function ProjectGrid() {
             <h3 className="project-category-title">{category}</h3>
             <div className="project-grid">
               {categoryProjects.map((project) => (
-                <ProjectCard key={project.githubUrl} project={project} />
+                <ProjectCard key={project.name} project={project} />
               ))}
             </div>
           </section>

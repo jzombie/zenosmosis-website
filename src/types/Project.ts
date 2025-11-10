@@ -1,6 +1,7 @@
 export interface Project {
   name: string;
   description: string;
-  githubUrl: string;
   category: string;
+  githubUrl?: string;
+  bookUrl?: string;
 }
