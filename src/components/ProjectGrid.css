@@ -1,3 +1,11 @@
+.project-card--linked {
+  text-decoration: none;
+}
+
+.project-card--linked:hover {
+  color: var(--zenos-white-strong);
+}
+
 .project-grid-container {
   padding: 2.5rem 2rem 2rem 2rem;
   width: min(100%, 1400px);
@@ -70,6 +78,13 @@
   box-shadow: 0 14px 28px var(--zenos-shadow-strong);
 }
 
+.project-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
 .project-name {
   margin: 0;
   font-size: 1.25rem;
@@ -85,42 +100,23 @@
   flex: 1;
 }
 
-.project-actions {
-  margin-top: auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.project-action {
+.project-callout {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid var(--zenos-border);
-  background:
-    linear-gradient(135deg, var(--zen-accent-amber-faint), transparent),
-    var(--zen-surface-chip);
-  color: var(--zenos-white-soft);
-  text-decoration: none;
-  font-size: 0.85rem;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  color: var(--zen-accent-amber);
 }
 
-.project-action:hover {
-  background:
-    linear-gradient(135deg, var(--zen-accent-amber-soft), var(--zen-accent-coral-faint)),
-    var(--zen-surface-card-hover);
-  border-color: var(--zen-border-warm);
+.project-card:hover .project-callout {
   color: var(--zenos-white-strong);
-  transform: translateY(-1px);
 }
 
 .project-action-icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
 
 @media (max-width: 768px) {
