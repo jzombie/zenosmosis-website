@@ -11,6 +11,36 @@ import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
 import './SidePanel.css';
 
+const GitHubLogoIcon = () => (
+  <svg
+    className="title-icon github-icon"
+    viewBox="0 0 16 16"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      fillRule="evenodd"
+      d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.52 7.52 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8"
+    />
+  </svg>
+);
+
+const RustGearIcon = () => (
+  <svg
+    className="title-icon rust-icon"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      d="M12 3.5c-.28 0-.56.02-.83.05l-.53 1.73a6.58 6.58 0 0 0-1.62.67l-1.61-1.09a8.51 8.51 0 0 0-2.07 2.07l1.09 1.61c-.27.51-.5 1.05-.67 1.62l-1.73.53A8.4 8.4 0 0 0 4.5 12c0 .28.02.56.05.83l1.73.53c.17.57.4 1.11.67 1.62l-1.09 1.61a8.51 8.51 0 0 0 2.07 2.07l1.61-1.09c.51.27 1.05.5 1.62.67l.53 1.73c.27.03.55.05.83.05s.56-.02.83-.05l.53-1.73c.57-.17 1.11-.4 1.62-.67l1.61 1.09a8.51 8.51 0 0 0 2.07-2.07l-1.09-1.61c.27-.51.5-1.05.67-1.62l1.73-.53c.03-.27.05-.55.05-.83s-.02-.56-.05-.83l-1.73-.53a6.6 6.6 0 0 0-.67-1.62l1.09-1.61a8.51 8.51 0 0 0-2.07-2.07l-1.61 1.09a6.57 6.57 0 0 0-1.62-.67l-.53-1.73A9.44 9.44 0 0 0 12 3.5Zm0 2.5a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+    <path d="M9 8.5h4.2a2.5 2.5 0 0 1 0 5H11l2.4 3.5h-2.4l-2.4-3.5V8.5H9Zm2 2v1h2.2a.5.5 0 0 0 0-1H11Z" />
+  </svg>
+);
+
 export function SidePanel() {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -53,33 +83,36 @@ export function SidePanel() {
       
       <aside className={`side-panel ${isOpen ? 'open' : 'closed'}`}>
         <div className="side-panel-content">
-        <h2 className="side-panel-title">GitHub Activity</h2>
-        
-        {isInitialGithubLoad && (
-          <div className="thinking-animation">
-            <div className="thinking-dot"></div>
-            <div className="thinking-dot"></div>
-            <div className="thinking-dot"></div>
-            <span className="thinking-text">Loading stats...</span>
-          </div>
-        )}
+          <h2 className="side-panel-title">
+            <GitHubLogoIcon />
+            GitHub Activity
+          </h2>
 
-        {githubError && !stats && (
-          <div className="error-message">{githubError}</div>
-        )}
+          {isInitialGithubLoad && (
+            <div className="thinking-animation">
+              <div className="thinking-dot"></div>
+              <div className="thinking-dot"></div>
+              <div className="thinking-dot"></div>
+              <span className="thinking-text">Loading stats...</span>
+            </div>
+          )}
 
-        {githubError && stats && (
-          <div className="error-message">Displaying cached data while live stats refresh ({githubError})</div>
-        )}
+          {githubError && !stats && (
+            <div className="error-message">{githubError}</div>
+          )}
 
-        {stats && (
-          <>
-            <h3>{stats.user.name}</h3>
-            <div className="activity-section">
-              <h4>Recent Open-Source Activity</h4>
-              {stats.recentActivity.length > 0 ? (
-                <ul className="activity-list">
-                  {stats.recentActivity.map((activity: GitHubActivityItem) => {
+          {githubError && stats && (
+            <div className="error-message">Displaying cached data while live stats refresh ({githubError})</div>
+          )}
+
+          {stats && (
+            <>
+              <h3>{stats.user.name}</h3>
+              <div className="activity-section">
+                <h4 className="chart-heading">Recent Open-Source Activity</h4>
+                {stats.recentActivity.length > 0 ? (
+                  <ul className="activity-list">
+                    {stats.recentActivity.map((activity: GitHubActivityItem) => {
                     const isClickable = Boolean(activity.url);
 
                     const handleActivityKeyDown = (
@@ -192,40 +225,43 @@ export function SidePanel() {
 
             {stats.languageDistribution.length > 0 && (
               <div className="chart-section">
-                <h4>Language Footprint</h4>
+                <h4 className="chart-heading">Language Footprint</h4>
                 <LanguageDistributionChart data={stats.languageDistribution} />
               </div>
             )}
 
             {stats.topContributors.length > 0 && (
               <div className="chart-section">
-                <h4>Top Contributors</h4>
+                <h4 className="chart-heading">Top Contributors</h4>
                 <ContributorImpactChart contributors={stats.topContributors} />
               </div>
             )}
-          </>
-        )}
-      </div>
+            </>
+          )}
 
-      {!isInitialCrateLoad && crateError && crateMetrics.length === 0 && (
-        <div className="error-message">{crateError}</div>
-      )}
+          {!isInitialCrateLoad && crateError && crateMetrics.length === 0 && (
+            <div className="error-message">{crateError}</div>
+          )}
 
-      {crateError && crateMetrics.length > 0 && (
-        <div className="error-message">Showing cached crate data while live stats refresh ({crateError})</div>
-      )}
+          {crateError && crateMetrics.length > 0 && (
+            <div className="error-message">Showing cached crate data while live stats refresh ({crateError})</div>
+          )}
 
-      {!isInitialCrateLoad && crateMetrics.length === 0 && !crateError && (
-        <p className="no-activity">No crates found</p>
-      )}
+          {!isInitialCrateLoad && crateMetrics.length === 0 && !crateError && (
+            <p className="no-activity">No crates found</p>
+          )}
 
-      {crateMetrics.length > 0 && (
-        <div className="chart-section">
-          <h4>Crate Downloads</h4>
-          <CrateDownloadTrends data={crateMetrics} />
+          {crateMetrics.length > 0 && (
+            <div className="chart-section">
+              <h4 className="chart-heading">
+                <RustGearIcon />
+                Crate Downloads
+              </h4>
+              <CrateDownloadTrends data={crateMetrics} />
+            </div>
+          )}
         </div>
-      )}
-    </aside>
+      </aside>
     </>
   );
 }

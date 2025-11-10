@@ -15,7 +15,7 @@ function App() {
           <main className="main-content">
             <section className="hero-intro">
               <h1 className="hero-title">Open-source craft for engineers who care about the details.</h1>
-              <p className="hero-subtitle">Ideas, experiments, and production-ready tools built in the open.</p>
+              <p className="hero-subtitle">Ideas and experiments built in the open.</p>
             </section>
             <ProjectGrid />
           </main>

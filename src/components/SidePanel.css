@@ -14,7 +14,7 @@
 
 .side-panel-content {
   padding: 1.5rem;
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .side-panel-toggle {
@@ -75,16 +75,45 @@
 }
 
 .side-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .side-panel-content > h3 {
   margin: 0 0 1.25rem;
   font-size: 1.2rem;
-  color: var(--zenos-white-strong);
+  color: var(--zen-spectrum-blush);
+}
+
+.title-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.title-icon path {
+  fill: currentColor;
+}
+
+.chart-heading .title-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.github-icon {
+  color: var(--zenos-white-soft);
+}
+
+.rust-icon {
+  color: var(--zen-accent-amber);
 }
 
 /* LLM-style thinking animation */
@@ -155,7 +184,7 @@
 .stats-section h3 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .bio {
@@ -203,7 +232,7 @@
 .stat-value {
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
   line-height: 1.1;
 }
 
@@ -228,7 +257,13 @@
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: var(--zenos-white-strong);
+}
+
+.chart-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--zenos-white-soft);
 }
 
 .chart-card {
@@ -341,7 +376,7 @@
 
 .contributor-name {
   font-weight: 600;
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .contributor-commits {
@@ -409,7 +444,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .crate-card-subtitle {
@@ -554,7 +589,7 @@
 .pr-state.open {
   background: var(--zen-accent-amber-soft);
   border-color: var(--zen-border-warm);
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .pr-state.closed {
@@ -566,7 +601,7 @@
 .pr-state.merged {
   background: var(--zen-accent-coral-soft);
   border-color: var(--zen-border-coral);
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .pr-title {
@@ -583,7 +618,7 @@
 .activity-section h4 {
   font-size: 1rem;
   margin-bottom: 1rem;
-  color: var(--zenos-white-strong);
+  color: var(--zenos-white-soft);
 }
 
 .activity-list {
