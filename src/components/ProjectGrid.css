@@ -22,6 +22,14 @@
   text-shadow: 0 10px 22px var(--zenos-shadow-soft);
 }
 
+.projects-title-icon {
+  width: 34px;
+  height: 34px;
+  transform: rotate(-12deg);
+  color: var(--zen-accent-amber);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+}
+
 .project-categories {
   display: flex;
   flex-direction: column;

@@ -1,6 +1,7 @@
 import { projects } from '../projects';
 import { ProjectCard } from './ProjectCard';
 import type { Project } from '../types/Project';
+import { BookIcon } from './icons/BookIcon';
 import './ProjectGrid.css';
 
 export function ProjectGrid() {
@@ -14,7 +15,10 @@ export function ProjectGrid() {
 
   return (
     <div className="project-grid-container">
-      <h2 className="projects-title">Projects</h2>
+      <h2 className="projects-title">
+        <BookIcon className="projects-title-icon" aria-hidden />
+        <span>Projects with Books</span>
+      </h2>
       <div className="project-categories">
         {Array.from(groupedProjects.entries()).map(([category, categoryProjects]) => (
           <section key={category} className="project-category">
