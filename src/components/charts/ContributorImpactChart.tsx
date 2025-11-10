@@ -1,4 +1,5 @@
 import type { GitHubContributorStat } from '../../services/githubApi';
+import { LinkOut } from '../LinkOut';
 
 interface ContributorImpactChartProps {
   contributors: GitHubContributorStat[];
@@ -21,11 +22,10 @@ export function ContributorImpactChart({ contributors }: ContributorImpactChartP
           const barWidth = Math.round((contributor.commits / maxCommits) * 100);
           return (
             <li key={contributor.login} className="contributor-item">
-              <a
+              <LinkOut
                 className="contributor-profile"
                 href={contributor.profileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                allowReferrer={false}
               >
                 <img
                   className="contributor-avatar"
@@ -37,7 +37,7 @@ export function ContributorImpactChart({ contributors }: ContributorImpactChartP
                   <span className="contributor-name">{contributor.login}</span>
                   <span className="contributor-commits">{contributor.commits.toLocaleString()} commits</span>
                 </div>
-              </a>
+              </LinkOut>
               <div className="contributor-bar" aria-hidden="true">
                 <div className="contributor-bar-value" style={{ width: `${barWidth}%` }} />
               </div>

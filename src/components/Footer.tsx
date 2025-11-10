@@ -1,6 +1,7 @@
 import { appConfig } from '../config/appConfig';
 import logoUrl from '../assets/zenOSmosis-logo.svg';
 import { GitHubMark, CratesMark, LinkedInMark } from './icons/BrandIcons';
+import { LinkOut } from './LinkOut';
 import './Footer.css';
 
 const year = new Date().getFullYear();
@@ -29,29 +30,29 @@ export function SiteFooter() {
         <div className="footer-columns">
           <div className="footer-column">
             <h4>Explore</h4>
-            <a className="footer-link" href={blogUrl} target="_blank" rel="noreferrer noopener">
+            <LinkOut className="footer-link" href={blogUrl} allowReferrer={true}>
               Blog
-            </a>
+            </LinkOut>
           </div>
 
           <div className="footer-column">
             <h4>Profiles</h4>
-            <a className="footer-link" href={githubUrl} target="_blank" rel="noreferrer noopener">
+            <LinkOut className="footer-link" href={githubUrl} allowReferrer={false}>
               <GitHubMark aria-hidden />
               GitHub
-            </a>
-            <a className="footer-link" href={cratesUrl} target="_blank" rel="noreferrer noopener">
+            </LinkOut>
+            <LinkOut className="footer-link" href={cratesUrl} allowReferrer={false}>
               <CratesMark aria-hidden />
               crates.io
-            </a>
+            </LinkOut>
           </div>
 
           <div className="footer-column">
             <h4>Connect</h4>
-            <a className="footer-link" href={linkedinUrl} target="_blank" rel="noreferrer noopener">
+            <LinkOut className="footer-link" href={linkedinUrl} allowReferrer={false}>
               <LinkedInMark aria-hidden />
               LinkedIn
-            </a>
+            </LinkOut>
             <a className="footer-link" href={`mailto:${site.contactEmail}`}>
               {site.contactEmail}
             </a>

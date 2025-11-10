@@ -1,4 +1,5 @@
 import type { CrateDownloadSeries } from '../../services/cratesApi';
+import { LinkOut } from '../LinkOut';
 
 interface CrateDownloadTrendsProps {
   data: CrateDownloadSeries[];
@@ -44,12 +45,11 @@ export function CrateDownloadTrends({ data, days = 30 }: CrateDownloadTrendsProp
           const latest = series.daily.at(-1)?.downloads ?? 0;
 
           return (
-            <a
+            <LinkOut
               key={series.crate}
               className="crate-card"
               href={series.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              allowReferrer={false}
             >
               <div className="crate-card-header">
                 <div>
@@ -72,7 +72,7 @@ export function CrateDownloadTrends({ data, days = 30 }: CrateDownloadTrendsProp
                 <span className="crate-card-footer-label">Peak day</span>
                 <span className="crate-card-footer-value">{maxValue.toLocaleString()} downloads</span>
               </div>
-            </a>
+            </LinkOut>
           );
         })}
       </div>

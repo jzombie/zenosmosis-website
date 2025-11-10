@@ -4,6 +4,7 @@ import { SidePanel } from './components/SidePanel'
 import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import { PersistentQueryProvider } from './contexts/PersistentQueryProvider'
 import { SiteFooter } from './components/Footer'
+import { LinkOut } from './components/LinkOut'
 import { appConfig, githubUrl } from './config/appConfig'
 import './App.css'
 import './styles/liquid-background.css'
@@ -24,14 +25,13 @@ function App() {
                 <a className="hero-cta-primary" href={`mailto:${site.contactEmail}`}>
                   Start a project
                 </a>
-                <a
+                <LinkOut
                   className="hero-cta-secondary"
                   href={githubUrl}
-                  target="_blank"
-                  rel="noreferrer noopener"
+                  allowReferrer={true}
                 >
                   Explore
-                </a>
+                </LinkOut>
               </div>
             </section>
             <ProjectGrid />

@@ -11,6 +11,8 @@ import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
 import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
 import { GitHubMark, RustGearMark } from './icons/BrandIcons';
+import { LinkOut } from './LinkOut';
+import { openLink } from '../utils/linking';
 import './SidePanel.css';
 
 const BranchIcon = () => (
@@ -55,12 +57,7 @@ const truncateText = (value: string, maxLength = 160) => {
 };
 
 export function SidePanel() {
-  const [isOpen, setIsOpen] = useState(() => {
-    if (typeof window === 'undefined') {
-      return true;
-    }
-    return window.innerWidth > 768;
-  });
+  const [isOpen, setIsOpen] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -117,22 +114,26 @@ export function SidePanel() {
 
   const openExternalLink = (targetUrl?: string) => {
     if (!targetUrl) return;
-    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    openLink(targetUrl, { allowReferrer: false });
   };
+
+  const resolvedIsOpen = isOpen ?? true;
+  const isInitializing = isOpen === null;
 
   return (
     <>
       <button 
         className="side-panel-toggle"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
+        onClick={() => setIsOpen(!(isOpen ?? true))}
+        aria-label={resolvedIsOpen ? 'Close sidebar' : 'Open sidebar'}
+        disabled={isInitializing}
       >
-        <span className={`toggle-icon ${isOpen ? 'close' : 'open'}`}>
-          {isOpen ? '✕' : '☰'}
+        <span className={`toggle-icon ${resolvedIsOpen ? 'close' : 'open'}`}>
+          {resolvedIsOpen ? '✕' : '☰'}
         </span>
       </button>
       
-      <aside className={`side-panel ${isOpen ? 'open' : 'closed'}`}>
+      <aside className={`side-panel ${resolvedIsOpen ? 'open' : 'closed'}${isInitializing ? ' initializing' : ''}`}>
         <div className="side-panel-content">
           <h2 className="side-panel-title">
             <GitHubMark className="heading-icon github-icon" />
@@ -160,22 +161,20 @@ export function SidePanel() {
             <>
               <h3>{stats.user.name}</h3>
               <div className="profile-links" role="navigation" aria-label="Profile quick links">
-                <a
+                <LinkOut
                   className="profile-link"
                   href={githubProfileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  allowReferrer={false}
                 >
                   GitHub Profile
-                </a>
-                <a
+                </LinkOut>
+                <LinkOut
                   className="profile-link"
                   href={cratesProfileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  allowReferrer={false}
                 >
                   crates.io Profile
-                </a>
+                </LinkOut>
               </div>
               <div className="activity-section">
                 <h4 className="chart-heading">Recent Open-Source Activity</h4>
@@ -258,18 +257,17 @@ export function SidePanel() {
                           {activity.type === 'push' && activity.commits && activity.commits.length > 0 && (
                             <div className="activity-commits">
                               {activity.commits.map((commit: GitHubActivityCommit) => (
-                                <a
+                                <LinkOut
                                   key={commit.sha}
                                   href={commit.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
                                   className="activity-commit-link"
+                                  allowReferrer={false}
                                   onClick={(event) => event.stopPropagation()}
                                   onKeyDown={(event) => event.stopPropagation()}
                                 >
                                   <span className="commit-sha">{commit.sha.slice(0, 7)}</span>
                                   <span className="commit-message">{commit.message}</span>
-                                </a>
+                                </LinkOut>
                               ))}
                             </div>
                           )}
