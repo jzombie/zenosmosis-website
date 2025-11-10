@@ -1,72 +1,43 @@
-import { useState, useEffect, type KeyboardEvent } from 'react';
-import { fetchGitHubStats, type GitHubStats } from '../services/githubApi';
-import { fetchCrateDownloadStats, type CrateDownloadSeries } from '../services/cratesApi';
+import { useState, type KeyboardEvent } from 'react';
+import { useGitHubStatsQuery } from '../hooks/useGitHubStatsQuery';
+import { useCrateDownloadsQuery } from '../hooks/useCrateDownloadsQuery';
+import type {
+  GitHubActivityCommit,
+  GitHubActivityItem,
+  GitHubHighlight,
+} from '../services/githubApi';
 import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
 import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
 import './SidePanel.css';
 
 export function SidePanel() {
-  const [stats, setStats] = useState<GitHubStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(true);
-  const [crateMetrics, setCrateMetrics] = useState<CrateDownloadSeries[]>([]);
-  const [crateError, setCrateError] = useState<string | null>(null);
+
+  const githubQuery = useGitHubStatsQuery();
+  const crateQuery = useCrateDownloadsQuery();
+
+  const stats = githubQuery.data ?? null;
+  const crateMetrics = crateQuery.data ?? [];
+
+  const isInitialGithubLoad = githubQuery.isPending && !stats;
+  const githubError = githubQuery.isError
+    ? githubQuery.error instanceof Error
+      ? githubQuery.error.message
+      : 'Failed to load GitHub stats'
+    : null;
+
+  const isInitialCrateLoad = crateQuery.isPending && crateMetrics.length === 0;
+  const crateError = crateQuery.isError
+    ? crateQuery.error instanceof Error
+      ? crateQuery.error.message
+      : 'Failed to load crates.io statistics'
+    : null;
 
   const openExternalLink = (targetUrl?: string) => {
     if (!targetUrl) return;
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
   };
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadStats() {
-      try {
-        const [githubResult, crateResult] = await Promise.all([
-          fetchGitHubStats().catch((err) => {
-            console.error('Failed to load GitHub stats', err);
-            return null;
-          }),
-          fetchCrateDownloadStats().catch((err) => {
-            console.error('Failed to load crates.io stats', err);
-            return null;
-          }),
-        ]);
-
-        if (!mounted) {
-          return;
-        }
-
-        if (githubResult) {
-          setStats(githubResult);
-          setError(null);
-        } else {
-          setStats(null);
-          setError('Failed to load GitHub stats');
-        }
-
-        if (crateResult) {
-          setCrateMetrics(crateResult);
-          setCrateError(null);
-        } else {
-          setCrateMetrics([]);
-          setCrateError('Failed to load crates.io statistics');
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadStats();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   return (
     <>
@@ -84,7 +55,7 @@ export function SidePanel() {
         <div className="side-panel-content">
         <h2 className="side-panel-title">GitHub Activity</h2>
         
-        {loading && (
+        {isInitialGithubLoad && (
           <div className="thinking-animation">
             <div className="thinking-dot"></div>
             <div className="thinking-dot"></div>
@@ -93,18 +64,22 @@ export function SidePanel() {
           </div>
         )}
 
-        {error && (
-          <div className="error-message">{error}</div>
+        {githubError && !stats && (
+          <div className="error-message">{githubError}</div>
         )}
 
-        {stats && !loading && (
+        {githubError && stats && (
+          <div className="error-message">Displaying cached data while live stats refresh ({githubError})</div>
+        )}
+
+        {stats && (
           <>
             <h3>{stats.user.name}</h3>
             <div className="activity-section">
               <h4>Recent Open-Source Activity</h4>
               {stats.recentActivity.length > 0 ? (
                 <ul className="activity-list">
-                  {stats.recentActivity.map((activity) => {
+                  {stats.recentActivity.map((activity: GitHubActivityItem) => {
                     const isClickable = Boolean(activity.url);
 
                     const handleActivityKeyDown = (
@@ -136,7 +111,7 @@ export function SidePanel() {
 
                         {activity.type === 'push' && activity.commits && activity.commits.length > 0 && (
                           <div className="activity-commits">
-                            {activity.commits.map((commit) => (
+                            {activity.commits.map((commit: GitHubActivityCommit) => (
                               <a
                                 key={commit.sha}
                                 href={commit.url}
@@ -182,7 +157,7 @@ export function SidePanel() {
               <p className="bio">{stats.user.bio}</p>
               {stats.highlights.length > 0 && (
                 <div className="stats-grid">
-                  {stats.highlights.map((metric) => {
+                  {stats.highlights.map((metric: GitHubHighlight) => {
                     const content = (
                       <>
                         <span className="stat-value">{metric.value}</span>
@@ -232,11 +207,19 @@ export function SidePanel() {
         )}
       </div>
 
-      {!loading && crateError && (
+      {!isInitialCrateLoad && crateError && crateMetrics.length === 0 && (
         <div className="error-message">{crateError}</div>
       )}
 
-      {!loading && crateMetrics.length > 0 && (
+      {crateError && crateMetrics.length > 0 && (
+        <div className="error-message">Showing cached crate data while live stats refresh ({crateError})</div>
+      )}
+
+      {!isInitialCrateLoad && crateMetrics.length === 0 && !crateError && (
+        <p className="no-activity">No crates found</p>
+      )}
+
+      {crateMetrics.length > 0 && (
         <div className="chart-section">
           <h4>Crate Downloads</h4>
           <CrateDownloadTrends data={crateMetrics} />

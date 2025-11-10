@@ -15,11 +15,18 @@ const CRATES_USERNAME = 'jzombie';
 const MAX_CRATES = 4;
 const HISTORY_DAYS = 30;
 
+function createResponseError(response: Response, endpoint: string) {
+  const error: any = new Error(`crates.io request failed (${response.status}) for ${endpoint}`);
+  error.status = response.status;
+  error.endpoint = endpoint;
+  return error;
+}
+
 export async function fetchCrateDownloadStats(): Promise<CrateDownloadSeries[]> {
   try {
     const ownerResponse = await fetch(`https://crates.io/api/v1/owners/github/${CRATES_USERNAME}/crates`);
     if (!ownerResponse.ok) {
-      throw new Error(`Crates.io owner request failed with status ${ownerResponse.status}`);
+      throw createResponseError(ownerResponse, 'owners');
     }
 
     const ownerData = await ownerResponse.json();

@@ -62,12 +62,19 @@ export interface GitHubStats {
 
 const GITHUB_USERNAME = 'jzombie';
 
+function createResponseError(response: Response, endpoint: string) {
+  const error: any = new Error(`GitHub request failed (${response.status}) for ${endpoint}`);
+  error.status = response.status;
+  error.endpoint = endpoint;
+  return error;
+}
+
 export async function fetchGitHubStats(): Promise<GitHubStats> {
   try {
     // Fetch user info
     const userResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`);
     if (!userResponse.ok) {
-      throw new Error(`GitHub user request failed with status ${userResponse.status}`);
+      throw createResponseError(userResponse, 'users');
     }
     const user = await userResponse.json();
 
@@ -314,9 +321,9 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
         following: user.following,
         public_gists: user.public_gists,
       },
-  highlights,
-  languageDistribution,
-  topContributors,
+      highlights,
+      languageDistribution,
+      topContributors,
       recentActivity,
     };
   } catch (error) {
