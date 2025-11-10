@@ -1,2 +1,80 @@
-/* Additional styles can go here */
+:root {
+	--zenos-white: #ffffff;
+	--zenos-white-strong: rgba(255, 255, 255, 0.94);
+	--zenos-white-soft: rgba(255, 255, 255, 0.78);
+	--zenos-white-faint: rgba(255, 255, 255, 0.58);
+	--zenos-white-glass-strong: rgba(255, 255, 255, 0.24);
+	--zenos-white-glass: rgba(255, 255, 255, 0.15);
+	--zenos-white-glass-soft: rgba(255, 255, 255, 0.1);
+	--zenos-white-glass-faint: rgba(255, 255, 255, 0.06);
+
+	--zenos-gray: #727374;
+	--zenos-gray-strong: rgba(114, 115, 116, 0.82);
+	--zenos-gray-soft: rgba(114, 115, 116, 0.62);
+	--zenos-gray-glass: rgba(114, 115, 116, 0.35);
+	--zenos-gray-glass-faint: rgba(114, 115, 116, 0.2);
+
+	--zenos-blue: #4b86a7;
+	--zenos-blue-strong: #2f607c;
+	--zenos-blue-soft: rgba(75, 134, 167, 0.68);
+	--zenos-blue-glass: rgba(75, 134, 167, 0.25);
+	--zenos-blue-glass-soft: rgba(75, 134, 167, 0.16);
+	--zenos-blue-glass-faint: rgba(75, 134, 167, 0.08);
+
+	--zen-base-950: #111626;
+	--zen-base-900: #13192e;
+	--zen-base-850: #1c2134;
+	--zen-base-800: #1f283f;
+	--zen-base-700: #313245;
+	--zen-base-600: #4a465b;
+	--zen-spectrum-abyss: #161c33;
+	--zen-spectrum-blush: #9a7f77;
+
+	--zenos-ink-strong: rgba(17, 22, 38, 0.96);
+	--zenos-ink: rgba(17, 22, 38, 0.88);
+	--zenos-ink-soft: rgba(17, 22, 38, 0.72);
+
+	--zen-surface-panel: rgba(19, 24, 40, 0.92);
+	--zen-surface-card: rgba(24, 30, 48, 0.88);
+	--zen-surface-card-hover: rgba(32, 40, 61, 0.94);
+	--zen-surface-overlay: rgba(28, 35, 55, 0.6);
+	--zen-surface-chip: rgba(25, 31, 50, 0.55);
+
+	--zen-accent-amber: #f28705;
+	--zen-accent-amber-soft: rgba(242, 135, 5, 0.28);
+	--zen-accent-amber-faint: rgba(242, 135, 5, 0.16);
+	--zen-accent-coral: #f2644b;
+	--zen-accent-coral-soft: rgba(242, 100, 75, 0.32);
+	--zen-accent-coral-faint: rgba(242, 100, 75, 0.18);
+	--zen-accent-grove: #5f6c45;
+	--zen-accent-grove-soft: rgba(95, 108, 69, 0.28);
+	--zen-accent-grove-faint: rgba(95, 108, 69, 0.16);
+
+	--zen-border-soft: rgba(255, 255, 255, 0.08);
+	--zen-border: rgba(255, 255, 255, 0.14);
+	--zen-border-strong: rgba(255, 255, 255, 0.22);
+	--zen-border-warm: rgba(242, 135, 5, 0.32);
+	--zen-border-coral: rgba(242, 100, 75, 0.32);
+	--zenos-border-soft: var(--zen-border-soft);
+	--zenos-border: var(--zen-border);
+	--zenos-border-strong: var(--zen-border-strong);
+
+	--zenos-shadow-soft: rgba(9, 12, 22, 0.45);
+	--zenos-shadow-strong: rgba(9, 12, 22, 0.68);
+	--zen-glow-warm: rgba(242, 135, 5, 0.38);
+	--zen-glow-coral: rgba(242, 100, 75, 0.32);
+
+	--zen-color-1: var(--zenos-blue);
+	--zen-color-2: #27445a;
+	--zen-color-3: var(--zen-accent-amber);
+	--zen-color-4: var(--zen-accent-coral);
+	--zen-color-5: var(--zen-accent-grove);
+	--zen-color-6: var(--zen-spectrum-abyss);
+	--zen-color-7: var(--zen-spectrum-blush);
+	--zen-color-8: var(--zenos-white);
+	--zen-color-9: var(--zen-base-900);
+	--zen-color-10: #1b253d;
+
+	color-scheme: dark;
+}
 

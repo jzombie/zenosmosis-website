@@ -6,12 +6,12 @@
 }
 
 .projects-title {
-  color: white;
+  color: var(--zenos-white-strong);
   font-size: 2.5rem;
   font-weight: 600;
   margin-bottom: 1.25rem;
   text-align: center;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 10px 22px var(--zenos-shadow-soft);
 }
 
 .project-categories {
@@ -29,7 +29,7 @@
 
 .project-category-title {
   margin: 0;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--zenos-white-strong);
   font-size: 1.35rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -45,51 +45,55 @@
 }
 
 .project-card {
-  background: rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(135deg, var(--zen-accent-amber-faint), transparent),
+    var(--zen-surface-card);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--zen-border);
   border-radius: 12px;
   padding: 1.5rem;
   text-decoration: none;
-  color: white;
+  color: var(--zenos-white-strong);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 14px var(--zenos-shadow-soft);
 }
 
 .project-card:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background:
+    linear-gradient(135deg, var(--zen-accent-coral-soft), var(--zen-accent-amber-faint)),
+    var(--zen-surface-card-hover);
+  border-color: var(--zen-border-warm);
   transform: translateY(-4px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 14px 28px var(--zenos-shadow-strong);
 }
 
 .project-name {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
+  color: var(--zenos-white-strong);
 }
 
 .project-description {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--zenos-white-soft);
   flex: 1;
 }
 
 .github-link {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--zen-accent-amber);
   font-weight: 500;
 }
 
 .project-card:hover .github-link {
-  color: white;
+  color: var(--zenos-white-strong);
 }
 
 @media (max-width: 768px) {

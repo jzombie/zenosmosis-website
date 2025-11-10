@@ -4,7 +4,19 @@ interface LanguageDistributionChartProps {
   data: GitHubLanguageSlice[];
 }
 
-const CHART_COLORS = ['#61dafb', '#9d7bff', '#f4d35e', '#34c759', '#ff6f61', '#ff9f1c', '#2ec4b6', '#a15cff'];
+// Blend logo tones with the new warm accent palette for clearer segmentation.
+const CHART_COLORS = [
+  'var(--zen-color-1)',
+  'var(--zen-color-2)',
+  'var(--zen-color-3)',
+  'var(--zen-color-4)',
+  'var(--zen-color-5)',
+  'var(--zen-color-6)',
+  'var(--zen-color-7)',
+  'var(--zen-color-8)',
+  'var(--zen-color-9)',
+  'var(--zen-color-10)',
+];
 
 export function LanguageDistributionChart({ data }: LanguageDistributionChartProps) {
   if (!data.length) {

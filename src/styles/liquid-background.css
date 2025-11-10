@@ -13,9 +13,12 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  background: radial-gradient(circle at 48% 116%, rgba(255, 174, 83, 0.45) 0%, rgba(255, 174, 83, 0) 32%),
-    linear-gradient(185deg, #01040d 0%, #06112b 30%, #072349 60%, #030b1b 100%);
-  color: white;
+  background:
+    radial-gradient(circle at 38% 118%, var(--zen-accent-coral-soft) 0%, transparent 52%),
+    radial-gradient(circle at 18% 92%, var(--zen-accent-amber-faint) 0%, transparent 50%),
+    radial-gradient(circle at 82% -12%, var(--zenos-blue-glass) 0%, transparent 62%),
+    linear-gradient(188deg, var(--zen-base-950) 0%, var(--zen-base-900) 46%, var(--zen-base-850) 100%);
+  color: var(--zenos-white-strong);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -24,9 +27,9 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-  radial-gradient(circle at 18% 92%, rgba(255, 194, 120, 0.45) 0%, rgba(255, 194, 120, 0.12) 28%, rgba(255, 194, 120, 0) 55%),
-  radial-gradient(circle at 15% 88%, rgba(255, 236, 210, 0.45) 0%, rgba(255, 236, 210, 0) 55%),
-    radial-gradient(ellipse 160% 120% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 45%, transparent 70%);
+    radial-gradient(circle at 16% 88%, var(--zen-accent-amber-soft) 0%, transparent 58%),
+    radial-gradient(circle at 32% 102%, var(--zen-accent-grove-soft) 0%, transparent 64%),
+    radial-gradient(ellipse 160% 120% at 50% 0%, var(--zenos-white-glass) 0%, transparent 70%);
   mix-blend-mode: screen;
   pointer-events: none;
   transform: translate3d(0, 0, 0);
@@ -42,9 +45,10 @@ body::after {
   width: 240vh;
   height: 240vh;
   background:
-    radial-gradient(circle at 96% 85%, rgba(255, 223, 189, 0.75) 0%, rgba(255, 223, 189, 0.35) 4%, rgba(255, 223, 189, 0) 14%),
-    linear-gradient(93deg, rgba(255, 231, 204, 0.82) 0%, rgba(255, 194, 137, 0.6) 26%, rgba(255, 165, 90, 0.4) 48%, rgba(255, 144, 63, 0) 68%);
-  filter: blur(8px) saturate(0.95);
+    radial-gradient(circle at 92% 86%, var(--zen-accent-coral-soft) 0%, transparent 24%),
+    radial-gradient(circle at 78% 82%, var(--zen-accent-amber-faint) 0%, transparent 38%),
+    linear-gradient(96deg, var(--zen-accent-coral-soft) 0%, var(--zen-accent-amber-faint) 45%, transparent 78%);
+  filter: blur(8px) saturate(1.05);
   transform-origin: right bottom;
   transform: rotate(6deg) translate3d(0, 0, 0);
   -webkit-mask: radial-gradient(130% 130% at 100% 100%, rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.85) 48%, rgba(0, 0, 0, 0.85) 54%, rgba(0, 0, 0, 0) 60%);

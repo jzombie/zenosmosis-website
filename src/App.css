@@ -14,13 +14,14 @@
   align-items: center;
   padding: 0 2rem;
   box-sizing: border-box;
+  color: var(--zenos-white-strong);
 }
 
 .hero-intro {
   margin-top: 6rem;
   max-width: 780px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--zenos-white-strong);
 }
 
 .hero-title {
@@ -28,14 +29,18 @@
   font-size: clamp(2.25rem, 2.8vw + 1.5rem, 3.25rem);
   font-weight: 600;
   letter-spacing: -0.01em;
-  text-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(120deg, var(--zenos-white-strong), var(--zen-accent-amber), var(--zen-accent-coral));
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 10px 26px var(--zenos-shadow-strong);
 }
 
 .hero-subtitle {
   margin: 0;
   font-size: clamp(1.05rem, 0.6vw + 0.95rem, 1.25rem);
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--zen-spectrum-blush);
 }
 
 /* When JS is disabled, side panel won't render, so main content takes full width */
