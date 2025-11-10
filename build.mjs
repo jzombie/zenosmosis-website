@@ -1,5 +1,5 @@
 import { build } from 'vite';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -45,6 +45,34 @@ async function buildProduction() {
     '<div id="root"></div>',
     `<div id="root">${projectsHTML}</div>`
   );
+
+  // Inline hashed CSS generated during the client build so styles work without JS
+  const cssLinkRegex = /<link rel="stylesheet"[^>]*href="([^"]+\.css)"[^>]*>/g;
+  let cssMatch;
+  const inlineChunks = [];
+
+  while ((cssMatch = cssLinkRegex.exec(html)) !== null) {
+    const href = cssMatch[1];
+
+    // Only inline the compiled asset CSS; leave other linked stylesheets alone
+    if (!href.startsWith('/assets/')) {
+      continue;
+    }
+
+    const cssFilePath = join(__dirname, 'dist', href.replace(/^\//, ''));
+    if (!existsSync(cssFilePath)) {
+      continue;
+    }
+
+    const cssContent = readFileSync(cssFilePath, 'utf-8');
+    inlineChunks.push(cssContent);
+    html = html.replace(cssMatch[0], '');
+  }
+
+  if (inlineChunks.length > 0) {
+    const inlineTag = `<style data-ssr-inline>${inlineChunks.join('\n')}</style>`;
+    html = html.replace('</head>', `  ${inlineTag}\n  </head>`);
+  }
   
   // Write back the modified HTML
   writeFileSync(indexPath, html);

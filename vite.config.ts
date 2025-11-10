@@ -19,11 +19,28 @@ function injectProjectsPlugin(): Plugin {
       
       const { renderProjectsToHTML } = await viteServer.ssrLoadModule('/src/entry-server.tsx');
       const projectsHTML = renderProjectsToHTML();
-      
-      return html.replace(
+
+      let transformedHtml = html.replace(
         '<div id="root"></div>',
         `<div id="root">${projectsHTML}</div>`
       );
+
+      // Ensure component-level CSS is linked when running without JS in dev mode
+      const devCssLinks = [
+        '/src/App.css',
+        '/src/components/SidePanel.css',
+      ];
+
+      const cssMarkup = devCssLinks
+        .map((href) => `<link rel="stylesheet" href="${href}">`)
+        .join('\n    ');
+
+      transformedHtml = transformedHtml.replace(
+        '</head>',
+        `    ${cssMarkup}\n  </head>`
+      );
+
+      return transformedHtml;
     },
   };
 }
