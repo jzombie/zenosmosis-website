@@ -90,6 +90,36 @@
 }
 
 
+.github-identity {
+  margin: 0 0 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.github-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--zenos-white-soft);
+}
+
+.github-handle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.45rem 0.35rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  background: linear-gradient(120deg, #7df9ff, var(--zen-accent-amber), #f39bec);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 6px rgba(125, 249, 255, 0.6), 0 0 18px rgba(242, 135, 5, 0.45);
+  filter: drop-shadow(0 0 6px rgba(125, 249, 255, 0.35));
+}
+
 .profile-links {
   display: flex;
   flex-wrap: wrap;

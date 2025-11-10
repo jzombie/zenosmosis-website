@@ -159,7 +159,10 @@ export function SidePanel() {
 
           {stats && (
             <>
-              <h3>{stats.user.name}</h3>
+              <div className="github-identity">
+                <span className="github-name">{stats.user.name}</span>
+                <span className="github-handle">@{appConfig.github.username}</span>
+              </div>
               <div className="profile-links" role="navigation" aria-label="Profile quick links">
                 <LinkOut
                   className="profile-link"
