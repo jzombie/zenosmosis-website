@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react'
 import { LogoBar } from './components/LogoBar'
 import { ProjectGrid } from './components/ProjectGrid'
 import { SidePanel } from './components/SidePanel'
@@ -12,6 +13,16 @@ import './styles/liquid-background.css'
 function App() {
   const { site } = appConfig
 
+  const handlePrimaryCtaClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    const footer = document.querySelector<HTMLElement>('.site-footer')
+    if (footer) {
+      footer.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    } else {
+      window.location.href = `mailto:${site.contactEmail}`
+    }
+  }
+
   return (
     <ClientOnlyProvider>
       <PersistentQueryProvider>
@@ -20,10 +31,14 @@ function App() {
           <main className="main-content">
             <section className="hero-intro">
               <h1 className="hero-title">Open-source craft for engineers who care about the details.</h1>
-              <p className="hero-subtitle">Ideas and experiments built in the open.</p>
+              <p className="hero-subtitle">Closed-source projects and contract work available for discussion.</p>
               <div className="hero-cta">
-                <a className="hero-cta-primary" href={`mailto:${site.contactEmail}`}>
-                  Start a project
+                <a
+                  className="hero-cta-primary"
+                  href="#contact-footer"
+                  onClick={handlePrimaryCtaClick}
+                >
+                  Let's Connect
                 </a>
                 <LinkOut
                   className="hero-cta-secondary"

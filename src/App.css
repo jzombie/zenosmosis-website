@@ -40,7 +40,7 @@
   margin: 0;
   font-size: clamp(1.05rem, 0.6vw + 0.95rem, 1.25rem);
   line-height: 1.55;
-  color: var(--zen-spectrum-blush);
+  color: var(--zenos-white-soft);
 }
 
 .hero-cta {
@@ -123,5 +123,3 @@
     justify-content: flex-start;
   }
 }
-
-

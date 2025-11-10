@@ -17,7 +17,7 @@ export function SiteFooter() {
   const phoneHref = `tel:${site.contactPhone.replace(/[^\d+]/g, '')}`;
 
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" id="contact-footer">
       <div className="footer-inner">
         <div className="footer-brand">
           <img src={logoUrl} alt={site.name} className="footer-logo" />
