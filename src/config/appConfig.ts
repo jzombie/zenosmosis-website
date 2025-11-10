@@ -5,6 +5,13 @@
  * and avoids scattering hard-coded values throughout the codebase.
  */
 export const appConfig = {
+  site: {
+    name: 'zenOSmosis',
+    baseUrl: 'https://zenosmosis.com',
+    blogPath: 'https://blog.zenosmosis.com',
+    contactEmail: 'info@zenosmosis.com',
+    contactPhone: '415-562-7140',
+  },
   github: {
     username: 'jzombie',
     /** Number of recent activity items to show in the sidebar feed. */
@@ -18,6 +25,9 @@ export const appConfig = {
     username: 'jzombie',
     maxCrates: 4,
     historyDays: 30,
+  },
+  social: {
+    linkedinSlug: 'jeremyharrisconsultant',
   },
   queryCache: {
     /** Duration (ms) to treat cached data as fresh before background refetch. */

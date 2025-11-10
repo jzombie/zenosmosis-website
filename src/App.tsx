@@ -3,6 +3,7 @@ import { ProjectGrid } from './components/ProjectGrid'
 import { SidePanel } from './components/SidePanel'
 import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import { PersistentQueryProvider } from './contexts/PersistentQueryProvider'
+import { SiteFooter } from './components/Footer'
 import './App.css'
 import './styles/liquid-background.css'
 
@@ -23,6 +24,7 @@ function App() {
             <SidePanel />
           </ClientOnly>
         </div>
+        <SiteFooter />
       </PersistentQueryProvider>
     </ClientOnlyProvider>
   )

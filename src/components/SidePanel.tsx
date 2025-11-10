@@ -10,74 +10,8 @@ import { appConfig } from '../config/appConfig';
 import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
 import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
+import { GitHubMark, RustGearMark } from './icons/BrandIcons';
 import './SidePanel.css';
-
-const GitHubLogoIcon = () => (
-  <svg
-    className="heading-icon github-icon"
-    viewBox="0 0 16 16"
-    aria-hidden="true"
-    focusable="false"
-  >
-    <path
-      fillRule="evenodd"
-      d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.52 7.52 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8"
-    />
-  </svg>
-);
-
-const RustGearIcon = () => (
-  <svg
-    className="heading-icon rust-icon"
-    viewBox="0 0 106 106"
-    aria-hidden="true"
-    focusable="false"
-  >
-    <g transform="translate(53 53)">
-      <path
-        d="M-9 -15h13c8 0 8 8 0 8H-9ZM-40 22H0V11h-9V3H1c11 0 5 19 14 19H40V3h-6v2c0 8-9 7-10 2-1-5-5-9-6-9 15-8 6-24-6-24H-35v11h10V11H-40Z"
-        fill="currentColor"
-        stroke="none"
-      />
-
-      <mask id="rust-hole-mask">
-        <rect x="-60" y="-60" width="120" height="120" fill="white" />
-        {[0, 72, 144, 216, 288].map((angle) => (
-          <circle key={angle} cx={0} cy={-40} r={3} transform={`rotate(${angle})`} fill="black" />
-        ))}
-      </mask>
-
-      <g mask="url(#rust-hole-mask)">
-        <circle r="43" fill="none" stroke="currentColor" strokeWidth={9} />
-        {[0, 11.25, 22.5, 33.75, 45, 56.25, 67.5, 78.75, 90, 101.25, 112.5, 123.75, 135, 146.25, 157.5, 168.75, 180, 191.25, 202.5, 213.75, 225, 236.25, 247.5, 258.75, 270, 281.25, 292.5, 303.75, 315, 326.25, 337.5, 348.75].map(
-          (angle) => (
-            <polygon
-              key={`cog-${angle}`}
-              points="46 3 51 0 46 -3"
-              stroke="currentColor"
-              strokeWidth={3}
-              strokeLinejoin="round"
-              fill="none"
-              transform={`rotate(${angle})`}
-            />
-          ),
-        )}
-
-        {[0, 72, 144, 216, 288].map((angle) => (
-          <polygon
-            key={`mount-${angle}`}
-            points="-7 -42 0 -35 7 -42"
-            stroke="currentColor"
-            strokeWidth={6}
-            strokeLinejoin="round"
-            fill="none"
-            transform={`rotate(${angle})`}
-          />
-        ))}
-      </g>
-    </g>
-  </svg>
-);
 
 const BranchIcon = () => (
   <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden="true" focusable="false">
@@ -166,7 +100,7 @@ export function SidePanel() {
       <aside className={`side-panel ${isOpen ? 'open' : 'closed'}`}>
         <div className="side-panel-content">
           <h2 className="side-panel-title">
-            <GitHubLogoIcon />
+            <GitHubMark className="heading-icon github-icon" />
             GitHub Activity
           </h2>
 
@@ -398,7 +332,7 @@ export function SidePanel() {
           {crateMetrics.length > 0 && (
             <div className="chart-section">
               <h4 className="chart-heading">
-                <RustGearIcon />
+                <RustGearMark className="heading-icon rust-icon" />
                 Rust Crate Downloads
               </h4>
               <CrateDownloadTrends data={crateMetrics} />
