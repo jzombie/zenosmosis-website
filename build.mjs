@@ -35,14 +35,14 @@ async function buildProduction() {
   
   // Import the SSR module and render
   // Import the freshly built SSR bundle and render the app to an HTML string.
-  const { renderProjectsToHTML } = await import('./dist-ssr/main-ssr.js');
+  const { renderSSRToHTML } = await import('./dist-ssr/main-ssr.js');
   
   // Read the built index.html
   const indexPath = join(__dirname, 'dist', 'index.html');
   let html = readFileSync(indexPath, 'utf-8');
   
   // Inject the SSR content
-  const projectsHTML = renderProjectsToHTML();
+  const projectsHTML = renderSSRToHTML();
   html = html.replace(
     '<div id="root"></div>',
     `<div id="root">${projectsHTML}</div>`

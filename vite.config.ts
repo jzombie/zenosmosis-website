@@ -25,8 +25,8 @@ function injectSsrPlugin(): Plugin {
         return html; // Skip in production build
       }
       
-  const { renderProjectsToHTML } = await viteServer.ssrLoadModule('/src/main-ssr.tsx');
-      const projectsHTML = renderProjectsToHTML();
+  const { renderSSRToHTML } = await viteServer.ssrLoadModule('/src/main-ssr.tsx');
+      const projectsHTML = renderSSRToHTML();
 
       const transformedHtml = html.replace(
         '<div id="root"></div>',
