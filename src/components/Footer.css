@@ -1,5 +1,5 @@
 .site-footer {
-  margin-top: 4rem;
+  margin-top: 0;
   padding: 3rem 1.5rem 2rem;
   background:
     linear-gradient(180deg, var(--zen-base-900), var(--zen-base-950));
