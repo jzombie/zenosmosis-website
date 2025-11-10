@@ -3,6 +3,7 @@ import { ProjectGrid } from './components/ProjectGrid'
 import { SidePanel } from './components/SidePanel'
 import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import './App.css'
+import './styles/liquid-background.css'
 
 function App() {
   return (

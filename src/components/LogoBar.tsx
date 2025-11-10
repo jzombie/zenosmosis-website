@@ -1,3 +1,5 @@
+import './LogoBar.css';
+
 export function LogoBar() {
   return (
     <header className="logo-bar">

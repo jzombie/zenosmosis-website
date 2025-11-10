@@ -1,5 +1,6 @@
 import { projects } from '../projects';
 import { ProjectCard } from './ProjectCard';
+import './ProjectGrid.css';
 
 export function ProjectGrid() {
   return (
