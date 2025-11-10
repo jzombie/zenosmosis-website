@@ -6,6 +6,7 @@ import type {
   GitHubActivityItem,
   GitHubHighlight,
 } from '../services/githubApi';
+import { appConfig } from '../config/appConfig';
 import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
 import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
@@ -122,6 +123,9 @@ export function SidePanel() {
   const stats = githubQuery.data ?? null;
   const crateMetrics = crateQuery.data ?? [];
 
+  const githubProfileUrl = `https://github.com/${appConfig.github.username}`;
+  const cratesProfileUrl = `https://crates.io/users/${appConfig.crates.username}?sort=downloads`;
+
   const isInitialGithubLoad = githubQuery.isPending && !stats;
   const githubError = githubQuery.isError
     ? githubQuery.error instanceof Error
@@ -180,6 +184,24 @@ export function SidePanel() {
           {stats && (
             <>
               <h3>{stats.user.name}</h3>
+              <div className="profile-links" role="navigation" aria-label="Profile quick links">
+                <a
+                  className="profile-link"
+                  href={githubProfileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub Profile
+                </a>
+                <a
+                  className="profile-link"
+                  href={cratesProfileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  crates.io Profile
+                </a>
+              </div>
               <div className="activity-section">
                 <h4 className="chart-heading">Recent Open-Source Activity</h4>
                 {stats.recentActivity.length > 0 ? (
@@ -226,13 +248,17 @@ export function SidePanel() {
                               {pushBranchLabel && (
                                 <span className={`activity-branch ${activity.type}`}>
                                   <BranchIcon />
-                                  {pushBranchLabel}
+                                  <span className="branch-name" title={pushBranchLabel}>
+                                    {pushBranchLabel}
+                                  </span>
                                 </span>
                               )}
                               {pullRequestLabel && (
                                 <span className={`activity-branch ${activity.type}`}>
                                   <PullRequestIcon />
-                                  {pullRequestLabel}
+                                  <span className="branch-name" title={pullRequestLabel}>
+                                    {pullRequestLabel}
+                                  </span>
                                 </span>
                               )}
                             </div>
@@ -242,100 +268,100 @@ export function SidePanel() {
                             )}
                           </div>
 
-                        {activity.type === 'push' && activity.commits && activity.commits.length > 0 && (
-                          <div className="activity-commits">
-                            {activity.commits.map((commit: GitHubActivityCommit) => (
-                              <a
-                                key={commit.sha}
-                                href={commit.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="activity-commit-link"
-                                onClick={(event) => event.stopPropagation()}
-                                onKeyDown={(event) => event.stopPropagation()}
+                          {activity.type === 'push' && activity.commits && activity.commits.length > 0 && (
+                            <div className="activity-commits">
+                              {activity.commits.map((commit: GitHubActivityCommit) => (
+                                <a
+                                  key={commit.sha}
+                                  href={commit.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="activity-commit-link"
+                                  onClick={(event) => event.stopPropagation()}
+                                  onKeyDown={(event) => event.stopPropagation()}
+                                >
+                                  <span className="commit-sha">{commit.sha.slice(0, 7)}</span>
+                                  <span className="commit-message">{commit.message}</span>
+                                </a>
+                              ))}
+                            </div>
+                          )}
+
+                          {activity.type === 'pull_request' && activity.pullRequest && (
+                            <div className="activity-pr-meta">
+                              <span
+                                className={`pr-state ${activity.pullRequest.isMerged ? 'merged' : activity.pullRequest.state}`}
                               >
-                                <span className="commit-sha">{commit.sha.slice(0, 7)}</span>
-                                <span className="commit-message">{commit.message}</span>
-                              </a>
-                            ))}
-                          </div>
-                        )}
+                                {activity.pullRequest.isMerged
+                                  ? 'Merged'
+                                  : activity.pullRequest.state === 'open'
+                                  ? 'Open'
+                                  : 'Closed'}
+                              </span>
+                              <span className="pr-title">{activity.pullRequest.title}</span>
+                            </div>
+                          )}
 
-                        {activity.type === 'pull_request' && activity.pullRequest && (
-                          <div className="activity-pr-meta">
-                            <span
-                              className={`pr-state ${activity.pullRequest.isMerged ? 'merged' : activity.pullRequest.state}`}
-                            >
-                              {activity.pullRequest.isMerged
-                                ? 'Merged'
-                                : activity.pullRequest.state === 'open'
-                                ? 'Open'
-                                : 'Closed'}
-                            </span>
-                            <span className="pr-title">{activity.pullRequest.title}</span>
-                          </div>
-                        )}
+                          <div className="activity-date">{activity.date}</div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p className="no-activity">No recent activity</p>
+                )}
+              </div>
 
-                        <div className="activity-date">{activity.date}</div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="no-activity">No recent activity</p>
-              )}
-            </div>
+              <div className="stats-section">
+                <p className="bio">{stats.user.bio}</p>
+                {stats.highlights.length > 0 && (
+                  <div className="stats-grid">
+                    {stats.highlights.map((metric: GitHubHighlight) => {
+                      const content = (
+                        <>
+                          <span className="stat-value">{metric.value}</span>
+                          <span className="stat-label">{metric.label}</span>
+                          {metric.subtitle && <span className="stat-subtitle">{metric.subtitle}</span>}
+                        </>
+                      );
 
-            <div className="stats-section">
-              <p className="bio">{stats.user.bio}</p>
-              {stats.highlights.length > 0 && (
-                <div className="stats-grid">
-                  {stats.highlights.map((metric: GitHubHighlight) => {
-                    const content = (
-                      <>
-                        <span className="stat-value">{metric.value}</span>
-                        <span className="stat-label">{metric.label}</span>
-                        {metric.subtitle && <span className="stat-subtitle">{metric.subtitle}</span>}
-                      </>
-                    );
+                      const isClickable = Boolean(metric.href);
 
-                    const isClickable = Boolean(metric.href);
+                      return (
+                        <div
+                          key={metric.label}
+                          className={`stat-item${isClickable ? ' clickable' : ''}`}
+                          role={isClickable ? 'button' : undefined}
+                          tabIndex={isClickable ? 0 : undefined}
+                          onClick={isClickable ? () => openExternalLink(metric.href) : undefined}
+                          onKeyDown={isClickable ? (event: KeyboardEvent<HTMLDivElement>) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              openExternalLink(metric.href);
+                            }
+                          } : undefined}
+                        >
+                          {content}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
-                    return (
-                      <div
-                        key={metric.label}
-                        className={`stat-item${isClickable ? ' clickable' : ''}`}
-                        role={isClickable ? 'button' : undefined}
-                        tabIndex={isClickable ? 0 : undefined}
-                        onClick={isClickable ? () => openExternalLink(metric.href) : undefined}
-                        onKeyDown={isClickable ? (event: KeyboardEvent<HTMLDivElement>) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            openExternalLink(metric.href);
-                          }
-                        } : undefined}
-                      >
-                        {content}
-                      </div>
-                    );
-                  })}
+              {stats.languageDistribution.length > 0 && (
+                <div className="chart-section">
+                  <h4 className="chart-heading">Language Footprint</h4>
+                  <LanguageDistributionChart data={stats.languageDistribution} />
                 </div>
               )}
-            </div>
 
-            {stats.languageDistribution.length > 0 && (
-              <div className="chart-section">
-                <h4 className="chart-heading">Language Footprint</h4>
-                <LanguageDistributionChart data={stats.languageDistribution} />
-              </div>
-            )}
-
-            {stats.topContributors.length > 0 && (
-              <div className="chart-section">
-                <h4 className="chart-heading">Top Contributors</h4>
-                <ContributorImpactChart contributors={stats.topContributors} />
-              </div>
-            )}
+              {stats.topContributors.length > 0 && (
+                <div className="chart-section">
+                  <h4 className="chart-heading">Top Contributors</h4>
+                  <ContributorImpactChart contributors={stats.topContributors} />
+                </div>
+              )}
             </>
           )}
 
