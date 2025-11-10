@@ -114,6 +114,12 @@ const PullRequestIcon = () => (
   </svg>
 );
 
+const truncateText = (value: string, maxLength = 160) => {
+  if (value.length <= maxLength) return value;
+  const truncated = value.slice(0, maxLength).trimEnd();
+  return `${truncated.replace(/[\s.,;:-]*$/, '')}…`;
+};
+
 export function SidePanel() {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -216,11 +222,23 @@ export function SidePanel() {
                         activity.type === 'pull_request' && activity.pullRequest
                           ? `PR #${activity.pullRequest.number}`
                           : null;
+
+                      const commitMessages =
+                        activity.type === 'push' && activity.commits && activity.commits.length > 0
+                          ? activity.commits
+                              .map((commit) => commit.message?.trim().replace(/\s+/g, ' ') ?? '')
+                              .filter(Boolean)
+                          : [];
+
                       const summaryText =
                         activity.type === 'push'
-                          ? activity.commits && activity.commits.length > 0
-                            ? `Commits: ${activity.commits.length}`
-                            : null
+                          ? commitMessages.length > 0
+                            ? truncateText(
+                                commitMessages.length > 1
+                                  ? `${commitMessages[0]} (+${commitMessages.length - 1} more)`
+                                  : commitMessages[0],
+                              )
+                            : activity.summary
                           : activity.summary;
 
                       const handleActivityKeyDown = (

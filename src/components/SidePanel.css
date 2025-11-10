@@ -629,6 +629,13 @@
   color: var(--zenos-white-soft);
   margin-bottom: 0.3rem;
   line-height: 1.4;
+  min-width: 0;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .activity-commits {
@@ -687,6 +694,13 @@
 .commit-message {
   flex: 1;
   line-height: 1.3;
+  min-width: 0;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .activity-pr-meta {

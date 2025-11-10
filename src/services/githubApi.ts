@@ -119,25 +119,47 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
         }
 
         if (event.type === 'PushEvent') {
-          const commits = Array.isArray(event.payload?.commits)
-            ? event.payload.commits.slice(0, 5).map((commit: any) => ({
-                sha: commit.sha,
-                message: commit.message || 'Commit',
-                url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
-              }))
+          const commits: GitHubActivityCommit[] = Array.isArray(event.payload?.commits)
+            ? event.payload.commits.slice(0, 5).map((commit: any) => {
+                const rawMessage = typeof commit.message === 'string' ? commit.message : '';
+                const cleanedMessage = rawMessage
+                  .split('\n')[0]
+                  .trim()
+                  .replace(/\s+/g, ' ');
+
+                return {
+                  sha: commit.sha,
+                  message: cleanedMessage || 'Commit',
+                  url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
+                } as GitHubActivityCommit;
+              })
             : [];
 
           const commitCount = event.payload?.commits?.length ?? 0;
           const branch = (event.payload?.ref || '').replace('refs/heads/', '');
+          const commitMessages = commits.map((commit) => commit.message).filter(Boolean);
+          const remainingCommitCount = Math.max(commitCount - 1, 0);
+
+          let summary = 'Commit activity';
+          if (commitMessages.length > 0) {
+            summary = commitMessages[0];
+            if (remainingCommitCount > 0) {
+              summary = `${summary} (+${remainingCommitCount} more)`;
+            }
+          } else if (commitCount > 0) {
+            summary = `${commitCount} ${commitCount === 1 ? 'commit' : 'commits'}`;
+            if (branch) {
+              summary += ` on ${branch}`;
+            }
+          } else if (branch) {
+            summary = `Updates on ${branch}`;
+          }
 
           recentActivity.push({
             id: event.id,
             type: 'push',
             repo: event.repo.name,
-            summary:
-              commitCount > 0
-                ? `${commitCount} ${commitCount === 1 ? 'commit' : 'commits'} pushed to ${branch || 'default branch'}`
-                : `Push to ${branch || 'repository'}`,
+            summary,
             date: formatTimestamp(event.created_at),
             url: branch
               ? `https://github.com/${event.repo.name}/tree/${encodeURIComponent(branch)}`
