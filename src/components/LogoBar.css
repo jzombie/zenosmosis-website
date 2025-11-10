@@ -1,0 +1,19 @@
+/* Dark translucent logo bar */
+
+.logo-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, var(--zen-base-950), var(--zen-base-900));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1rem 2rem;
+  z-index: 1000;
+  box-shadow: 0 10px 24px var(--zenos-shadow-soft);
+}
+
+.logo-bar .logo {
+  height: 40px;
+  display: block;
+}
