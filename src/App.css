@@ -16,11 +16,39 @@
   box-sizing: border-box;
 }
 
+.hero-intro {
+  margin-top: 6rem;
+  margin-bottom: 3rem;
+  max-width: 780px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hero-title {
+  margin: 0 0 1rem;
+  font-size: clamp(2.25rem, 2.8vw + 1.5rem, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.hero-subtitle {
+  margin: 0;
+  font-size: clamp(1.05rem, 0.6vw + 0.95rem, 1.25rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 /* When JS is disabled, side panel won't render, so main content takes full width */
 
 @media (max-width: 1024px) {
   .main-content {
     padding: 0 1.5rem;
+  }
+
+  .hero-intro {
+    margin-top: 5rem;
+    margin-bottom: 2.5rem;
   }
 }
 
@@ -28,6 +56,12 @@
   .main-content {
     padding: 0 1rem 2rem;
     align-items: stretch;
+  }
+
+  .hero-intro {
+    margin-top: 4.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
   }
 }
 
