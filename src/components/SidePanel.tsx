@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react';
+import { useState, useEffect, type KeyboardEvent } from 'react';
 import { useGitHubStatsQuery } from '../hooks/useGitHubStatsQuery';
 import { useCrateDownloadsQuery } from '../hooks/useCrateDownloadsQuery';
 import type {
@@ -55,7 +55,42 @@ const truncateText = (value: string, maxLength = 160) => {
 };
 
 export function SidePanel() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+    return window.innerWidth > 768;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(min-width: 769px)');
+
+    const syncOpenState = () => {
+      setIsOpen(mediaQuery.matches);
+    };
+
+    syncOpenState();
+
+    const listener = () => syncOpenState();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', listener);
+    } else if (typeof mediaQuery.addListener === 'function') {
+      mediaQuery.addListener(listener);
+    }
+
+    return () => {
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', listener);
+      } else if (typeof mediaQuery.removeListener === 'function') {
+        mediaQuery.removeListener(listener);
+      }
+    };
+  }, []);
 
   const githubQuery = useGitHubStatsQuery();
   const crateQuery = useCrateDownloadsQuery();

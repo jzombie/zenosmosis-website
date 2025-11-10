@@ -44,3 +44,5 @@ export const appConfig = {
 } as const;
 
 export type AppConfig = typeof appConfig;
+
+export const githubUrl = `https://github.com/${appConfig.github.username}`;

@@ -43,6 +43,57 @@
   color: var(--zen-spectrum-blush);
 }
 
+.hero-cta {
+  margin-top: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.hero-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--zen-accent-amber), var(--zen-accent-coral));
+  color: var(--zenos-white);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+}
+
+.hero-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--zenos-border);
+  color: var(--zenos-white-soft);
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.hero-cta-secondary:hover {
+  color: var(--zen-accent-amber);
+  border-color: var(--zen-border-warm);
+  transform: translateY(-1px);
+}
+
 /* When JS is disabled, side panel won't render, so main content takes full width */
 
 @media (max-width: 1024px) {
@@ -66,6 +117,10 @@
     margin-top: 4rem;
     margin-bottom: 0.875rem;
     text-align: left;
+  }
+
+  .hero-cta {
+    justify-content: flex-start;
   }
 }
 
