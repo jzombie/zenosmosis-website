@@ -13,7 +13,7 @@ import './SidePanel.css';
 
 const GitHubLogoIcon = () => (
   <svg
-    className="title-icon github-icon"
+    className="heading-icon github-icon"
     viewBox="0 0 16 16"
     aria-hidden="true"
     focusable="false"
@@ -27,17 +27,54 @@ const GitHubLogoIcon = () => (
 
 const RustGearIcon = () => (
   <svg
-    className="title-icon rust-icon"
-    viewBox="0 0 24 24"
+    className="heading-icon rust-icon"
+    viewBox="0 0 106 106"
     aria-hidden="true"
     focusable="false"
   >
-    <path
-      d="M12 3.5c-.28 0-.56.02-.83.05l-.53 1.73a6.58 6.58 0 0 0-1.62.67l-1.61-1.09a8.51 8.51 0 0 0-2.07 2.07l1.09 1.61c-.27.51-.5 1.05-.67 1.62l-1.73.53A8.4 8.4 0 0 0 4.5 12c0 .28.02.56.05.83l1.73.53c.17.57.4 1.11.67 1.62l-1.09 1.61a8.51 8.51 0 0 0 2.07 2.07l1.61-1.09c.51.27 1.05.5 1.62.67l.53 1.73c.27.03.55.05.83.05s.56-.02.83-.05l.53-1.73c.57-.17 1.11-.4 1.62-.67l1.61 1.09a8.51 8.51 0 0 0 2.07-2.07l-1.09-1.61c.27-.51.5-1.05.67-1.62l1.73-.53c.03-.27.05-.55.05-.83s-.02-.56-.05-.83l-1.73-.53a6.6 6.6 0 0 0-.67-1.62l1.09-1.61a8.51 8.51 0 0 0-2.07-2.07l-1.61 1.09a6.57 6.57 0 0 0-1.62-.67l-.53-1.73A9.44 9.44 0 0 0 12 3.5Zm0 2.5a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    />
-    <path d="M9 8.5h4.2a2.5 2.5 0 0 1 0 5H11l2.4 3.5h-2.4l-2.4-3.5V8.5H9Zm2 2v1h2.2a.5.5 0 0 0 0-1H11Z" />
+    <g transform="translate(53 53)">
+      <path
+        d="M-9 -15h13c8 0 8 8 0 8H-9ZM-40 22H0V11h-9V3H1c11 0 5 19 14 19H40V3h-6v2c0 8-9 7-10 2-1-5-5-9-6-9 15-8 6-24-6-24H-35v11h10V11H-40Z"
+        fill="currentColor"
+        stroke="none"
+      />
+
+      <mask id="rust-hole-mask">
+        <rect x="-60" y="-60" width="120" height="120" fill="white" />
+        {[0, 72, 144, 216, 288].map((angle) => (
+          <circle key={angle} cx={0} cy={-40} r={3} transform={`rotate(${angle})`} fill="black" />
+        ))}
+      </mask>
+
+      <g mask="url(#rust-hole-mask)">
+        <circle r="43" fill="none" stroke="currentColor" strokeWidth={9} />
+        {[0, 11.25, 22.5, 33.75, 45, 56.25, 67.5, 78.75, 90, 101.25, 112.5, 123.75, 135, 146.25, 157.5, 168.75, 180, 191.25, 202.5, 213.75, 225, 236.25, 247.5, 258.75, 270, 281.25, 292.5, 303.75, 315, 326.25, 337.5, 348.75].map(
+          (angle) => (
+            <polygon
+              key={`cog-${angle}`}
+              points="46 3 51 0 46 -3"
+              stroke="currentColor"
+              strokeWidth={3}
+              strokeLinejoin="round"
+              fill="none"
+              transform={`rotate(${angle})`}
+            />
+          ),
+        )}
+
+        {[0, 72, 144, 216, 288].map((angle) => (
+          <polygon
+            key={`mount-${angle}`}
+            points="-7 -42 0 -35 7 -42"
+            stroke="currentColor"
+            strokeWidth={6}
+            strokeLinejoin="round"
+            fill="none"
+            transform={`rotate(${angle})`}
+          />
+        ))}
+      </g>
+    </g>
   </svg>
 );
 
@@ -255,7 +292,7 @@ export function SidePanel() {
             <div className="chart-section">
               <h4 className="chart-heading">
                 <RustGearIcon />
-                Crate Downloads
+                Rust Crate Downloads
               </h4>
               <CrateDownloadTrends data={crateMetrics} />
             </div>

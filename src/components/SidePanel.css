@@ -90,7 +90,7 @@
   color: var(--zen-spectrum-blush);
 }
 
-.title-icon {
+.heading-icon {
   width: 1.35rem;
   height: 1.35rem;
   display: inline-flex;
@@ -99,13 +99,13 @@
   color: inherit;
 }
 
-.title-icon path {
+.heading-icon path {
   fill: currentColor;
 }
 
-.chart-heading .title-icon {
-  width: 1.1rem;
-  height: 1.1rem;
+.chart-heading .heading-icon {
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 .github-icon {
@@ -258,7 +258,6 @@
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
-
 .chart-heading {
   display: flex;
   align-items: center;
