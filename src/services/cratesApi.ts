@@ -10,6 +10,7 @@ export interface CrateDownloadSeries {
   url: string;
   totalDownloads: number;
   recentDownloads: number;
+  recentDownloadsReported?: number;
   daily: CrateDownloadPoint[];
 }
 
@@ -24,14 +25,27 @@ export async function fetchCrateDownloadStats(): Promise<CrateDownloadSeries[]> 
   try {
     const { username, maxCrates, historyDays } = appConfig.crates;
 
-    const ownerResponse = await fetch(`https://crates.io/api/v1/owners/github/${username}/crates`);
-    if (!ownerResponse.ok) {
-      throw createResponseError(ownerResponse, 'owners');
+    const userResponse = await fetch(`https://crates.io/api/v1/users/${username}`);
+    if (!userResponse.ok) {
+      throw createResponseError(userResponse, 'users');
     }
 
-    const ownerData = await ownerResponse.json();
-    const crates = Array.isArray(ownerData?.crates) ? ownerData.crates : [];
-  const selectedCrates = crates.slice(0, maxCrates);
+    const userData = await userResponse.json();
+    const userId = typeof userData?.user?.id === 'number' ? userData.user.id : null;
+    if (!userId) {
+      throw new Error(`crates.io user lookup failed for ${username}`);
+    }
+
+    const cratesResponse = await fetch(
+      `https://crates.io/api/v1/crates?user_id=${userId}&per_page=${maxCrates}&sort=recent-downloads`,
+    );
+    if (!cratesResponse.ok) {
+      throw createResponseError(cratesResponse, 'crates');
+    }
+
+    const cratesData = await cratesResponse.json();
+    const crates = Array.isArray(cratesData?.crates) ? cratesData.crates : [];
+    const selectedCrates = crates.slice(0, maxCrates);
 
     const series: CrateDownloadSeries[] = [];
 
@@ -48,22 +62,44 @@ export async function fetchCrateDownloadStats(): Promise<CrateDownloadSeries[]> 
         }
 
         const downloadsData = await downloadsResponse.json();
-        const dailyDownloads = Array.isArray(downloadsData?.downloads) ? downloadsData.downloads : [];
-        const trimmed = dailyDownloads.slice(-historyDays);
+        const versionDownloads = Array.isArray(downloadsData?.version_downloads)
+          ? downloadsData.version_downloads
+          : [];
+        const extraDownloads = Array.isArray(downloadsData?.meta?.extra_downloads)
+          ? downloadsData.meta.extra_downloads
+          : [];
 
-        const daily: CrateDownloadPoint[] = trimmed.map((entry: any) => ({
-          date: typeof entry?.date === 'string' ? entry.date : '',
-          downloads: typeof entry?.downloads === 'number' ? entry.downloads : 0,
-        }));
+        const downloadsByDate = new Map<string, number>();
 
-        const recentDownloads = daily.reduce((sum, entry) => sum + entry.downloads, 0);
+        for (const entry of versionDownloads) {
+          const date = typeof entry?.date === 'string' ? entry.date : null;
+          const count = typeof entry?.downloads === 'number' ? entry.downloads : 0;
+          if (!date || count <= 0) continue;
+          downloadsByDate.set(date, (downloadsByDate.get(date) ?? 0) + count);
+        }
+
+        for (const entry of extraDownloads) {
+          const date = typeof entry?.date === 'string' ? entry.date : null;
+          const count = typeof entry?.downloads === 'number' ? entry.downloads : 0;
+          if (!date || count <= 0) continue;
+          downloadsByDate.set(date, (downloadsByDate.get(date) ?? 0) + count);
+        }
+
+        const combinedDaily = Array.from(downloadsByDate.entries())
+          .map(([date, downloads]) => ({ date, downloads }))
+          .sort((a, b) => a.date.localeCompare(b.date));
+
+        const trimmed = combinedDaily.slice(-historyDays);
+        const recentDownloads = trimmed.reduce((sum, entry) => sum + entry.downloads, 0);
 
         series.push({
           crate: crateName,
           url: `https://crates.io/crates/${crateName}`,
           totalDownloads: typeof crate?.downloads === 'number' ? crate.downloads : 0,
+          recentDownloadsReported:
+            typeof crate?.recent_downloads === 'number' ? crate.recent_downloads : undefined,
           recentDownloads,
-          daily,
+          daily: trimmed,
         });
       } catch (crateError) {
         console.warn('Failed to fetch download stats for crate', crateName, crateError);
