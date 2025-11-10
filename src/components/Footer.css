@@ -84,6 +84,10 @@
   height: 18px;
 }
 
+.footer-link svg path {
+  fill: currentColor;
+}
+
 .footer-meta {
   margin-top: 3rem;
   padding-top: 1.5rem;
