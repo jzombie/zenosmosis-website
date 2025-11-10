@@ -20,7 +20,7 @@
 .side-panel-toggle {
   display: none; /* Hidden on desktop */
   position: fixed;
-  top: 1rem; /* Same as header padding */
+  top: .8rem;
   right: 1rem;
   width: 48px;
   height: 48px;
