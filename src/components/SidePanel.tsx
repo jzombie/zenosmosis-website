@@ -78,6 +78,41 @@ const RustGearIcon = () => (
   </svg>
 );
 
+const BranchIcon = () => (
+  <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden="true" focusable="false">
+    <g fill="currentColor">
+      <circle cx={4} cy={3} r={1.7} />
+      <circle cx={4} cy={13} r={1.7} />
+      <circle cx={11.5} cy={6} r={1.7} />
+    </g>
+    <path
+      d="M4 4.9v5.2a3 3 0 0 0 3 3h1.65"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M4 4.9c0 2.25 1.85 4.1 4.1 4.1H11"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const PullRequestIcon = () => (
+  <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden="true" focusable="false">
+    <path
+      fill="currentColor"
+      d="M7.75 1a.75.75 0 0 1 .75.75v1.5h.25A2.75 2.75 0 0 1 11.5 6v3.69a2.75 2.75 0 1 1-1.5 0V6a1.25 1.25 0 0 0-1.25-1.25H8.5v1.5a.75.75 0 0 1-1.5 0V1.75A.75.75 0 0 1 7.75 1ZM3.75 1A2.75 2.75 0 0 0 1 3.75v8.5a2.75 2.75 0 1 0 1.5 0V3.75A.75.75 0 0 1 3.75 3h.25V1.75A.75.75 0 0 1 5.25 1v1.5h.25a.75.75 0 0 1 .75.75v5.69a2.75 2.75 0 1 1-1.5 0V5.5H3.75A.75.75 0 0 1 3 4.75v-1A.75.75 0 0 1 3.75 3Zm0 12a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Zm7.5 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z"
+    />
+  </svg>
+);
+
 export function SidePanel() {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -150,34 +185,62 @@ export function SidePanel() {
                 {stats.recentActivity.length > 0 ? (
                   <ul className="activity-list">
                     {stats.recentActivity.map((activity: GitHubActivityItem) => {
-                    const isClickable = Boolean(activity.url);
+                      const isClickable = Boolean(activity.url);
+                      const eventTypeLabel = activity.type.replace(/_/g, ' ');
+                      const pushBranchLabel = activity.type === 'push'
+                        ? activity.branch || 'default branch'
+                        : null;
+                      const pullRequestLabel =
+                        activity.type === 'pull_request' && activity.pullRequest
+                          ? `PR #${activity.pullRequest.number}`
+                          : null;
+                      const summaryText =
+                        activity.type === 'push'
+                          ? activity.commits && activity.commits.length > 0
+                            ? `Commits: ${activity.commits.length}`
+                            : null
+                          : activity.summary;
 
-                    const handleActivityKeyDown = (
-                      event: KeyboardEvent<HTMLLIElement>
-                    ) => {
-                      if (!isClickable) return;
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        openExternalLink(activity.url);
-                      }
-                    };
+                      const handleActivityKeyDown = (
+                        event: KeyboardEvent<HTMLLIElement>
+                      ) => {
+                        if (!isClickable) return;
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          openExternalLink(activity.url);
+                        }
+                      };
 
-                    return (
-                      <li
-                        key={activity.id}
-                        className={`activity-item${isClickable ? ' clickable' : ''}`}
-                        role={isClickable ? 'button' : undefined}
-                        tabIndex={isClickable ? 0 : undefined}
-                        onClick={isClickable ? () => openExternalLink(activity.url) : undefined}
-                        onKeyDown={handleActivityKeyDown}
-                      >
-                        <div className="activity-main">
-                          <div className="activity-type">
-                            {activity.type === 'push' ? 'Push' : 'Pull Request'}
+                      return (
+                        <li
+                          key={activity.id}
+                          className={`activity-item${isClickable ? ' clickable' : ''}`}
+                          role={isClickable ? 'button' : undefined}
+                          tabIndex={isClickable ? 0 : undefined}
+                          onClick={isClickable ? () => openExternalLink(activity.url) : undefined}
+                          onKeyDown={handleActivityKeyDown}
+                        >
+                          <div className="activity-main">
+                            <div className="activity-meta">
+                              <span className="activity-type">{`Event type: ${eventTypeLabel}`}</span>
+                              {pushBranchLabel && (
+                                <span className={`activity-branch ${activity.type}`}>
+                                  <BranchIcon />
+                                  {pushBranchLabel}
+                                </span>
+                              )}
+                              {pullRequestLabel && (
+                                <span className={`activity-branch ${activity.type}`}>
+                                  <PullRequestIcon />
+                                  {pullRequestLabel}
+                                </span>
+                              )}
+                            </div>
+                            <div className="activity-repo">{activity.repo}</div>
+                            {summaryText && (
+                              <div className="activity-summary">{summaryText}</div>
+                            )}
                           </div>
-                          <div className="activity-repo">{activity.repo}</div>
-                          <div className="activity-summary">{activity.summary}</div>
-                        </div>
 
                         {activity.type === 'push' && activity.commits && activity.commits.length > 0 && (
                           <div className="activity-commits">

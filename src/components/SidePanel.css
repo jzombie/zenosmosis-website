@@ -200,25 +200,56 @@
   gap: 1rem;
   margin-top: 1rem;
 }
-
-.stat-item {
+.activity-meta {
   display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  padding: 1rem;
-  border-radius: 10px;
-  background:
-    linear-gradient(135deg, var(--zen-accent-amber-faint), transparent),
-    var(--zen-surface-card);
-  border: 1px solid var(--zen-border);
-  color: inherit;
-  text-decoration: none;
-  min-height: 110px;
-  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.3rem;
+}
+
+.activity-type {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--zenos-white-faint);
+}
+
+.activity-branch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--zenos-border);
+  background: var(--zen-surface-chip);
+  font-size: 0.75rem;
+  color: var(--zenos-white-soft);
+}
+
+.activity-branch svg {
+  width: 14px;
+  height: 14px;
+}
+
+.activity-branch.push {
+  color: var(--zen-accent-amber);
+  border-color: var(--zen-border-warm);
+}
+
+.activity-branch.pull_request {
+  color: var(--zen-accent-coral);
+}
+
+.activity-repo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--zen-accent-coral);
+  margin-bottom: 0.2rem;
 }
 
 .stat-item.clickable {
-  cursor: pointer;
+  margin-bottom: 0.25rem;
 }
 
 .stat-item:hover {
@@ -488,7 +519,6 @@
   color: var(--zenos-white-soft);
 }
 
-
 .activity-item.clickable {
   cursor: pointer;
 }
@@ -499,26 +529,58 @@
   color: inherit;
 }
 
+.activity-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+
 .activity-type {
   font-size: 0.75rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: var(--zenos-white-faint);
-  margin-bottom: 0.25rem;
+}
+
+.activity-branch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--zenos-border);
+  background: var(--zen-surface-chip);
+  font-size: 0.75rem;
+  color: var(--zenos-white-soft);
+}
+
+.activity-branch svg {
+  width: 14px;
+  height: 14px;
+}
+
+.activity-branch.push {
+  color: var(--zen-accent-amber);
+  border-color: var(--zen-border-warm);
+}
+
+.activity-branch.pull_request {
+  color: var(--zen-accent-coral);
 }
 
 .activity-repo {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--zen-accent-coral);
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.25rem;
 }
 
 .activity-summary {
   font-size: 0.8rem;
   color: var(--zenos-white-soft);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
   line-height: 1.4;
 }
 
@@ -550,6 +612,19 @@
     linear-gradient(135deg, var(--zen-accent-coral-soft), var(--zen-accent-amber-faint)),
     var(--zen-surface-card-hover);
   border-color: var(--zen-border-warm);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--zenos-border);
+  background:
+    linear-gradient(135deg, var(--zen-accent-grove-faint), transparent),
+    var(--zen-surface-card);
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 .commit-sha {
