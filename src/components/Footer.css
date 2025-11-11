@@ -11,7 +11,9 @@
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  gap: 2.5rem;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
+  align-items: start;
 }
 
 .footer-brand {
@@ -45,14 +47,17 @@
 }
 
 .footer-columns {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.75rem;
+  display: flex;
+  gap: 2.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .footer-column {
   display: grid;
   gap: 0.75rem;
+  min-width: 0;
+  align-content: start;
 }
 
 .footer-column h4 {
@@ -108,6 +113,18 @@
 
 .footer-meta a:hover {
   color: var(--zen-accent-amber);
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .footer-columns {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 }
 
 @media (max-width: 640px) {
