@@ -44,6 +44,7 @@ async function buildProduction() {
   // Inject meta tags from appConfig
   const { site } = appConfig;
   const structuredData = generateStructuredData();
+  const socialImageUrl = `${site.baseUrl}${site.socialImage}`;
   const metaTags = `
     <title>${site.title}</title>
     <meta name="description" content="${site.description}" />
@@ -54,10 +55,16 @@ async function buildProduction() {
     <meta property="og:title" content="${site.title}" />
     <meta property="og:description" content="${site.description}" />
     <meta property="og:site_name" content="${site.name}" />
+    <meta property="og:image" content="${socialImageUrl}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="${site.socialImageAlt}" />
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="${site.baseUrl}" />
     <meta property="twitter:title" content="${site.title}" />
     <meta property="twitter:description" content="${site.description}" />
+    <meta property="twitter:image" content="${socialImageUrl}" />
+    <meta property="twitter:image:alt" content="${site.socialImageAlt}" />
     <script type="application/ld+json">
 ${JSON.stringify(structuredData, null, 2)}
     </script>

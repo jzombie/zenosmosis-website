@@ -16,6 +16,8 @@ export const appConfig = {
     keywords: 'Rust, open source, engineering, databases, infrastructure, SIMD, SQL, MQTT, Docker, mdBook documentation',
     author: 'Jeremy Harris',
     authorSlug: 'jeremy-harris',
+    socialImage: '/social/zenOSmosis-card-1200x630.jpg',
+    socialImageAlt: 'zenOSmosis — Open-source craft for engineers who care about the details.',
   },
   github: {
     username: 'jzombie',
