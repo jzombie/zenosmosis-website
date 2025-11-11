@@ -10,7 +10,11 @@
 import ReactDOMServer from 'react-dom/server'
 import App from './App'
 import './index.css'
+import { appConfig } from './config/appConfig'
+import { generateStructuredData } from './utils/structuredData'
 
 export function renderSSRToHTML(): string {
   return ReactDOMServer.renderToString(<App />)
 }
+
+export { appConfig, generateStructuredData }

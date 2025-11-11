@@ -6,12 +6,13 @@ import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import { PersistentQueryProvider } from './contexts/PersistentQueryProvider'
 import { SiteFooter } from './components/Footer'
 import { LinkOut } from './components/LinkOut'
-import { appConfig, githubUrl, linkedInUrl } from './config/appConfig'
+import { githubUrl, linkedInUrl, appConfig } from './config/appConfig'
 import './App.css'
 import './styles/liquid-background.css'
 
 function App() {
   const { site } = appConfig
+
 
   const handlePrimaryCtaClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()

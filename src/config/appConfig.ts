@@ -10,7 +10,12 @@ export const appConfig = {
     baseUrl: 'https://zenosmosis.com',
     blogPath: 'https://blog.zenosmosis.com',
     contactEmail: 'info@zenosmosis.com',
-    contactPhone: '415-562-7140',
+    contactPhone: '+1-415-562-7140',
+    title: 'zenOSmosis - Engineering Craftsmanship',
+    description: 'Open-source craft for engineers who care about the details. Rust tooling, databases, infrastructure projects, and comprehensive documentation by Jeremy Harris.',
+    keywords: 'Rust, open source, engineering, databases, infrastructure, SIMD, SQL, MQTT, Docker, mdBook documentation',
+    author: 'Jeremy Harris',
+    authorSlug: 'jeremy-harris',
   },
   github: {
     username: 'jzombie',

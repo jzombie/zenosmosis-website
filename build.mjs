@@ -35,11 +35,35 @@ async function buildProduction() {
   
   // Import the SSR module and render
   // Import the freshly built SSR bundle and render the app to an HTML string.
-  const { renderSSRToHTML } = await import('./dist-ssr/main-ssr.js');
+  const { renderSSRToHTML, appConfig, generateStructuredData } = await import('./dist-ssr/main-ssr.js');
   
   // Read the built index.html
   const indexPath = join(__dirname, 'dist', 'index.html');
   let html = readFileSync(indexPath, 'utf-8');
+  
+  // Inject meta tags from appConfig
+  const { site } = appConfig;
+  const structuredData = generateStructuredData();
+  const metaTags = `
+    <title>${site.title}</title>
+    <meta name="description" content="${site.description}" />
+    <meta name="keywords" content="${site.keywords}" />
+    <meta name="author" content="${site.author}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${site.baseUrl}" />
+    <meta property="og:title" content="${site.title}" />
+    <meta property="og:description" content="${site.description}" />
+    <meta property="og:site_name" content="${site.name}" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="${site.baseUrl}" />
+    <meta property="twitter:title" content="${site.title}" />
+    <meta property="twitter:description" content="${site.description}" />
+    <script type="application/ld+json">
+${JSON.stringify(structuredData, null, 2)}
+    </script>
+  `;
+  
+  html = html.replace('</head>', `${metaTags}\n  </head>`);
   
   // Inject the SSR content
   const projectsHTML = renderSSRToHTML();
