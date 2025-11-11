@@ -1,4 +1,4 @@
-# zenOSmosis.dev
+# zenOSmosis Website
 
 A Vite + React SPA that powers the zenOSmosis digital garden and project hub.
 
@@ -7,7 +7,7 @@ A Vite + React SPA that powers the zenOSmosis digital garden and project hub.
 - `npm install`
 - `npm run dev`
 - `npm run preview` – serve the production build locally
-- `npm run build` – production build used by the Netlify deploy pipeline
+- `npm run build` – production build used by the deploy pipeline
 
 ### CSS while JavaScript is disabled
 
