@@ -11,6 +11,7 @@ import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
 import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
 import { GitHubMark, RustGearMark } from './icons/BrandIcons';
+import { LiveIndicator } from './LiveIndicator';
 import { LinkOut } from './LinkOut';
 import { openLink } from '../utils/linking';
 import './SidePanel.css';
@@ -161,7 +162,10 @@ export function SidePanel() {
             <>
               <div className="github-identity">
                 <span className="github-name">{stats.user.name}</span>
-                <LinkOut className="github-handle" href={githubProfileUrl} allowReferrer={false}>@{appConfig.github.username}</LinkOut>
+                <LinkOut className="github-handle" href={githubProfileUrl} allowReferrer={false}>
+                  @{appConfig.github.username}
+                  <LiveIndicator isLive={!githubQuery.isError} />
+                </LinkOut>
               </div>
               <div className="profile-links" role="navigation" aria-label="Profile quick links">
                 <LinkOut

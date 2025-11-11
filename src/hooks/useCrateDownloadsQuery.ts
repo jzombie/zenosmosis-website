@@ -3,6 +3,7 @@ import {
   fetchCrateDownloadStats,
   type CrateDownloadSeries,
 } from '../services/cratesApi'
+import { appConfig } from '../config/appConfig'
 
 export const CRATE_DOWNLOADS_QUERY_KEY = ['crates', 'downloads'] as const
 
@@ -11,5 +12,7 @@ export function useCrateDownloadsQuery(): UseQueryResult<CrateDownloadSeries[]> 
     queryKey: CRATE_DOWNLOADS_QUERY_KEY,
     queryFn: fetchCrateDownloadStats,
     meta: { source: 'crates-downloads' },
+    refetchInterval: appConfig.queryCache.staleTimeMs,
+    refetchIntervalInBackground: true,
   })
 }
