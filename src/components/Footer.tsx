@@ -47,7 +47,7 @@ export function SiteFooter() {
             </LinkOut>
           </div>
 
-          <div className="footer-column">
+          <div className="footer-column" id="connect-column">
             <h4>Connect</h4>
             <LinkOut className="footer-link" href={linkedinUrl} allowReferrer={false}>
               <LinkedInMark aria-hidden />
