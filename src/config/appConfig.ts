@@ -46,3 +46,4 @@ export const appConfig = {
 export type AppConfig = typeof appConfig;
 
 export const githubUrl = `https://github.com/${appConfig.github.username}`;
+export const linkedInUrl = `https://www.linkedin.com/in/${appConfig.social.linkedinSlug}`;

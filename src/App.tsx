@@ -6,7 +6,7 @@ import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import { PersistentQueryProvider } from './contexts/PersistentQueryProvider'
 import { SiteFooter } from './components/Footer'
 import { LinkOut } from './components/LinkOut'
-import { appConfig, githubUrl } from './config/appConfig'
+import { appConfig, githubUrl, linkedInUrl } from './config/appConfig'
 import './App.css'
 import './styles/liquid-background.css'
 
@@ -15,9 +15,24 @@ function App() {
 
   const handlePrimaryCtaClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
-    const footer = document.querySelector<HTMLElement>('.site-footer')
-    if (footer) {
-      footer.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    const connectColumn = document.getElementById('connect-column')
+    if (connectColumn) {
+      connectColumn.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      
+      setTimeout(() => {
+        connectColumn.classList.add('highlight-connect')
+        
+        let ignoreScrollUntil = Date.now() + 3000
+        
+        const onScroll = () => {
+          if (Date.now() < ignoreScrollUntil) {
+            return
+          }
+          connectColumn.classList.remove('highlight-connect')
+          window.removeEventListener('scroll', onScroll)
+        }
+        window.addEventListener('scroll', onScroll, { passive: true })
+      }, 800)
     } else {
       window.location.href = `mailto:${site.contactEmail}`
     }
@@ -35,7 +50,7 @@ function App() {
               <div className="hero-cta">
                 <a
                   className="hero-cta-primary"
-                  href="#contact-footer"
+                  href={linkedInUrl}
                   onClick={handlePrimaryCtaClick}
                 >
                   Let's Connect
