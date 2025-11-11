@@ -19,6 +19,9 @@ export function ProjectGrid() {
         <BookIcon className="projects-title-icon" aria-hidden />
         <span>Projects with Books</span>
       </h2>
+      <p className="projects-subtitle">
+        Each listed project below includes comprehensive documentation written like a book. These are complete guides covering architecture, usage, and implementation details.
+      </p>
       <div className="project-categories">
         {Array.from(groupedProjects.entries()).map(([category, categoryProjects]) => (
           <section key={category} className="project-category">
