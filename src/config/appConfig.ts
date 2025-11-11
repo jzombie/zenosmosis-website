@@ -1,6 +1,6 @@
 /**
  * Central application configuration. All tunable values that influence API requests,
- * caching behaviour, and feature limits live here so the entire app can share the
+ * caching behavior, and feature limits live here so the entire app can share the
  * same source of truth. This makes it simple to reuse the approach in other projects
  * and avoids scattering hard-coded values throughout the codebase.
  */
@@ -11,13 +11,45 @@ export const appConfig = {
     blogPath: 'https://blog.zenosmosis.com',
     contactEmail: 'info@zenosmosis.com',
     contactPhone: '+1-415-562-7140',
-    title: 'zenOSmosis - Engineering Craftsmanship',
-    description: 'Open-source craft for engineers who care about the details. Rust tooling, databases, infrastructure projects, and comprehensive documentation by Jeremy Harris.',
-    keywords: 'Rust, open source, engineering, databases, infrastructure, SIMD, SQL, MQTT, Docker, mdBook documentation',
+
+    // Keep titles under ~55–60 chars; use the same across <title>, og:title, twitter:title.
+    // A: broader positioning
+    title: 'zenOSmosis — High-Performance Data Systems',
+    // B (alt you can A/B later): 'zenOSmosis — Engineering Craftsmanship'
+
+    // Use two descriptions: one longer for SEO, one short for social cards.
+    // ~150–160 chars helps SEO snippets; ~90–110 chars is ideal for social.
+    description:
+      'Open-source data systems and tooling: storage engines, SQL, infrastructure, and clear documentation',
+    socialDescription:
+      'Open-source data systems and tooling: storage, SQL, and infra',
+
+    // Keep this lean; prioritize intent over a long comma soup.
+    keywords:
+      'Rust, data systems, storage engine, SQL, Apache Arrow, performance, infrastructure, Docker, MQTT, documentation',
+
+    // Author credit (used in meta=author if you surface it)
     author: 'Jeremy Harris',
     authorSlug: 'jeremy-harris',
+
+    // Use an absolute URL so all platforms resolve it reliably.
     socialImage: '/social/zenOSmosis-card-1200x630.jpg',
-    socialImageAlt: 'zenOSmosis — Open-source craft for engineers who care about the details.',
+    socialImageAlt: 'zenOSmosis — Open-source Rust data systems and tools',
+
+    // (Optional but useful if you wire it into meta tags)
+    siteName: 'zenOSmosis',
+    locale: 'en_US',
+    twitterHandle: '', // e.g., '@yourhandle' if you get one later
+    
+    // Organization details for structured data
+    organizationDescription: 'zenOSmosis develops high-performance open-source data systems, storage engines, SQL tooling, and infrastructure projects with comprehensive technical documentation.',
+    foundingDate: '2010-07-15',
+    
+    // Person/author details for structured data
+    authorJobTitle: 'Software Engineer & Systems Architect',
+    authorDescription: 'Software engineer specializing in high-performance data systems, storage engines, and infrastructure tooling.',
+    languages: ['en'],
+    areaServed: 'Worldwide',
   },
   github: {
     username: 'jzombie',

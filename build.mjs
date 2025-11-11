@@ -35,7 +35,7 @@ async function buildProduction() {
   
   // Import the SSR module and render
   // Import the freshly built SSR bundle and render the app to an HTML string.
-  const { renderSSRToHTML, appConfig, generateStructuredData } = await import('./dist-ssr/main-ssr.js');
+  const { renderSSRToHTML, appConfig, generateStructuredData, getBaseUrl, getCanonicalUrl, toAbsoluteUrl } = await import('./dist-ssr/main-ssr.js');
   
   // Read the built index.html
   const indexPath = join(__dirname, 'dist', 'index.html');
@@ -44,15 +44,16 @@ async function buildProduction() {
   // Inject meta tags from appConfig
   const { site } = appConfig;
   const structuredData = generateStructuredData();
-  const socialImageUrl = `${site.baseUrl}${site.socialImage}`;
+  const canonicalUrl = getCanonicalUrl();
+  const socialImageUrl = toAbsoluteUrl(site.socialImage);
   const metaTags = `
-    <link rel="canonical" href="${site.baseUrl}/" />
+    <link rel="canonical" href="${canonicalUrl}" />
     <title>${site.title}</title>
     <meta name="description" content="${site.description}" />
     <meta name="keywords" content="${site.keywords}" />
     <meta name="author" content="${site.author}" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="${site.baseUrl}" />
+    <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:title" content="${site.title}" />
     <meta property="og:description" content="${site.description}" />
     <meta property="og:site_name" content="${site.name}" />
@@ -61,7 +62,7 @@ async function buildProduction() {
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="${site.socialImageAlt}" />
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="${site.baseUrl}" />
+    <meta property="twitter:url" content="${canonicalUrl}" />
     <meta property="twitter:title" content="${site.title}" />
     <meta property="twitter:description" content="${site.description}" />
     <meta property="twitter:image" content="${socialImageUrl}" />
