@@ -46,6 +46,7 @@ async function buildProduction() {
   const structuredData = generateStructuredData();
   const socialImageUrl = `${site.baseUrl}${site.socialImage}`;
   const metaTags = `
+    <link rel="canonical" href="${site.baseUrl}/" />
     <title>${site.title}</title>
     <meta name="description" content="${site.description}" />
     <meta name="keywords" content="${site.keywords}" />
