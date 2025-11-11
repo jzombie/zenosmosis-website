@@ -108,6 +108,13 @@
   flex: 1;
 }
 
+.project-technologies {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--zenos-white-faint);
+  font-style: italic;
+}
+
 .project-callout {
   display: inline-flex;
   align-items: center;

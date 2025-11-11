@@ -16,6 +16,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <div className="project-card-body">
         <h3 className="project-name">{project.name}</h3>
         <p className="project-description">{project.description}</p>
+        {project.technologies.length > 0 && (
+          <p className="project-technologies">{project.technologies.join(', ')}</p>
+        )}
       </div>
       <span className="project-callout">
         <BookIcon className="project-action-icon" aria-hidden />

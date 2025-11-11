@@ -161,7 +161,7 @@ export function SidePanel() {
             <>
               <div className="github-identity">
                 <span className="github-name">{stats.user.name}</span>
-                <span className="github-handle">@{appConfig.github.username}</span>
+                <LinkOut className="github-handle" href={githubProfileUrl} allowReferrer={false}>@{appConfig.github.username}</LinkOut>
               </div>
               <div className="profile-links" role="navigation" aria-label="Profile quick links">
                 <LinkOut

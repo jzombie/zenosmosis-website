@@ -3,4 +3,5 @@ export interface Project {
   description: string;
   category: string;
   bookUrl: string;
+  technologies: string[];
 }
