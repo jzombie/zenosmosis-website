@@ -20,7 +20,7 @@ export function SiteFooter() {
           <img src={logoUrl} alt={site.name} className="footer-logo" />
           <h2 className="footer-headline">Software for curious minds.</h2>
           <p className="footer-description">
-            Thoughtful engineering, open toolmaking, and generous documentation to help indie developers build at a sustainable pace.
+            Thoughtful engineering, open toolmaking, and generous documentation for the insanely curious.
           </p>
         </div>
 

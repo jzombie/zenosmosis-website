@@ -46,8 +46,8 @@ function App() {
         <div className="app-layout">
           <main className="main-content">
             <section className="hero-intro">
-              <h1 className="hero-title">Open-source craft for engineers who care about the details.</h1>
-              <p className="hero-subtitle">Closed-source, contract, and full-time work available for discussion.</p>
+              <h1 className="hero-title">Real code. Real docs. No theater.</h1>
+              <p className="hero-subtitle">Custom software requests available for discussion.</p>
               <div className="hero-cta">
                 <a
                   className="hero-cta-primary"
