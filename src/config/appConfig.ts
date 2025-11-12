@@ -53,6 +53,7 @@ export const appConfig = {
   },
   github: {
     username: 'jzombie',
+    orgUsername: 'zenOSmosis',
     /** Number of recent activity items to show in the sidebar feed. */
     recentActivityLimit: 6,
     /** How many events to request from the GitHub events API at once. */
@@ -85,4 +86,5 @@ export const appConfig = {
 export type AppConfig = typeof appConfig;
 
 export const githubUrl = `https://github.com/${appConfig.github.username}`;
+export const githubOrgUrl = `https://github.com/${appConfig.github.orgUsername}`;
 export const linkedInUrl = `https://www.linkedin.com/in/${appConfig.social.linkedinSlug}`;
