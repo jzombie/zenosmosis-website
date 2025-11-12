@@ -6,7 +6,7 @@ import type {
   GitHubActivityItem,
   GitHubHighlight,
 } from '../services/githubApi';
-import { appConfig } from '../config/appConfig';
+import { appConfig, githubUrl, cratesUrl } from '../config/appConfig';
 import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
 import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
@@ -96,9 +96,6 @@ export function SidePanel() {
   const stats = githubQuery.data ?? null;
   const crateMetrics = crateQuery.data ?? [];
 
-  const githubProfileUrl = `https://github.com/${appConfig.github.username}`;
-  const cratesProfileUrl = `https://crates.io/users/${appConfig.crates.username}?sort=downloads`;
-
   const isInitialGithubLoad = githubQuery.isPending && !stats;
   const githubError = githubQuery.isError
     ? githubQuery.error instanceof Error
@@ -137,7 +134,13 @@ export function SidePanel() {
       <aside className={`side-panel ${resolvedIsOpen ? 'open' : 'closed'}${isInitializing ? ' initializing' : ''}`}>
         <div className="side-panel-content">
           <h2 className="side-panel-title">
-            <GitHubMark className="heading-icon github-icon" />
+            <LinkOut
+              className="heading-icon-link"
+              href={githubUrl}
+              allowReferrer={false}
+            >
+              <GitHubMark className="heading-icon github-icon" />
+            </LinkOut>
             GitHub Activity
           </h2>
 
@@ -162,7 +165,7 @@ export function SidePanel() {
             <>
               <div className="github-identity">
                 <span className="github-name">{stats.user.name}</span>
-                <LinkOut className="github-handle" href={githubProfileUrl} allowReferrer={false}>
+                <LinkOut className="github-handle" href={githubUrl} allowReferrer={false}>
                   @{appConfig.github.username}
                   <LiveIndicator isLive={!githubQuery.isError} />
                 </LinkOut>
@@ -170,14 +173,14 @@ export function SidePanel() {
               <div className="profile-links" role="navigation" aria-label="Profile quick links">
                 <LinkOut
                   className="profile-link"
-                  href={githubProfileUrl}
+                  href={githubUrl}
                   allowReferrer={false}
                 >
                   GitHub Profile
                 </LinkOut>
                 <LinkOut
                   className="profile-link"
-                  href={cratesProfileUrl}
+                  href={cratesUrl}
                   allowReferrer={false}
                 >
                   crates.io Profile
@@ -372,7 +375,13 @@ export function SidePanel() {
           {crateMetrics.length > 0 && (
             <div className="chart-section">
               <h4 className="chart-heading">
-                <RustGearMark className="heading-icon rust-icon" />
+                <LinkOut
+                  className="heading-icon-link"
+                  href={cratesUrl}
+                  allowReferrer={false}
+                >
+                  <RustGearMark className="heading-icon rust-icon" />
+                </LinkOut>
                 Rust Crate Downloads
               </h4>
               <CrateDownloadTrends data={crateMetrics} />

@@ -1,4 +1,4 @@
-import { appConfig, githubOrgUrl } from '../config/appConfig';
+import { appConfig, cratesUrl, githubOrgUrl, githubUrl, linkedInUrl } from '../config/appConfig';
 import logoUrl from '../assets/zenOSmosis-logo.svg';
 import { GitHubMark, CratesMark, LinkedInMark } from './icons/BrandIcons';
 import { LinkOut } from './LinkOut';
@@ -7,13 +7,10 @@ import './Footer.css';
 const year = new Date().getFullYear();
 
 export function SiteFooter() {
-  const { site, github, crates, social } = appConfig;
+  const { site } = appConfig;
   const blogUrl = site.blogPath.startsWith('http')
     ? site.blogPath
     : `${site.baseUrl.replace(/\/$/, '')}/${site.blogPath.replace(/^\//, '')}`;
-  const githubUrl = `https://github.com/${github.username}`;
-  const cratesUrl = `https://crates.io/users/${crates.username}?sort=downloads`;
-  const linkedinUrl = `https://www.linkedin.com/in/${social.linkedinSlug}`;
   const phoneHref = `tel:${site.contactPhone.replace(/[^\d+]/g, '')}`;
 
   return (
@@ -53,7 +50,7 @@ export function SiteFooter() {
 
           <div className="footer-column" id="connect-column">
             <h4>Connect</h4>
-            <LinkOut className="footer-link" href={linkedinUrl} allowReferrer={false}>
+            <LinkOut className="footer-link" href={linkedInUrl} allowReferrer={false}>
               <LinkedInMark aria-hidden />
               LinkedIn
             </LinkOut>

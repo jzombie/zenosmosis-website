@@ -87,4 +87,5 @@ export type AppConfig = typeof appConfig;
 
 export const githubUrl = `https://github.com/${appConfig.github.username}`;
 export const githubOrgUrl = `https://github.com/${appConfig.github.orgUsername}`;
+export const cratesUrl = `https://crates.io/users/${appConfig.crates.username}?sort=downloads`;
 export const linkedInUrl = `https://www.linkedin.com/in/${appConfig.social.linkedinSlug}`;
