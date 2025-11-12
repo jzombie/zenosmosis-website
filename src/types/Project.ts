@@ -3,5 +3,6 @@ export interface Project {
   description: string;
   category: string;
   bookUrl: string;
+  languages: string[];
   technologies: string[];
 }

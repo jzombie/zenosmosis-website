@@ -108,24 +108,35 @@ export function generateStructuredData() {
           site.blogPath,
         ],
         knowsAbout: Array.from(
-          new Set(projects.flatMap((p) => p.technologies))
+          new Set(
+            projects.flatMap((p) => [...p.languages, ...p.technologies])
+          )
         ),
         knowsLanguage: site.languages,
       },
       // SoftwareSourceCode nodes
-      ...projects.map((project) => ({
-        '@type': 'SoftwareSourceCode',
-        '@id': `${project.bookUrl}#software`,
-        name: project.name,
-        description: project.description,
-        url: project.bookUrl,
-        programmingLanguage: project.technologies,
-        author: { '@id': authorId },
-        sourceOrganization: { '@id': organizationId },
-        maintainer: { '@id': authorId },
-        isPartOf: { '@id': websiteId },
-        inLanguage: site.languages,
-      })),
+      ...projects.map((project) => {
+        const keywords = Array.from(
+          new Set([...project.languages, ...project.technologies])
+        )
+
+        return {
+          '@type': 'SoftwareSourceCode',
+          '@id': `${project.bookUrl}#software`,
+          name: project.name,
+          description: project.description,
+          url: project.bookUrl,
+          ...(project.languages.length > 0
+            ? { programmingLanguage: project.languages }
+            : {}),
+          ...(keywords.length > 0 ? { keywords } : {}),
+          author: { '@id': authorId },
+          sourceOrganization: { '@id': organizationId },
+          maintainer: { '@id': authorId },
+          isPartOf: { '@id': websiteId },
+          inLanguage: site.languages,
+        }
+      }),
     ],
   }
 }
