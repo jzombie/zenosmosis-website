@@ -25,7 +25,11 @@ function injectSsrPlugin(): Plugin {
         return html; // Skip in production build
       }
       
-  const { renderSSRToHTML } = await viteServer.ssrLoadModule('/src/main-ssr.tsx');
+      const {
+        renderSSRToHTML,
+        buildMetaTags,
+      } = await viteServer.ssrLoadModule('/src/main-ssr.tsx');
+
       const projectsHTML = renderSSRToHTML();
 
       const transformedHtml = html.replace(
@@ -33,18 +37,21 @@ function injectSsrPlugin(): Plugin {
         `<div id="root">${projectsHTML}</div>`
       );
 
-    const entryModule = await viteServer.moduleGraph.getModuleByUrl('/src/main-ssr.tsx');
+    const headHtml = transformedHtml.replace('</head>', `${buildMetaTags()}
+  </head>`);
+
+      const entryModule = await viteServer.moduleGraph.getModuleByUrl('/src/main-ssr.tsx');
       const cssUrls = collectCssUrls(entryModule);
 
       if (!cssUrls.length) {
-        return transformedHtml;
+        return headHtml;
       }
 
       const cssMarkup = cssUrls
         .map((href) => `<link rel="stylesheet" href="${href}">`)
         .join('\n    ');
 
-      return transformedHtml.replace('</head>', `    ${cssMarkup}\n  </head>`);
+      return headHtml.replace('</head>', `    ${cssMarkup}\n  </head>`);
     },
   };
 }

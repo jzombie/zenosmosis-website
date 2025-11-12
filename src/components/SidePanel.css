@@ -159,6 +159,11 @@
   color: inherit;
 }
 
+.heading-icon-link {
+  display: inline-flex;
+  align-items: center;
+}
+
 .heading-icon path {
   fill: currentColor;
 }
