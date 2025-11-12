@@ -149,6 +149,18 @@
   color: var(--zen-accent-amber);
 }
 
+@media (max-width: 1120px) and (min-width: 769px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .footer-columns {
+    gap: 1.75rem;
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 768px) {
   .footer-inner {
     grid-template-columns: 1fr;
