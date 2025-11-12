@@ -14,7 +14,7 @@ export const appConfig = {
 
     // Keep titles under ~55–60 chars; use the same across <title>, og:title, twitter:title.
     // A: broader positioning
-    title: 'zenOSmosis — Systems Studio and Open Lab',
+    title: 'zenOSmosis — Software for Curious Minds',
     // B (alt you can A/B later): 'zenOSmosis — Engineering Craftsmanship'
 
     // Use two descriptions: one longer for SEO, one short for social cards.
