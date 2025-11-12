@@ -61,7 +61,7 @@ function App() {
                   href={githubOrgUrl}
                   allowReferrer={true}
                 >
-                  Explore
+                  Learn More
                 </LinkOut>
               </div>
             </section>
