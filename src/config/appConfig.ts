@@ -20,7 +20,7 @@ export const appConfig = {
     // Use two descriptions: one longer for SEO, one short for social cards.
     // ~150–160 chars helps SEO snippets; ~90–110 chars is ideal for social.
     description:
-      'Open-source data systems and tooling: storage engines, SQL, infrastructure, and clear documentation',
+      'Open-source data systems and tooling: storage engines, SQL, infrastructure, and clear documentation.',
     socialDescription:
       'Open-source data systems and tooling: storage, SQL, and infra',
 
