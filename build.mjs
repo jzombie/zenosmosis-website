@@ -35,42 +35,14 @@ async function buildProduction() {
   
   // Import the SSR module and render
   // Import the freshly built SSR bundle and render the app to an HTML string.
-  const { renderSSRToHTML, appConfig, generateStructuredData, getBaseUrl, getCanonicalUrl, toAbsoluteUrl } = await import('./dist-ssr/main-ssr.js');
+  const { renderSSRToHTML, buildMetaTags } = await import('./dist-ssr/main-ssr.js');
   
   // Read the built index.html
   const indexPath = join(__dirname, 'dist', 'index.html');
   let html = readFileSync(indexPath, 'utf-8');
   
   // Inject meta tags from appConfig
-  const { site } = appConfig;
-  const structuredData = generateStructuredData();
-  const canonicalUrl = getCanonicalUrl();
-  const socialImageUrl = toAbsoluteUrl(site.socialImage);
-  const metaTags = `
-    <link rel="canonical" href="${canonicalUrl}" />
-    <title>${site.title}</title>
-    <meta name="description" content="${site.description}" />
-    <meta name="keywords" content="${site.keywords}" />
-    <meta name="author" content="${site.author}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="${canonicalUrl}" />
-    <meta property="og:title" content="${site.title}" />
-    <meta property="og:description" content="${site.description}" />
-    <meta property="og:site_name" content="${site.name}" />
-    <meta property="og:image" content="${socialImageUrl}" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="${site.socialImageAlt}" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="${canonicalUrl}" />
-    <meta property="twitter:title" content="${site.title}" />
-    <meta property="twitter:description" content="${site.description}" />
-    <meta property="twitter:image" content="${socialImageUrl}" />
-    <meta property="twitter:image:alt" content="${site.socialImageAlt}" />
-    <script type="application/ld+json">
-${JSON.stringify(structuredData, null, 2)}
-    </script>
-  `;
+  const metaTags = buildMetaTags();
   
   html = html.replace('</head>', `${metaTags}\n  </head>`);
   
