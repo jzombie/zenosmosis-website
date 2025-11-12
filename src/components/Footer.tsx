@@ -1,4 +1,4 @@
-import { appConfig } from '../config/appConfig';
+import { appConfig, githubOrgUrl } from '../config/appConfig';
 import logoUrl from '../assets/zenOSmosis-logo.svg';
 import { GitHubMark, CratesMark, LinkedInMark } from './icons/BrandIcons';
 import { LinkOut } from './LinkOut';
@@ -39,7 +39,11 @@ export function SiteFooter() {
             <h4>Profiles</h4>
             <LinkOut className="footer-link" href={githubUrl} allowReferrer={false}>
               <GitHubMark aria-hidden />
-              GitHub
+              GitHub · Research
+            </LinkOut>
+            <LinkOut className="footer-link" href={githubOrgUrl} allowReferrer={false}>
+              <GitHubMark aria-hidden />
+              GitHub · Studio
             </LinkOut>
             <LinkOut className="footer-link" href={cratesUrl} allowReferrer={false}>
               <CratesMark aria-hidden />
