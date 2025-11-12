@@ -53,6 +53,7 @@ export const appConfig = {
   },
   github: {
     username: 'jzombie',
+    orgUsername: 'zenOSmosis',
     /** Number of recent activity items to show in the sidebar feed. */
     recentActivityLimit: 6,
     /** How many events to request from the GitHub events API at once. */

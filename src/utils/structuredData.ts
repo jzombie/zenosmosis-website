@@ -65,6 +65,9 @@ export function generateStructuredData() {
         },
         sameAs: [
           `https://github.com/${github.username}`,
+          ...(github.orgUsername
+            ? [`https://github.com/${github.orgUsername}`]
+            : []),
           `https://www.linkedin.com/in/${social.linkedinSlug}`,
           `https://crates.io/users/${crates.username}`,
           site.blogPath,
