@@ -7,6 +7,8 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const stack = Array.from(new Set([...project.languages, ...project.technologies]));
+
   return (
     <LinkOut
       href={project.bookUrl}
@@ -16,8 +18,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <div className="project-card-body">
         <h3 className="project-name">{project.name}</h3>
         <p className="project-description">{project.description}</p>
-        {project.technologies.length > 0 && (
-          <p className="project-technologies">{project.technologies.join(', ')}</p>
+        {stack.length > 0 && (
+          <p className="project-technologies">{stack.join(', ')}</p>
         )}
       </div>
       <span className="project-callout">
