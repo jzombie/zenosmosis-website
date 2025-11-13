@@ -1,4 +1,4 @@
-# zenOSmosis Website
+# zenOSmosis website
 
 A Vite + React SPA that powers the zenOSmosis digital garden and project hub.
 
