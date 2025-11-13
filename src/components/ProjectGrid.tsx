@@ -20,7 +20,7 @@ export function ProjectGrid() {
         <span>Projects with Books</span>
       </h2>
       <p className="projects-subtitle">
-        Each project below includes comprehensive documentation written like a book, covering architecture, usage, and implementation details.<br />
+        Each project below includes comprehensive documentation written like a book, featuring diagrams, architecture, usage, and implementation details.<br />
         Most of these projects are early stage and actively developed.
       </p>
       <div className="project-categories">
