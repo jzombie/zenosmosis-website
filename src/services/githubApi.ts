@@ -173,18 +173,36 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
           const pr = event.payload?.pull_request;
           if (!pr) continue;
 
+          let state: 'open' | 'closed' = pr.state === 'closed' ? 'closed' : 'open';
+          let isMerged = Boolean(pr.merged_at);
+
+          if (typeof pr.url === 'string') {
+            try {
+              const prResponse = await fetch(pr.url);
+              if (prResponse.ok) {
+                const prDetails = await prResponse.json();
+                state = prDetails?.state === 'closed' ? 'closed' : 'open';
+                isMerged = Boolean(prDetails?.merged_at);
+              }
+            } catch (prError) {
+              console.warn('Failed to hydrate PR details for event', pr.number, prError);
+            }
+          }
+
+          const summaryState = isMerged ? 'merged' : state === 'open' ? 'open' : 'closed';
+
           recentActivity.push({
             id: event.id,
             type: 'pull_request',
             repo: event.repo.name,
-            summary: `PR #${pr.number} ${event.payload?.action || 'updated'}`,
+            summary: `PR #${pr.number} ${summaryState}`,
             date: formatTimestamp(event.created_at),
             url: pr.html_url,
             pullRequest: {
               number: pr.number,
               title: pr.title,
-              state: pr.state,
-              isMerged: Boolean(pr.merged_at),
+              state,
+              isMerged,
             },
           });
         }
