@@ -47,6 +47,26 @@ export interface GitHubContributorStat {
   profileUrl: string;
 }
 
+interface GitHubResponseError extends Error {
+  status?: number;
+  endpoint?: string;
+}
+
+interface GitHubCommitPayload {
+  sha?: string;
+  message?: string;
+}
+
+interface GitHubRepoSummary {
+  name?: string;
+  fork?: boolean;
+  stargazers_count?: number;
+  languages_url?: string;
+  contributors_url?: string;
+  open_issues_count?: number;
+  forks_count?: number;
+}
+
 export interface GitHubStats {
   user: {
     login: string;
@@ -64,7 +84,7 @@ export interface GitHubStats {
 }
 
 function createResponseError(response: Response, endpoint: string) {
-  const error: any = new Error(`GitHub request failed (${response.status}) for ${endpoint}`);
+  const error = new Error(`GitHub request failed (${response.status}) for ${endpoint}`) as GitHubResponseError;
   error.status = response.status;
   error.endpoint = endpoint;
   return error;
@@ -121,7 +141,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
 
         if (event.type === 'PushEvent') {
           const commits: GitHubActivityCommit[] = Array.isArray(event.payload?.commits)
-            ? event.payload.commits.slice(0, 5).map((commit: any) => {
+            ? event.payload.commits.slice(0, 5).map((commit: GitHubCommitPayload) => {
                 const rawMessage = typeof commit.message === 'string' ? commit.message : '';
                 const cleanedMessage = rawMessage
                   .split('\n')[0]
@@ -226,20 +246,21 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
     let totalOpenIssues = 0;
     let starredRepoCount = 0;
 
-    const prioritizedRepos: any[] = [];
+    const prioritizedRepos: GitHubRepoSummary[] = [];
     const languageTotals = new Map<string, number>();
     const contributorTotals = new Map<string, GitHubContributorStat>();
 
     if (Array.isArray(repos)) {
-      const reposForPrioritization = repos
-        .filter((repo: any) => !repo?.fork)
+      const typedRepos = repos as GitHubRepoSummary[];
+      const reposForPrioritization = typedRepos
+        .filter((repo) => !repo?.fork)
         .sort(
-          (a: any, b: any) => (b?.stargazers_count ?? 0) - (a?.stargazers_count ?? 0)
+          (a, b) => (b?.stargazers_count ?? 0) - (a?.stargazers_count ?? 0)
         );
 
-  prioritizedRepos.push(...reposForPrioritization.slice(0, repoSampleSize));
+      prioritizedRepos.push(...reposForPrioritization.slice(0, repoSampleSize));
 
-      for (const repo of repos) {
+      for (const repo of typedRepos) {
         const stars = repo?.stargazers_count ?? 0;
         const forks = repo?.forks_count ?? 0;
         const openIssues = repo?.open_issues_count ?? 0;
@@ -251,7 +272,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       }
 
       await Promise.all(
-        prioritizedRepos.map(async (repo: any) => {
+        prioritizedRepos.map(async (repo) => {
           await Promise.all([
             (async () => {
               if (typeof repo?.languages_url !== 'string') return;
