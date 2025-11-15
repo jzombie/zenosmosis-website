@@ -199,13 +199,7 @@ export function SidePanel() {
                         activity.type === 'pull_request' && activity.pullRequest
                           ? `PR #${activity.pullRequest.number}`
                           : null;
-                      const pullRequestUrl =
-                        activity.type === 'pull_request' && activity.pullRequest
-                          ? activity.url ??
-                            (activity.repo && activity.pullRequest.number
-                              ? `https://github.com/${activity.repo}/pull/${activity.pullRequest.number}`
-                              : undefined)
-                          : undefined;
+                      const pullRequestUrl = activity.pullRequest?.url;
                       const activityClickUrl =
                         activity.type === 'pull_request' ? pullRequestUrl : activity.url;
                       const isClickable = Boolean(activityClickUrl);

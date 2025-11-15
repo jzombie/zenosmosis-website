@@ -13,6 +13,7 @@ export interface GitHubActivityPullRequest {
   title: string;
   state: 'open' | 'closed';
   isMerged: boolean;
+  url: string;
 }
 
 export interface GitHubActivityItem {
@@ -173,9 +174,10 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
           const pr = event.payload?.pull_request;
           if (!pr) continue;
 
+          const repoName = typeof event.repo?.name === 'string' ? event.repo.name : '';
           let state: 'open' | 'closed' = pr.state === 'closed' ? 'closed' : 'open';
           let isMerged = Boolean(pr.merged_at);
-          let prUrl = typeof pr.html_url === 'string' ? pr.html_url : undefined;
+          let pullRequestUrl = typeof pr.html_url === 'string' ? pr.html_url : undefined;
 
           if (typeof pr.url === 'string') {
             try {
@@ -185,7 +187,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
                 state = prDetails?.state === 'closed' ? 'closed' : 'open';
                 isMerged = Boolean(prDetails?.merged_at);
                 if (typeof prDetails?.html_url === 'string') {
-                  prUrl = prDetails.html_url;
+                  pullRequestUrl = prDetails.html_url;
                 }
               }
             } catch (prError) {
@@ -193,24 +195,26 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
             }
           }
 
-          if (!prUrl && typeof event.repo?.name === 'string' && typeof pr.number === 'number') {
-            prUrl = `https://github.com/${event.repo.name}/pull/${pr.number}`;
+          if (!pullRequestUrl && repoName && typeof pr.number === 'number') {
+            pullRequestUrl = `https://github.com/${repoName}/pull/${pr.number}`;
           }
 
+          const resolvedPullRequestUrl = pullRequestUrl ?? `https://github.com/${repoName || githubUsername}`;
           const summaryState = isMerged ? 'merged' : state === 'open' ? 'open' : 'closed';
 
           recentActivity.push({
             id: event.id,
             type: 'pull_request',
-            repo: event.repo.name,
+            repo: repoName || event.repo.name,
             summary: `PR #${pr.number} ${summaryState}`,
             date: formatTimestamp(event.created_at),
-            url: prUrl,
+            url: resolvedPullRequestUrl,
             pullRequest: {
               number: pr.number,
               title: pr.title,
               state,
               isMerged,
+              url: resolvedPullRequestUrl,
             },
           });
         }
