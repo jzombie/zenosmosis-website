@@ -1,82 +1,89 @@
 :root {
-	--zenos-white: #ffffff;
-	--zenos-white-strong: rgba(255, 255, 255, 0.94);
-	--zenos-white-soft: rgba(255, 255, 255, 0.78);
-	--zenos-white-faint: rgba(255, 255, 255, 0.58);
-	--zenos-white-glass-strong: rgba(255, 255, 255, 0.24);
-	--zenos-white-glass: rgba(255, 255, 255, 0.15);
-	--zenos-white-glass-soft: rgba(255, 255, 255, 0.1);
-	--zenos-white-glass-faint: rgba(255, 255, 255, 0.06);
+	/* Core whites */
+	--color-white: #ffffff;
+	--color-white-strong: rgba(255, 255, 255, 0.94);
+	--color-white-soft: rgba(255, 255, 255, 0.78);
+	--color-white-faint: rgba(255, 255, 255, 0.58);
+	--glass-white-strong: rgba(255, 255, 255, 0.24);
+	--glass-white: rgba(255, 255, 255, 0.15);
+	--glass-white-soft: rgba(255, 255, 255, 0.1);
+	--glass-white-faint: rgba(255, 255, 255, 0.06);
 
-	--zenos-gray: #727374;
-	--zenos-gray-strong: rgba(114, 115, 116, 0.82);
-	--zenos-gray-soft: rgba(114, 115, 116, 0.62);
-	--zenos-gray-glass: rgba(114, 115, 116, 0.35);
-	--zenos-gray-glass-faint: rgba(114, 115, 116, 0.2);
+	/* Neutral grays */
+	--color-gray: #727374;
+	--color-gray-strong: rgba(114, 115, 116, 0.82);
+	--color-gray-soft: rgba(114, 115, 116, 0.62);
+	--glass-gray: rgba(114, 115, 116, 0.35);
+	--glass-gray-faint: rgba(114, 115, 116, 0.2);
 
-	--zenos-blue: #4b86a7;
-	--zenos-blue-strong: #2f607c;
-	--zenos-blue-soft: rgba(75, 134, 167, 0.68);
-	--zenos-blue-glass: rgba(75, 134, 167, 0.25);
-	--zenos-blue-glass-soft: rgba(75, 134, 167, 0.16);
-	--zenos-blue-glass-faint: rgba(75, 134, 167, 0.08);
+	/* Legacy logo blues */
+	--color-blue: #4b86a7;
+	--color-blue-strong: #2f607c;
+	--color-blue-soft: rgba(75, 134, 167, 0.68);
+	--glass-blue: rgba(75, 134, 167, 0.25);
+	--glass-blue-soft: rgba(75, 134, 167, 0.16);
+	--glass-blue-faint: rgba(75, 134, 167, 0.08);
 
-	--zen-base-950: #111626;
-	--zen-base-900: #13192e;
-	--zen-base-850: #1c2134;
-	--zen-base-800: #1f283f;
-	--zen-base-700: #313245;
-	--zen-base-600: #4a465b;
-	--zen-spectrum-abyss: #161c33;
-	--zen-spectrum-blush: #9a7f77;
+	/* Background stack */
+	--base-950: #111626;
+	--base-900: #13192e;
+	--base-850: #1c2134;
+	--base-800: #1f283f;
+	--base-700: #313245;
+	--base-600: #4a465b;
+	--spectrum-abyss: #161c33;
+	--spectrum-blush: #9a7f77;
 
-	--zenos-ink-strong: rgba(17, 22, 38, 0.96);
-	--zenos-ink: rgba(17, 22, 38, 0.88);
-	--zenos-ink-soft: rgba(17, 22, 38, 0.72);
+	/* Text inks */
+	--ink-strong: rgba(17, 22, 38, 0.96);
+	--ink: rgba(17, 22, 38, 0.88);
+	--ink-soft: rgba(17, 22, 38, 0.72);
 
-	--zen-surface-panel: rgba(19, 24, 40, 0.92);
-	--zen-surface-card: rgba(24, 30, 48, 0.88);
-	--zen-surface-card-hover: rgba(32, 40, 61, 0.94);
-	--zen-surface-overlay: rgba(28, 35, 55, 0.6);
-	--zen-surface-chip: rgba(25, 31, 50, 0.55);
+	/* Surfaces */
+	--surface-panel: rgba(19, 24, 40, 0.92);
+	--surface-card: rgba(24, 30, 48, 0.88);
+	--surface-card-hover: rgba(32, 40, 61, 0.94);
+	--surface-overlay: rgba(28, 35, 55, 0.6);
+	--surface-chip: rgba(25, 31, 50, 0.55);
 
-	--zen-accent-amber: #3c8fe0;
-	--zen-accent-amber-soft: rgba(60, 143, 224, 0.22);
-	--zen-accent-amber-faint: rgba(60, 143, 224, 0.12);
-	--zen-accent-coral: #55cee9;
-	--zen-accent-coral-soft: rgba(85, 206, 233, 0.24);
-	--zen-accent-coral-faint: rgba(85, 206, 233, 0.14);
-	--zen-accent-grove: #6974f0;
-	--zen-accent-grove-soft: rgba(105, 116, 240, 0.22);
-	--zen-accent-grove-faint: rgba(105, 116, 240, 0.12);
-	--zen-accent-link: #92b6e6;
-	--zen-accent-link-soft: rgba(146, 182, 230, 0.2);
-	--zen-accent-link-faint: rgba(146, 182, 230, 0.1);
+	/* Accents */
+	--accent-primary: #3c8fe0;
+	--accent-primary-soft: rgba(60, 143, 224, 0.22);
+	--accent-primary-faint: rgba(60, 143, 224, 0.12);
+	--accent-secondary: #55cee9;
+	--accent-secondary-soft: rgba(85, 206, 233, 0.24);
+	--accent-secondary-faint: rgba(85, 206, 233, 0.14);
+	--accent-tertiary: #6974f0;
+	--accent-tertiary-soft: rgba(105, 116, 240, 0.22);
+	--accent-tertiary-faint: rgba(105, 116, 240, 0.12);
+	--accent-muted: #92b6e6;
+	--accent-muted-soft: rgba(146, 182, 230, 0.2);
+	--accent-muted-faint: rgba(146, 182, 230, 0.1);
 
-	--zen-border-soft: rgba(255, 255, 255, 0.08);
-	--zen-border: rgba(255, 255, 255, 0.14);
-	--zen-border-strong: rgba(255, 255, 255, 0.22);
-	--zen-border-warm: rgba(60, 143, 224, 0.28);
-	--zen-border-coral: rgba(85, 206, 233, 0.26);
-	--zenos-border-soft: var(--zen-border-soft);
-	--zenos-border: var(--zen-border);
-	--zenos-border-strong: var(--zen-border-strong);
+	/* Borders & outlines */
+	--border-soft: rgba(255, 255, 255, 0.08);
+	--border: rgba(255, 255, 255, 0.14);
+	--border-strong: rgba(255, 255, 255, 0.22);
+	--border-accent-primary: rgba(60, 143, 224, 0.28);
+	--border-accent-secondary: rgba(85, 206, 233, 0.26);
 
-	--zenos-shadow-soft: rgba(9, 12, 22, 0.45);
-	--zenos-shadow-strong: rgba(9, 12, 22, 0.68);
-	--zen-glow-warm: rgba(60, 143, 224, 0.26);
-	--zen-glow-coral: rgba(85, 206, 233, 0.2);
+	/* Shadows & glows */
+	--shadow-soft: rgba(9, 12, 22, 0.45);
+	--shadow-strong: rgba(9, 12, 22, 0.68);
+	--glow-accent-primary: rgba(60, 143, 224, 0.26);
+	--glow-accent-secondary: rgba(85, 206, 233, 0.2);
 
-	--zen-color-1: var(--zenos-blue);
-	--zen-color-2: #27445a;
-	--zen-color-3: var(--zen-accent-amber);
-	--zen-color-4: var(--zen-accent-coral);
-	--zen-color-5: var(--zen-accent-grove);
-	--zen-color-6: var(--zen-spectrum-abyss);
-	--zen-color-7: var(--zen-spectrum-blush);
-	--zen-color-8: var(--zenos-white);
-	--zen-color-9: var(--zen-base-900);
-	--zen-color-10: #1b253d;
+	/* Data viz palette */
+	--data-color-1: var(--color-blue);
+	--data-color-2: #27445a;
+	--data-color-3: var(--accent-primary);
+	--data-color-4: var(--accent-secondary);
+	--data-color-5: var(--accent-tertiary);
+	--data-color-6: var(--spectrum-abyss);
+	--data-color-7: var(--spectrum-blush);
+	--data-color-8: var(--color-white);
+	--data-color-9: var(--base-900);
+	--data-color-10: #1b253d;
 
 	color-scheme: dark;
 }
