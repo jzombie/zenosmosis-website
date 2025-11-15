@@ -191,7 +191,6 @@ export function SidePanel() {
                 {stats.recentActivity.length > 0 ? (
                   <ul className="activity-list">
                     {stats.recentActivity.map((activity: GitHubActivityItem) => {
-                      const isClickable = Boolean(activity.url);
                       const eventTypeLabel = activity.type.replace(/_/g, ' ');
                       const pushBranchLabel = activity.type === 'push'
                         ? activity.branch || 'default branch'
@@ -201,7 +200,15 @@ export function SidePanel() {
                           ? `PR #${activity.pullRequest.number}`
                           : null;
                       const pullRequestUrl =
-                        activity.type === 'pull_request' ? activity.url : undefined;
+                        activity.type === 'pull_request' && activity.pullRequest
+                          ? activity.url ??
+                            (activity.repo && activity.pullRequest.number
+                              ? `https://github.com/${activity.repo}/pull/${activity.pullRequest.number}`
+                              : undefined)
+                          : undefined;
+                      const activityClickUrl =
+                        activity.type === 'pull_request' ? pullRequestUrl : activity.url;
+                      const isClickable = Boolean(activityClickUrl);
 
                       const commitMessages =
                         activity.type === 'push' && activity.commits && activity.commits.length > 0
@@ -221,13 +228,32 @@ export function SidePanel() {
                             : activity.summary
                           : activity.summary;
 
+                      const summaryNode = summaryText
+                        ? activity.type === 'pull_request' && pullRequestUrl
+                          ? (
+                              <LinkOut
+                                className="activity-summary pr-link"
+                                href={pullRequestUrl}
+                                allowReferrer={false}
+                                onClick={(event: MouseEvent<HTMLAnchorElement>) => event.stopPropagation()}
+                                onKeyDown={(event: KeyboardEvent<HTMLAnchorElement>) => event.stopPropagation()}
+                                aria-label={`Open pull request #${activity.pullRequest?.number}`}
+                              >
+                                {summaryText}
+                              </LinkOut>
+                            )
+                          : (
+                              <div className="activity-summary">{summaryText}</div>
+                            )
+                        : null;
+
                       const handleActivityKeyDown = (
                         event: KeyboardEvent<HTMLLIElement>
                       ) => {
                         if (!isClickable) return;
                         if (event.key === 'Enter' || event.key === ' ') {
                           event.preventDefault();
-                          openExternalLink(activity.url);
+                          openExternalLink(activityClickUrl);
                         }
                       };
 
@@ -237,7 +263,7 @@ export function SidePanel() {
                           className={`activity-item${isClickable ? ' clickable' : ''}`}
                           role={isClickable ? 'button' : undefined}
                           tabIndex={isClickable ? 0 : undefined}
-                          onClick={isClickable ? () => openExternalLink(activity.url) : undefined}
+                          onClick={isClickable ? () => openExternalLink(activityClickUrl) : undefined}
                           onKeyDown={handleActivityKeyDown}
                         >
                           <div className="activity-main">
@@ -276,9 +302,7 @@ export function SidePanel() {
                               )}
                             </div>
                             <div className="activity-repo">{activity.repo}</div>
-                            {summaryText && (
-                              <div className="activity-summary">{summaryText}</div>
-                            )}
+                            {summaryNode}
                           </div>
 
                           {activity.type === 'push' && activity.commits && activity.commits.length > 0 && (

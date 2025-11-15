@@ -175,6 +175,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
 
           let state: 'open' | 'closed' = pr.state === 'closed' ? 'closed' : 'open';
           let isMerged = Boolean(pr.merged_at);
+          let prUrl = typeof pr.html_url === 'string' ? pr.html_url : undefined;
 
           if (typeof pr.url === 'string') {
             try {
@@ -183,10 +184,17 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
                 const prDetails = await prResponse.json();
                 state = prDetails?.state === 'closed' ? 'closed' : 'open';
                 isMerged = Boolean(prDetails?.merged_at);
+                if (typeof prDetails?.html_url === 'string') {
+                  prUrl = prDetails.html_url;
+                }
               }
             } catch (prError) {
               console.warn('Failed to hydrate PR details for event', pr.number, prError);
             }
+          }
+
+          if (!prUrl && typeof event.repo?.name === 'string' && typeof pr.number === 'number') {
+            prUrl = `https://github.com/${event.repo.name}/pull/${pr.number}`;
           }
 
           const summaryState = isMerged ? 'merged' : state === 'open' ? 'open' : 'closed';
@@ -197,7 +205,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
             repo: event.repo.name,
             summary: `PR #${pr.number} ${summaryState}`,
             date: formatTimestamp(event.created_at),
-            url: pr.html_url,
+            url: prUrl,
             pullRequest: {
               number: pr.number,
               title: pr.title,

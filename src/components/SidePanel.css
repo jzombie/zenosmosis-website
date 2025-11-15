@@ -682,6 +682,17 @@ a.activity-branch:focus-visible {
   word-break: break-word;
 }
 
+a.activity-summary.pr-link {
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+a.activity-summary.pr-link:hover,
+a.activity-summary.pr-link:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
 .activity-commits {
   display: flex;
   flex-direction: column;
