@@ -294,6 +294,16 @@
   flex: 0 1 auto;
 }
 
+a.activity-branch {
+  text-decoration: none;
+}
+
+a.activity-branch:hover,
+a.activity-branch:focus-visible {
+  border-color: var(--zen-border-warm);
+  outline: none;
+}
+
 .activity-branch svg {
   width: 14px;
   height: 14px;
@@ -672,6 +682,17 @@
   word-break: break-word;
 }
 
+a.activity-summary.pr-link {
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+a.activity-summary.pr-link:hover,
+a.activity-summary.pr-link:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
 .activity-commits {
   display: flex;
   flex-direction: column;
@@ -742,6 +763,18 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.activity-pr-meta.pr-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.activity-pr-meta.pr-link:hover,
+.activity-pr-meta.pr-link:focus-visible {
+  text-decoration: none;
+  border-radius: 6px;
+  outline: none;
 }
 
 .pr-state {

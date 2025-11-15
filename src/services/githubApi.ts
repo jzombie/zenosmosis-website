@@ -13,6 +13,7 @@ export interface GitHubActivityPullRequest {
   title: string;
   state: 'open' | 'closed';
   isMerged: boolean;
+  url: string;
 }
 
 export interface GitHubActivityItem {
@@ -46,6 +47,26 @@ export interface GitHubContributorStat {
   profileUrl: string;
 }
 
+interface GitHubResponseError extends Error {
+  status?: number;
+  endpoint?: string;
+}
+
+interface GitHubCommitPayload {
+  sha?: string;
+  message?: string;
+}
+
+interface GitHubRepoSummary {
+  name?: string;
+  fork?: boolean;
+  stargazers_count?: number;
+  languages_url?: string;
+  contributors_url?: string;
+  open_issues_count?: number;
+  forks_count?: number;
+}
+
 export interface GitHubStats {
   user: {
     login: string;
@@ -63,7 +84,7 @@ export interface GitHubStats {
 }
 
 function createResponseError(response: Response, endpoint: string) {
-  const error: any = new Error(`GitHub request failed (${response.status}) for ${endpoint}`);
+  const error = new Error(`GitHub request failed (${response.status}) for ${endpoint}`) as GitHubResponseError;
   error.status = response.status;
   error.endpoint = endpoint;
   return error;
@@ -120,7 +141,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
 
         if (event.type === 'PushEvent') {
           const commits: GitHubActivityCommit[] = Array.isArray(event.payload?.commits)
-            ? event.payload.commits.slice(0, 5).map((commit: any) => {
+            ? event.payload.commits.slice(0, 5).map((commit: GitHubCommitPayload) => {
                 const rawMessage = typeof commit.message === 'string' ? commit.message : '';
                 const cleanedMessage = rawMessage
                   .split('\n')[0]
@@ -173,8 +194,10 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
           const pr = event.payload?.pull_request;
           if (!pr) continue;
 
+          const repoName = typeof event.repo?.name === 'string' ? event.repo.name : '';
           let state: 'open' | 'closed' = pr.state === 'closed' ? 'closed' : 'open';
           let isMerged = Boolean(pr.merged_at);
+          let pullRequestUrl = typeof pr.html_url === 'string' ? pr.html_url : undefined;
 
           if (typeof pr.url === 'string') {
             try {
@@ -183,26 +206,35 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
                 const prDetails = await prResponse.json();
                 state = prDetails?.state === 'closed' ? 'closed' : 'open';
                 isMerged = Boolean(prDetails?.merged_at);
+                if (typeof prDetails?.html_url === 'string') {
+                  pullRequestUrl = prDetails.html_url;
+                }
               }
             } catch (prError) {
               console.warn('Failed to hydrate PR details for event', pr.number, prError);
             }
           }
 
+          if (!pullRequestUrl && repoName && typeof pr.number === 'number') {
+            pullRequestUrl = `https://github.com/${repoName}/pull/${pr.number}`;
+          }
+
+          const resolvedPullRequestUrl = pullRequestUrl ?? `https://github.com/${repoName || githubUsername}`;
           const summaryState = isMerged ? 'merged' : state === 'open' ? 'open' : 'closed';
 
           recentActivity.push({
             id: event.id,
             type: 'pull_request',
-            repo: event.repo.name,
+            repo: repoName || event.repo.name,
             summary: `PR #${pr.number} ${summaryState}`,
             date: formatTimestamp(event.created_at),
-            url: pr.html_url,
+            url: resolvedPullRequestUrl,
             pullRequest: {
               number: pr.number,
               title: pr.title,
               state,
               isMerged,
+              url: resolvedPullRequestUrl,
             },
           });
         }
@@ -214,20 +246,21 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
     let totalOpenIssues = 0;
     let starredRepoCount = 0;
 
-    const prioritizedRepos: any[] = [];
+    const prioritizedRepos: GitHubRepoSummary[] = [];
     const languageTotals = new Map<string, number>();
     const contributorTotals = new Map<string, GitHubContributorStat>();
 
     if (Array.isArray(repos)) {
-      const reposForPrioritization = repos
-        .filter((repo: any) => !repo?.fork)
+      const typedRepos = repos as GitHubRepoSummary[];
+      const reposForPrioritization = typedRepos
+        .filter((repo) => !repo?.fork)
         .sort(
-          (a: any, b: any) => (b?.stargazers_count ?? 0) - (a?.stargazers_count ?? 0)
+          (a, b) => (b?.stargazers_count ?? 0) - (a?.stargazers_count ?? 0)
         );
 
-  prioritizedRepos.push(...reposForPrioritization.slice(0, repoSampleSize));
+      prioritizedRepos.push(...reposForPrioritization.slice(0, repoSampleSize));
 
-      for (const repo of repos) {
+      for (const repo of typedRepos) {
         const stars = repo?.stargazers_count ?? 0;
         const forks = repo?.forks_count ?? 0;
         const openIssues = repo?.open_issues_count ?? 0;
@@ -239,7 +272,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       }
 
       await Promise.all(
-        prioritizedRepos.map(async (repo: any) => {
+        prioritizedRepos.map(async (repo) => {
           await Promise.all([
             (async () => {
               if (typeof repo?.languages_url !== 'string') return;
