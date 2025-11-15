@@ -2,9 +2,9 @@
   margin-top: 0;
   padding: 3rem 1.5rem 2rem;
   background:
-    linear-gradient(180deg, var(--zen-base-900), var(--zen-base-950));
-  border-top: 1px solid var(--zenos-border);
-  color: var(--zenos-white-soft);
+    linear-gradient(180deg, var(--base-900), var(--base-950));
+  border-top: 1px solid var(--border);
+  color: var(--color-white-soft);
 }
 
 .footer-inner {
@@ -41,7 +41,7 @@
 
 .footer-description {
   margin: 0;
-  color: var(--zenos-white-faint);
+  color: var(--color-white-faint);
   max-width: 460px;
   line-height: 1.6;
 }
@@ -99,7 +99,7 @@
   font-size: 0.85rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--zenos-white-faint);
+  color: var(--color-white-faint);
 }
 
 .footer-link {
@@ -114,7 +114,7 @@
 }
 
 .footer-link:hover {
-  color: var(--zen-accent-amber);
+  color: var(--accent-primary);
   transform: translateX(2px);
 }
 
@@ -137,7 +137,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.78rem;
-  color: var(--zenos-white-faint);
+  color: var(--color-white-faint);
 }
 
 .footer-meta a {
@@ -146,7 +146,7 @@
 }
 
 .footer-meta a:hover {
-  color: var(--zen-accent-amber);
+  color: var(--accent-primary);
 }
 
 @media (max-width: 1120px) and (min-width: 769px) {

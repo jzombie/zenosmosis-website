@@ -4,18 +4,18 @@ interface LanguageDistributionChartProps {
   data: GitHubLanguageSlice[];
 }
 
-// Blend logo tones with the new warm accent palette for clearer segmentation.
+// Blend brand tones with the refreshed accent palette for clearer segmentation.
 const CHART_COLORS = [
-  'var(--zen-color-1)',
-  'var(--zen-color-2)',
-  'var(--zen-color-3)',
-  'var(--zen-color-4)',
-  'var(--zen-color-5)',
-  'var(--zen-color-6)',
-  'var(--zen-color-7)',
-  'var(--zen-color-8)',
-  'var(--zen-color-9)',
-  'var(--zen-color-10)',
+  'var(--data-color-1)',
+  'var(--data-color-2)',
+  'var(--data-color-3)',
+  'var(--data-color-4)',
+  'var(--data-color-5)',
+  'var(--data-color-6)',
+  'var(--data-color-7)',
+  'var(--data-color-8)',
+  'var(--data-color-9)',
+  'var(--data-color-10)',
 ];
 
 export function LanguageDistributionChart({ data }: LanguageDistributionChartProps) {

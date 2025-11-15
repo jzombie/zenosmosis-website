@@ -5,12 +5,12 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(180deg, var(--zen-base-950), var(--zen-base-900));
+  background: linear-gradient(180deg, var(--base-950), var(--base-900));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: 1rem 2rem;
   z-index: 1000;
-  box-shadow: 0 10px 24px var(--zenos-shadow-soft);
+  box-shadow: 0 10px 24px var(--shadow-soft);
 }
 
 .logo-bar .logo {
