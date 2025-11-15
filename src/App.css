@@ -58,18 +58,29 @@
   justify-content: center;
   padding: 0.8rem 1.6rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--zen-accent-amber), var(--zen-accent-coral));
+  background: linear-gradient(135deg, #0d1c33, #113358 40%, var(--zen-accent-amber));
   color: var(--zenos-white);
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+  border: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 10px 26px rgba(12, 26, 48, 0.6);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .hero-cta-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(135deg, #122541, #1a3f68 45%, var(--zen-accent-coral));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 14px 32px rgba(12, 26, 48, 0.7);
+}
+
+.hero-cta-primary:focus-visible {
+  outline: 2px solid rgba(85, 206, 233, 0.45);
+  outline-offset: 3px;
 }
 
 .hero-cta-secondary {

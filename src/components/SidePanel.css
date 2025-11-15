@@ -116,7 +116,7 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 6px rgba(125, 249, 255, 0.6), 0 0 18px rgba(242, 135, 5, 0.45);
+  text-shadow: 0 0 6px rgba(125, 249, 255, 0.6), 0 0 18px rgba(26, 140, 255, 0.45);
   filter: drop-shadow(0 0 6px rgba(125, 249, 255, 0.35));
 }
 
@@ -286,8 +286,10 @@
   gap: 0.35rem;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid var(--zenos-border);
-  background: var(--zen-surface-chip);
+  border: 1px solid var(--zen-accent-link-faint);
+  background:
+    linear-gradient(135deg, var(--zen-accent-link-faint), transparent),
+    var(--zen-surface-chip);
   font-size: 0.75rem;
   color: var(--zenos-white-soft);
   max-width: min(100%, 240px);
@@ -311,12 +313,13 @@ a.activity-branch:focus-visible {
 }
 
 .activity-branch.push {
-  color: var(--zen-accent-amber);
-  border-color: var(--zen-border-warm);
+  border-color: var(--zen-accent-link-soft);
+  box-shadow: 0 0 12px var(--zen-accent-link-faint);
 }
 
 .activity-branch.pull_request {
-  color: var(--zen-accent-coral);
+  border-color: var(--zen-accent-coral-soft);
+  box-shadow: 0 0 12px rgba(85, 206, 233, 0.12);
 }
 
 .branch-name {
@@ -335,8 +338,9 @@ a.activity-branch:focus-visible {
 .activity-repo {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--zen-accent-coral);
+  color: var(--zenos-white-soft);
   margin-bottom: 0.2rem;
+  text-shadow: 0 4px 18px var(--zen-accent-link-faint);
 }
 
 .stat-item.clickable {
@@ -683,8 +687,10 @@ a.activity-branch:focus-visible {
 }
 
 a.activity-summary.pr-link {
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: rgba(146, 182, 230, 0.4);
   border-radius: 6px;
+  color: var(--zenos-white-soft);
 }
 
 a.activity-summary.pr-link:hover,
@@ -707,9 +713,9 @@ a.activity-summary.pr-link:focus-visible {
   padding: 0.4rem 0.5rem;
   border-radius: 6px;
   background:
-    linear-gradient(135deg, var(--zen-accent-amber-faint), transparent),
+    linear-gradient(135deg, rgba(146, 182, 230, 0.08), transparent),
     var(--zen-surface-card);
-  border: 1px solid var(--zen-border);
+  border: 1px solid var(--zen-accent-link-faint);
   text-decoration: none;
   color: var(--zenos-white-soft);
   font-size: 0.8rem;
@@ -718,9 +724,9 @@ a.activity-summary.pr-link:focus-visible {
 
 .activity-commit-link:hover {
   background:
-    linear-gradient(135deg, var(--zen-accent-coral-soft), var(--zen-accent-amber-faint)),
+    linear-gradient(135deg, rgba(85, 206, 233, 0.18), rgba(146, 182, 230, 0.12)),
     var(--zen-surface-card-hover);
-  border-color: var(--zen-border-warm);
+  border-color: rgba(146, 182, 230, 0.45);
 }
 
 .stat-item {
@@ -743,7 +749,7 @@ a.activity-summary.pr-link:focus-visible {
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
   background: var(--zen-surface-chip);
-  color: var(--zen-accent-amber);
+  color: var(--zenos-white-soft);
 }
 
 .commit-message {
@@ -789,7 +795,7 @@ a.activity-summary.pr-link:focus-visible {
 }
 
 .pr-state.open {
-  background: var(--zen-accent-amber-soft);
+  background: rgba(31, 123, 253, 0.2);
   border-color: var(--zen-border-warm);
   color: var(--zenos-white-soft);
 }
@@ -801,7 +807,7 @@ a.activity-summary.pr-link:focus-visible {
 }
 
 .pr-state.merged {
-  background: var(--zen-accent-coral-soft);
+  background: rgba(46, 211, 255, 0.18);
   border-color: var(--zen-border-coral);
   color: var(--zenos-white-soft);
 }
