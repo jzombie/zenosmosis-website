@@ -1,4 +1,4 @@
-import { useState, useEffect, type KeyboardEvent } from 'react';
+import { useState, useEffect, type KeyboardEvent, type MouseEvent } from 'react';
 import { useGitHubStatsQuery } from '../hooks/useGitHubStatsQuery';
 import { useCrateDownloadsQuery } from '../hooks/useCrateDownloadsQuery';
 import type {
@@ -200,6 +200,8 @@ export function SidePanel() {
                         activity.type === 'pull_request' && activity.pullRequest
                           ? `PR #${activity.pullRequest.number}`
                           : null;
+                      const pullRequestUrl =
+                        activity.type === 'pull_request' ? activity.url : undefined;
 
                       const commitMessages =
                         activity.type === 'push' && activity.commits && activity.commits.length > 0
@@ -250,12 +252,27 @@ export function SidePanel() {
                                 </span>
                               )}
                               {pullRequestLabel && (
-                                <span className={`activity-branch ${activity.type}`}>
-                                  <PullRequestIcon />
-                                  <span className="branch-name" title={pullRequestLabel}>
-                                    {pullRequestLabel}
+                                pullRequestUrl ? (
+                                  <LinkOut
+                                    className={`activity-branch ${activity.type}`}
+                                    href={pullRequestUrl}
+                                    allowReferrer={false}
+                                    onClick={(event) => event.stopPropagation()}
+                                    onKeyDown={(event: KeyboardEvent<HTMLAnchorElement>) => event.stopPropagation()}
+                                  >
+                                    <PullRequestIcon />
+                                    <span className="branch-name" title={pullRequestLabel}>
+                                      {pullRequestLabel}
+                                    </span>
+                                  </LinkOut>
+                                ) : (
+                                  <span className={`activity-branch ${activity.type}`}>
+                                    <PullRequestIcon />
+                                    <span className="branch-name" title={pullRequestLabel}>
+                                      {pullRequestLabel}
+                                    </span>
                                   </span>
-                                </span>
+                                )
                               )}
                             </div>
                             <div className="activity-repo">{activity.repo}</div>
@@ -283,18 +300,40 @@ export function SidePanel() {
                           )}
 
                           {activity.type === 'pull_request' && activity.pullRequest && (
-                            <div className="activity-pr-meta">
-                              <span
-                                className={`pr-state ${activity.pullRequest.isMerged ? 'merged' : activity.pullRequest.state}`}
+                            pullRequestUrl ? (
+                              <LinkOut
+                                className="activity-pr-meta pr-link"
+                                href={pullRequestUrl}
+                                allowReferrer={false}
+                                onClick={(event: MouseEvent<HTMLAnchorElement>) => event.stopPropagation()}
+                                onKeyDown={(event: KeyboardEvent<HTMLAnchorElement>) => event.stopPropagation()}
+                                aria-label={`Open pull request #${activity.pullRequest.number}`}
                               >
-                                {activity.pullRequest.isMerged
-                                  ? 'Merged'
-                                  : activity.pullRequest.state === 'open'
-                                  ? 'Open'
-                                  : 'Closed'}
-                              </span>
-                              <span className="pr-title">{activity.pullRequest.title}</span>
-                            </div>
+                                <span
+                                  className={`pr-state ${activity.pullRequest.isMerged ? 'merged' : activity.pullRequest.state}`}
+                                >
+                                  {activity.pullRequest.isMerged
+                                    ? 'Merged'
+                                    : activity.pullRequest.state === 'open'
+                                    ? 'Open'
+                                    : 'Closed'}
+                                </span>
+                                <span className="pr-title">{activity.pullRequest.title}</span>
+                              </LinkOut>
+                            ) : (
+                              <div className="activity-pr-meta">
+                                <span
+                                  className={`pr-state ${activity.pullRequest.isMerged ? 'merged' : activity.pullRequest.state}`}
+                                >
+                                  {activity.pullRequest.isMerged
+                                    ? 'Merged'
+                                    : activity.pullRequest.state === 'open'
+                                    ? 'Open'
+                                    : 'Closed'}
+                                </span>
+                                <span className="pr-title">{activity.pullRequest.title}</span>
+                              </div>
+                            )
                           )}
 
                           <div className="activity-date">{activity.date}</div>
