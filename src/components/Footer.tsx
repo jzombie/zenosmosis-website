@@ -1,6 +1,6 @@
-import { appConfig, cratesUrl, githubOrgUrl, githubUrl, linkedInUrl } from '../config/appConfig';
+import { appConfig, cratesUrl, githubOrgUrl, githubUrl } from '../config/appConfig';
 import logoUrl from '../assets/zenOSmosis-logo.svg';
-import { GitHubMark, CratesMark, LinkedInMark } from './icons/BrandIcons';
+import { GitHubMark, CratesMark } from './icons/BrandIcons';
 import { LinkOut } from './LinkOut';
 import './Footer.css';
 
@@ -50,10 +50,6 @@ export function SiteFooter() {
 
           <div className="footer-column" id="connect-column">
             <h4>Connect</h4>
-            <LinkOut className="footer-link" href={linkedInUrl} allowReferrer={false}>
-              <LinkedInMark aria-hidden />
-              LinkedIn
-            </LinkOut>
             <a className="footer-link" href={`mailto:${site.contactEmail}`}>
               {site.contactEmail}
             </a>

@@ -1,6 +1,5 @@
 import type { Project } from '../types/Project';
 import { LinkOut } from './LinkOut';
-import { BookIcon } from './icons/BookIcon';
 
 interface ProjectCardProps {
   project: Project;
@@ -11,7 +10,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <LinkOut
-      href={project.bookUrl}
+      href={project.repoUrl}
       className="project-card project-card--linked"
       allowReferrer={true}
     >
@@ -22,10 +21,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <p className="project-technologies">{stack.join(', ')}</p>
         )}
       </div>
-      <span className="project-callout">
-        <BookIcon className="project-action-icon" aria-hidden />
-        <span>Read the book</span>
-      </span>
     </LinkOut>
   );
 }

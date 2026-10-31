@@ -1,7 +1,6 @@
 import { projects } from '../projects';
 import { ProjectCard } from './ProjectCard';
 import type { Project } from '../types/Project';
-import { BookIcon } from './icons/BookIcon';
 import './ProjectGrid.css';
 
 export function ProjectGrid() {
@@ -16,11 +15,11 @@ export function ProjectGrid() {
   return (
     <div className="project-grid-container">
       <h2 className="projects-title">
-        <BookIcon className="projects-title-icon" aria-hidden />
-        <span>Projects with Books</span>
+        <span>Projects</span>
       </h2>
       <p className="projects-subtitle">
-        Each project below includes comprehensive documentation written like a book, featuring diagrams, architecture, usage, and implementation details.<br />
+        A selection of open-source systems, tools, and experiments.
+        <br />
         Most of these projects are early stage and actively developed.
       </p>
       <div className="project-categories">
