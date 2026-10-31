@@ -46,8 +46,8 @@ function App() {
         <div className="app-layout">
           <main className="main-content">
             <section className="hero-intro">
-              <h1 className="hero-title">Open-source systems and tooling.</h1>
-              <p className="hero-subtitle">Storage engines, terminal environments, virtualization, and research pipelines.</p>
+              <h1 className="hero-title">Open-source systems that fit together.</h1>
+              <p className="hero-subtitle">Infrastructure, terminal environments, storage engines, and research pipelines — reusable pieces of one cohesive stack.</p>
               <div className="hero-cta">
                 <a
                   className="hero-cta-primary"

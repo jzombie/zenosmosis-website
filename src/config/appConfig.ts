@@ -13,14 +13,14 @@ export const appConfig = {
     contactPhone: '+1-415-562-7140',
 
     // Keep titles under ~55–60 chars; use the same across <title>, og:title, twitter:title.
-    title: 'zenOSmosis — Open-Source Systems and Tooling',
+    title: 'zenOSmosis — Open-Source Systems That Fit Together',
 
     // Use two descriptions: one longer for SEO, one short for social cards.
     // ~150–160 chars helps SEO snippets; ~90–110 chars is ideal for social.
     description:
-      'Open-source systems and tooling: storage engines, terminal environments, virtualization, and research pipelines.',
+      'Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open.',
     socialDescription:
-      'Open-source systems and tooling',
+      'Open-source systems that fit together',
 
     // Keep this lean; prioritize intent over a long comma soup.
     keywords:
@@ -32,7 +32,7 @@ export const appConfig = {
 
     // Use an absolute URL so all platforms resolve it reliably.
     socialImage: '/social/zenOSmosis-card-1200x630.jpg',
-    socialImageAlt: 'zenOSmosis — Open-source systems and tooling',
+    socialImageAlt: 'zenOSmosis — Open-source systems that fit together',
 
     // (Optional but useful if you wire it into meta tags)
     siteName: 'zenOSmosis',
@@ -40,12 +40,12 @@ export const appConfig = {
     twitterHandle: '', // e.g., '@yourhandle' if you get one later
     
     // Organization details for structured data
-    organizationDescription: 'zenOSmosis develops open-source systems and tooling: storage engines, SQL, terminal environments, virtualization, and infrastructure projects.',
+    organizationDescription: 'zenOSmosis builds open-source systems that fit together: infrastructure, terminal environments, storage engines, and research pipelines — reusable pieces of one cohesive stack.',
     foundingDate: '2010-07-15',
     
     // Person/author details for structured data
     authorJobTitle: 'Software Engineer & Systems Architect',
-    authorDescription: 'Software engineer building open-source systems and tooling: storage engines, terminal environments, and virtualization.',
+    authorDescription: 'Software engineer building open-source systems that fit together: reusable infrastructure, terminals, storage, and pipelines.',
     languages: ['en'],
     areaServed: 'Worldwide',
   },
