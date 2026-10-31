@@ -2,23 +2,6 @@ import type { Project } from './types/Project';
 
 export const projects: Project[] = [
   {
-    name: 'SIMD R Drive',
-    repoUrl: 'https://github.com/jzombie/rust-simd-r-drive',
-    description: 'Single-file SIMD-optimized storage engine that guarantees aligned, zero-copy binary reads across platforms.',
-    category: 'Filesystems & Databases',
-    languages: ['Rust'],
-    technologies: ['SIMD', 'Storage Engine'],
-  },
-  {
-    name: 'LLKV',
-    repoUrl: 'https://github.com/jzombie/rust-llkv',
-    description:
-      'Experimental SQL engine that layers Apache Arrow buffers, a streaming executor, and MVCC over pluggable key-value pagers.',
-    category: 'Filesystems & Databases',
-    languages: ['Rust', 'SQL'],
-    technologies: ['Apache Arrow', 'sqllogictest'],
-  },
-  {
     name: 'Muxio',
     repoUrl: 'https://github.com/jzombie/rust-muxio',
     description:
@@ -85,6 +68,23 @@ export const projects: Project[] = [
     category: 'Virtualization & Terminal',
     languages: ['Shell', 'Python', 'YAML'],
     technologies: ['QEMU', 'KVM', 'HVF', 'wimlib'],
+  },
+  {
+    name: 'SIMD R Drive',
+    repoUrl: 'https://github.com/jzombie/rust-simd-r-drive',
+    description: 'Single-file SIMD-optimized storage engine that guarantees aligned, zero-copy binary reads across platforms.',
+    category: 'Filesystems & Databases',
+    languages: ['Rust'],
+    technologies: ['SIMD', 'Storage Engine'],
+  },
+  {
+    name: 'LLKV',
+    repoUrl: 'https://github.com/jzombie/rust-llkv',
+    description:
+      'Experimental SQL engine that layers Apache Arrow buffers, a streaming executor, and MVCC over pluggable key-value pagers.',
+    category: 'Filesystems & Databases',
+    languages: ['Rust', 'SQL'],
+    technologies: ['Apache Arrow', 'sqllogictest'],
   },
   {
     name: 'SQLite sqllogictest Corpus',
