@@ -3,7 +3,7 @@ import { appConfig } from '../config/appConfig'
 import { getBaseUrl, toAbsoluteUrl } from './urlHelpers'
 
 export function generateStructuredData() {
-  const { site, github, social, crates } = appConfig
+  const { site, github, crates } = appConfig
   const baseUrl = getBaseUrl()
   const logoUrl = `${baseUrl}/assets/zenOSmosis-logo-oNQJHx0N.svg`
   const socialImageUrl = toAbsoluteUrl(site.socialImage)
@@ -68,13 +68,12 @@ export function generateStructuredData() {
           ...(github.orgUsername
             ? [`https://github.com/${github.orgUsername}`]
             : []),
-          `https://www.linkedin.com/in/${social.linkedinSlug}`,
           `https://crates.io/users/${crates.username}`,
           site.blogPath,
         ],
         founder: { '@id': authorId },
         owns: projects.map((project) => ({
-          '@id': `${project.bookUrl}#software`,
+          '@id': `${baseUrl}/#software-${project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         })),
         contactPoint: {
           '@type': 'ContactPoint',
@@ -103,7 +102,6 @@ export function generateStructuredData() {
         },
         sameAs: [
           `https://github.com/${github.username}`,
-          `https://www.linkedin.com/in/${social.linkedinSlug}`,
           `https://crates.io/users/${crates.username}`,
           site.blogPath,
         ],
@@ -122,10 +120,10 @@ export function generateStructuredData() {
 
         return {
           '@type': 'SoftwareSourceCode',
-          '@id': `${project.bookUrl}#software`,
+          '@id': `${baseUrl}/#software-${project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
           name: project.name,
           description: project.description,
-          url: project.bookUrl,
+          url: project.repoUrl,
           ...(project.languages.length > 0
             ? { programmingLanguage: project.languages }
             : {}),

@@ -32,14 +32,6 @@
   color: var(--color-white-soft);
 }
 
-.projects-title-icon {
-  width: 34px;
-  height: 34px;
-  transform: rotate(-12deg);
-  color: var(--accent-primary);
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
-}
-
 .project-categories {
   display: flex;
   flex-direction: column;
@@ -123,25 +115,6 @@
   font-size: 0.85rem;
   color: var(--color-white-faint);
   font-style: italic;
-}
-
-.project-callout {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--accent-primary);
-}
-
-.project-card:hover .project-callout {
-  color: var(--color-white-strong);
-}
-
-.project-action-icon {
-  width: 18px;
-  height: 18px;
 }
 
 @media (max-width: 768px) {

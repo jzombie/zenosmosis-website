@@ -13,20 +13,18 @@ export const appConfig = {
     contactPhone: '+1-415-562-7140',
 
     // Keep titles under ~55–60 chars; use the same across <title>, og:title, twitter:title.
-    // A: broader positioning
-    title: 'zenOSmosis — Software for Curious Minds',
-    // B (alt you can A/B later): 'zenOSmosis — Engineering Craftsmanship'
+    title: 'zenOSmosis — Open-Source Systems and Tooling',
 
     // Use two descriptions: one longer for SEO, one short for social cards.
     // ~150–160 chars helps SEO snippets; ~90–110 chars is ideal for social.
     description:
-      'Open-source data systems and tooling: storage engines, SQL, infrastructure, and clear documentation.',
+      'Open-source systems and tooling: storage engines, terminal environments, virtualization, and research pipelines.',
     socialDescription:
-      'Open-source data systems and tooling: storage, SQL, and infra',
+      'Open-source systems and tooling',
 
     // Keep this lean; prioritize intent over a long comma soup.
     keywords:
-      'Rust, data systems, storage engine, SQL, Apache Arrow, performance, infrastructure, Docker, MQTT, documentation',
+      'Rust, storage engine, SQL, terminal, virtualization, QEMU, SSH, infrastructure, Docker, MQTT',
 
     // Author credit (used in meta=author if you surface it)
     author: 'Jeremy Harris',
@@ -34,7 +32,7 @@ export const appConfig = {
 
     // Use an absolute URL so all platforms resolve it reliably.
     socialImage: '/social/zenOSmosis-card-1200x630.jpg',
-    socialImageAlt: 'zenOSmosis — Open-source Rust data systems and tools',
+    socialImageAlt: 'zenOSmosis — Open-source systems and tooling',
 
     // (Optional but useful if you wire it into meta tags)
     siteName: 'zenOSmosis',
@@ -42,12 +40,12 @@ export const appConfig = {
     twitterHandle: '', // e.g., '@yourhandle' if you get one later
     
     // Organization details for structured data
-    organizationDescription: 'zenOSmosis develops high-performance open-source data systems, storage engines, SQL tooling, and infrastructure projects with comprehensive technical documentation.',
+    organizationDescription: 'zenOSmosis develops open-source systems and tooling: storage engines, SQL, terminal environments, virtualization, and infrastructure projects.',
     foundingDate: '2010-07-15',
     
     // Person/author details for structured data
     authorJobTitle: 'Software Engineer & Systems Architect',
-    authorDescription: 'Software engineer specializing in high-performance data systems, storage engines, and infrastructure tooling.',
+    authorDescription: 'Software engineer building open-source systems and tooling: storage engines, terminal environments, and virtualization.',
     languages: ['en'],
     areaServed: 'Worldwide',
   },
@@ -65,9 +63,6 @@ export const appConfig = {
     username: 'jzombie',
     maxCrates: 4,
     historyDays: 30,
-  },
-  social: {
-    linkedinSlug: 'jeremyharrisconsultant',
   },
   queryCache: {
     /** Duration (ms) to treat cached data as fresh before background refetch. */
@@ -88,4 +83,3 @@ export type AppConfig = typeof appConfig;
 export const githubUrl = `https://github.com/${appConfig.github.username}`;
 export const githubOrgUrl = `https://github.com/${appConfig.github.orgUsername}`;
 export const cratesUrl = `https://crates.io/users/${appConfig.crates.username}?sort=downloads`;
-export const linkedInUrl = `https://www.linkedin.com/in/${appConfig.social.linkedinSlug}`;

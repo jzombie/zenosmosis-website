@@ -6,7 +6,7 @@ import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import { PersistentQueryProvider } from './contexts/PersistentQueryProvider'
 import { SiteFooter } from './components/Footer'
 import { LinkOut } from './components/LinkOut'
-import { githubOrgUrl, linkedInUrl, appConfig } from './config/appConfig'
+import { githubOrgUrl, appConfig } from './config/appConfig'
 import './App.css'
 import './styles/liquid-background.css'
 
@@ -46,15 +46,15 @@ function App() {
         <div className="app-layout">
           <main className="main-content">
             <section className="hero-intro">
-              <h1 className="hero-title">Real code. Real docs.<br />No theater.</h1>
-              <p className="hero-subtitle">Custom software requests available for discussion.</p>
+              <h1 className="hero-title">Open-source systems and tooling.</h1>
+              <p className="hero-subtitle">Storage engines, terminal environments, virtualization, and research pipelines.</p>
               <div className="hero-cta">
                 <a
                   className="hero-cta-primary"
-                  href={linkedInUrl}
+                  href="#connect-column"
                   onClick={handlePrimaryCtaClick}
                 >
-                  Let's Connect
+                  Contact
                 </a>
                 <LinkOut
                   className="hero-cta-secondary"
