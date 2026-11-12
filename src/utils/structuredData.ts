@@ -43,7 +43,8 @@ export function generateStructuredData() {
         },
         inLanguage: site.languages,
       },
-      // Organization node
+      // Organization node — mirrors blog llms.txt `Elsewhere`:
+      // professional site + professional work (org GitHub) only.
       {
         '@type': 'Organization',
         '@id': organizationId,
@@ -64,17 +65,11 @@ export function generateStructuredData() {
           height: 630,
         },
         sameAs: [
-          `https://github.com/${github.username}`,
-          ...(github.orgUsername
-            ? [`https://github.com/${github.orgUsername}`]
+          ...(github.organizationUsername
+            ? [`https://github.com/${github.organizationUsername}`]
             : []),
-          `https://crates.io/users/${crates.username}`,
-          site.blogPath,
         ],
         founder: { '@id': authorId },
-        owns: projects.map((project) => ({
-          '@id': `${baseUrl}/#software-${project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-        })),
         contactPoint: {
           '@type': 'ContactPoint',
           telephone: site.contactPhone,
@@ -86,24 +81,23 @@ export function generateStructuredData() {
         foundingDate: site.foundingDate,
         areaServed: site.areaServed,
       },
-      // Person node
+      // Person node — mirrors blog llms.txt `Author: [jzombie](personal URL)`
       {
         '@type': 'Person',
         '@id': authorId,
         name: site.author,
-        url: `${baseUrl}/`,
+        url: `https://github.com/${github.personalUsername}`,
         jobTitle: site.authorJobTitle,
         description: site.authorDescription,
         worksFor: { '@id': organizationId },
         image: {
           '@type': 'ImageObject',
-          '@id': `${socialImageUrl}#image`,
-          url: socialImageUrl,
+          '@id': `https://github.com/${github.personalUsername}.png`,
+          url: `https://github.com/${github.personalUsername}.png`,
         },
         sameAs: [
-          `https://github.com/${github.username}`,
-          `https://crates.io/users/${crates.username}`,
-          site.blogPath,
+          `https://github.com/${github.personalUsername}`,
+          `https://crates.io/users/${crates.personalUsername}`,
         ],
         knowsAbout: Array.from(
           new Set(
@@ -112,7 +106,20 @@ export function generateStructuredData() {
         ),
         knowsLanguage: site.languages,
       },
-      // SoftwareSourceCode nodes
+      // Blog node — mirrors blog llms.txt `Site:` + `Elsewhere` split:
+      // blog is its own Site authored by the Person, published by the org,
+      // not sameAs of either entity.
+      {
+        '@type': 'Blog',
+        '@id': `${site.blogPath}/#blog`,
+        url: `${site.blogPath}/`,
+        name: 'zenOSmosis blog',
+        author: { '@id': authorId },
+        publisher: { '@id': organizationId },
+        inLanguage: site.languages,
+      },
+      // SoftwareSourceCode nodes — mirrors blog `GitHub personal: personal projects`.
+      // Repos live under jzombie/, so author/maintainer is the Person only.
       ...projects.map((project) => {
         const keywords = Array.from(
           new Set([...project.languages, ...project.technologies])
@@ -129,7 +136,6 @@ export function generateStructuredData() {
             : {}),
           ...(keywords.length > 0 ? { keywords } : {}),
           author: { '@id': authorId },
-          sourceOrganization: { '@id': organizationId },
           maintainer: { '@id': authorId },
           isPartOf: { '@id': websiteId },
           inLanguage: site.languages,

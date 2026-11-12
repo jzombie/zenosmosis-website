@@ -6,7 +6,7 @@ import type {
   GitHubActivityItem,
   GitHubHighlight,
 } from '../services/githubApi';
-import { appConfig, githubUrl, cratesUrl } from '../config/appConfig';
+import { appConfig, githubPersonalUrl, cratesPersonalUrl } from '../config/appConfig';
 import { LanguageDistributionChart } from './charts/LanguageDistributionChart';
 import { ContributorImpactChart } from './charts/ContributorImpactChart';
 import { CrateDownloadTrends } from './charts/CrateDownloadTrends';
@@ -136,7 +136,7 @@ export function SidePanel() {
           <h2 className="side-panel-title">
             <LinkOut
               className="heading-icon-link"
-              href={githubUrl}
+              href={githubPersonalUrl}
               allowReferrer={false}
             >
               <GitHubMark className="heading-icon github-icon" />
@@ -165,22 +165,22 @@ export function SidePanel() {
             <>
               <div className="github-identity">
                 <span className="github-name">{stats.user.name}</span>
-                <LinkOut className="github-handle" href={githubUrl} allowReferrer={false}>
-                  @{appConfig.github.username}
+                <LinkOut className="github-handle" href={githubPersonalUrl} allowReferrer={false}>
+                  @{appConfig.github.personalUsername}
                   <LiveIndicator isLive={!githubQuery.isError} />
                 </LinkOut>
               </div>
               <div className="profile-links" role="navigation" aria-label="Profile quick links">
                 <LinkOut
                   className="profile-link"
-                  href={githubUrl}
+                  href={githubPersonalUrl}
                   allowReferrer={false}
                 >
                   GitHub Profile
                 </LinkOut>
                 <LinkOut
                   className="profile-link"
-                  href={cratesUrl}
+                  href={cratesPersonalUrl}
                   allowReferrer={false}
                 >
                   crates.io Profile
@@ -434,7 +434,7 @@ export function SidePanel() {
               <h4 className="chart-heading">
                 <LinkOut
                   className="heading-icon-link"
-                  href={cratesUrl}
+                  href={cratesPersonalUrl}
                   allowReferrer={false}
                 >
                   <RustGearMark className="heading-icon rust-icon" />

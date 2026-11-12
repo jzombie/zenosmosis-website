@@ -93,13 +93,13 @@ function createResponseError(response: Response, endpoint: string) {
 export async function fetchGitHubStats(): Promise<GitHubStats> {
   try {
     const {
-      username: githubUsername,
+      personalUsername: githubPersonalUsername,
       recentActivityLimit,
       eventsPerPage,
       repoSampleSize,
     } = appConfig.github;
     // Fetch user info
-    const userResponse = await fetch(`https://api.github.com/users/${githubUsername}`);
+    const userResponse = await fetch(`https://api.github.com/users/${githubPersonalUsername}`);
     if (!userResponse.ok) {
       throw createResponseError(userResponse, 'users');
     }
@@ -107,13 +107,13 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
 
     // Fetch recent events (commits, pushes, PRs, etc.)
     const eventsResponse = await fetch(
-      `https://api.github.com/users/${githubUsername}/events?per_page=${eventsPerPage}`
+      `https://api.github.com/users/${githubPersonalUsername}/events?per_page=${eventsPerPage}`
     );
     const events = eventsResponse.ok ? await eventsResponse.json() : [];
 
     // Fetch repository summaries for aggregate stats
     const reposResponse = await fetch(
-      `https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=updated`
+      `https://api.github.com/users/${githubPersonalUsername}/repos?per_page=100&sort=updated`
     );
     const repos = reposResponse.ok ? await reposResponse.json() : [];
 
@@ -219,7 +219,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
             pullRequestUrl = `https://github.com/${repoName}/pull/${pr.number}`;
           }
 
-          const resolvedPullRequestUrl = pullRequestUrl ?? `https://github.com/${repoName || githubUsername}`;
+          const resolvedPullRequestUrl = pullRequestUrl ?? `https://github.com/${repoName || githubPersonalUsername}`;
           const summaryState = isMerged ? 'merged' : state === 'open' ? 'open' : 'closed';
 
           recentActivity.push({
@@ -297,7 +297,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
                 if (!Array.isArray(contributorsData)) return;
                 for (const contributor of contributorsData) {
                   const login = contributor?.login;
-                  if (typeof login !== 'string' || login === githubUsername) continue;
+                  if (typeof login !== 'string' || login === githubPersonalUsername) continue;
                   const contributions = contributor?.contributions ?? 0;
                   const existing = contributorTotals.get(login) ?? {
                     login,
@@ -340,13 +340,13 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       {
         label: 'Repositories',
         value: user.public_repos.toLocaleString(),
-        href: `https://github.com/${githubUsername}?tab=repositories&type=source`,
+        href: `https://github.com/${githubPersonalUsername}?tab=repositories&type=source`,
         subtitle: 'Public projects',
       },
       {
         label: 'Total Stars',
         value: totalStars.toLocaleString(),
-        href: `https://github.com/${githubUsername}?tab=repositories&type=source`,
+        href: `https://github.com/${githubPersonalUsername}?tab=repositories&type=source`,
         subtitle:
           starredRepoCount > 0
             ? `Across ${starredRepoCount.toLocaleString()} repos`
@@ -359,7 +359,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       highlights.push({
         label: 'Top Language',
         value: topLanguage.language,
-        href: `https://github.com/search?q=user%3A${githubUsername}+language%3A${encodeURIComponent(
+        href: `https://github.com/search?q=user%3A${githubPersonalUsername}+language%3A${encodeURIComponent(
           topLanguage.language
         )}&type=repositories`,
         subtitle: `${languagePercentage}% of sampled code`,
@@ -370,7 +370,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       highlights.push({
         label: 'Public Gists',
         value: user.public_gists.toLocaleString(),
-        href: `https://gist.github.com/${githubUsername}`,
+        href: `https://gist.github.com/${githubPersonalUsername}`,
         subtitle: 'Code snippets & notes',
       });
     }
@@ -379,7 +379,7 @@ export async function fetchGitHubStats(): Promise<GitHubStats> {
       highlights.push({
         label: 'Forks',
         value: totalForks.toLocaleString(),
-        href: `https://github.com/${githubUsername}?tab=repositories&type=source`,
+        href: `https://github.com/${githubPersonalUsername}?tab=repositories&type=source`,
         subtitle: 'Total across repos',
       });
     }

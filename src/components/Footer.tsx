@@ -1,4 +1,4 @@
-import { appConfig, cratesUrl, githubOrgUrl, githubUrl } from '../config/appConfig';
+import { appConfig, cratesPersonalUrl, githubOrganizationUrl, githubPersonalUrl } from '../config/appConfig';
 import logoUrl from '../assets/zenOSmosis-logo.svg';
 import { GitHubMark, CratesMark } from './icons/BrandIcons';
 import { LinkOut } from './LinkOut';
@@ -34,15 +34,15 @@ export function SiteFooter() {
 
           <div className="footer-column">
             <h4>Profiles</h4>
-            <LinkOut className="footer-link" href={githubUrl} allowReferrer={false}>
+            <LinkOut className="footer-link" href={githubPersonalUrl} allowReferrer={false}>
               <GitHubMark aria-hidden />
               GitHub · Research
             </LinkOut>
-            <LinkOut className="footer-link" href={githubOrgUrl} allowReferrer={false}>
+            <LinkOut className="footer-link" href={githubOrganizationUrl} allowReferrer={false}>
               <GitHubMark aria-hidden />
               GitHub · Studio
             </LinkOut>
-            <LinkOut className="footer-link" href={cratesUrl} allowReferrer={false}>
+            <LinkOut className="footer-link" href={cratesPersonalUrl} allowReferrer={false}>
               <CratesMark aria-hidden />
               crates.io
             </LinkOut>

@@ -50,8 +50,8 @@ export const appConfig = {
     areaServed: 'Worldwide',
   },
   github: {
-    username: 'jzombie',
-    orgUsername: 'zenOSmosis',
+    personalUsername: 'jzombie',
+    organizationUsername: 'zenOSmosis',
     /** Number of recent activity items to show in the sidebar feed. */
     recentActivityLimit: 6,
     /** How many events to request from the GitHub events API at once. */
@@ -60,7 +60,7 @@ export const appConfig = {
     repoSampleSize: 8,
   },
   crates: {
-    username: 'jzombie',
+    personalUsername: 'jzombie',
     maxCrates: 4,
     historyDays: 30,
   },
@@ -80,6 +80,6 @@ export const appConfig = {
 
 export type AppConfig = typeof appConfig;
 
-export const githubUrl = `https://github.com/${appConfig.github.username}`;
-export const githubOrgUrl = `https://github.com/${appConfig.github.orgUsername}`;
-export const cratesUrl = `https://crates.io/users/${appConfig.crates.username}?sort=downloads`;
+export const githubPersonalUrl = `https://github.com/${appConfig.github.personalUsername}`;
+export const githubOrganizationUrl = `https://github.com/${appConfig.github.organizationUsername}`;
+export const cratesPersonalUrl = `https://crates.io/users/${appConfig.crates.personalUsername}?sort=downloads`;

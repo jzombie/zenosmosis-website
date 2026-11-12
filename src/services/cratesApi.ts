@@ -23,9 +23,9 @@ function createResponseError(response: Response, endpoint: string) {
 
 export async function fetchCrateDownloadStats(): Promise<CrateDownloadSeries[]> {
   try {
-    const { username, maxCrates, historyDays } = appConfig.crates;
+    const { personalUsername: cratesPersonalUsername, maxCrates, historyDays } = appConfig.crates;
 
-    const userResponse = await fetch(`https://crates.io/api/v1/users/${username}`);
+    const userResponse = await fetch(`https://crates.io/api/v1/users/${cratesPersonalUsername}`);
     if (!userResponse.ok) {
       throw createResponseError(userResponse, 'users');
     }
@@ -33,7 +33,7 @@ export async function fetchCrateDownloadStats(): Promise<CrateDownloadSeries[]> 
     const userData = await userResponse.json();
     const userId = typeof userData?.user?.id === 'number' ? userData.user.id : null;
     if (!userId) {
-      throw new Error(`crates.io user lookup failed for ${username}`);
+      throw new Error(`crates.io user lookup failed for ${cratesPersonalUsername}`);
     }
 
     const cratesResponse = await fetch(
