@@ -1,11 +1,12 @@
 import { projects } from '../projects'
 import { appConfig } from '../config/appConfig'
 import { getBaseUrl, toAbsoluteUrl } from './urlHelpers'
+import logoPath from '../assets/zenOSmosis-logo.svg'
 
 export function generateStructuredData() {
   const { site, github, crates } = appConfig
   const baseUrl = getBaseUrl()
-  const logoUrl = `${baseUrl}/assets/zenOSmosis-logo-oNQJHx0N.svg`
+  const logoUrl = toAbsoluteUrl(logoPath)
   const socialImageUrl = toAbsoluteUrl(site.socialImage)
   const authorId = `${baseUrl}/#person`
   const organizationId = `${baseUrl}/#organization`

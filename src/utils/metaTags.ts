@@ -1,6 +1,7 @@
 import { appConfig } from '../config/appConfig'
 import { generateStructuredData } from './structuredData'
 import { getCanonicalUrl, toAbsoluteUrl } from './urlHelpers'
+import logoPath from '../assets/zenOSmosis-logo.svg'
 
 /**
  * Build the shared SEO and social meta tags block so both the dev server and
@@ -10,6 +11,7 @@ export function buildMetaTags(): string {
   const { site } = appConfig
   const canonicalUrl = getCanonicalUrl()
   const socialImageUrl = toAbsoluteUrl(site.socialImage)
+  const logoUrl = toAbsoluteUrl(logoPath)
   const structuredData = JSON.stringify(generateStructuredData(), null, 2)
   const indent = '    '
 
@@ -24,10 +26,14 @@ export function buildMetaTags(): string {
     `${indent}<meta property="og:title" content="${site.title}" />`,
     `${indent}<meta property="og:description" content="${site.description}" />`,
     `${indent}<meta property="og:site_name" content="${site.name}" />`,
+    `${indent}<meta property="og:locale" content="${site.locale}" />`,
     `${indent}<meta property="og:image" content="${socialImageUrl}" />`,
+    `${indent}<meta property="og:image:secure_url" content="${socialImageUrl}" />`,
+    `${indent}<meta property="og:image:type" content="image/jpeg" />`,
     `${indent}<meta property="og:image:width" content="1200" />`,
     `${indent}<meta property="og:image:height" content="630" />`,
     `${indent}<meta property="og:image:alt" content="${site.socialImageAlt}" />`,
+    `${indent}<meta property="og:logo" content="${logoUrl}" />`,
     `${indent}<meta property="twitter:card" content="summary_large_image" />`,
     `${indent}<meta property="twitter:url" content="${canonicalUrl}" />`,
     `${indent}<meta property="twitter:title" content="${site.title}" />`,
