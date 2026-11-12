@@ -22,6 +22,7 @@ export function generateStructuredData() {
         name: site.name,
         description: site.description,
         publisher: { '@id': organizationId },
+        author: { '@id': authorId },
         inLanguage: site.languages,
       },
       // WebPage node (main page)
@@ -33,6 +34,7 @@ export function generateStructuredData() {
         description: site.description,
         isPartOf: { '@id': websiteId },
         about: { '@id': organizationId },
+        author: { '@id': authorId },
         primaryImageOfPage: {
           '@type': 'ImageObject',
           '@id': `${socialImageUrl}#image`,
@@ -82,11 +84,12 @@ export function generateStructuredData() {
         areaServed: site.areaServed,
       },
       // Person node — mirrors blog llms.txt `Author: [jzombie](personal URL)`
+      // url stays local (canonical on owned domain); externals live in sameAs only.
       {
         '@type': 'Person',
         '@id': authorId,
         name: site.author,
-        url: `https://github.com/${github.personalUsername}`,
+        url: `${baseUrl}/`,
         jobTitle: site.authorJobTitle,
         description: site.authorDescription,
         worksFor: { '@id': organizationId },
