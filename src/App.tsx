@@ -6,7 +6,7 @@ import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import { PersistentQueryProvider } from './contexts/PersistentQueryProvider'
 import { SiteFooter } from './components/Footer'
 import { LinkOut } from './components/LinkOut'
-import { githubOrganizationUrl, appConfig } from './config/appConfig'
+import { appConfig } from './config/appConfig'
 import './App.css'
 import './styles/liquid-background.css'
 
@@ -58,7 +58,7 @@ function App() {
                 </a>
                 <LinkOut
                   className="hero-cta-secondary"
-                  href={githubOrganizationUrl}
+                  href={site.blogPath}
                   allowReferrer={true}
                 >
                   Learn More
