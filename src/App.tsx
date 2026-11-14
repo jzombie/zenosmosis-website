@@ -6,7 +6,7 @@ import { ClientOnlyProvider, ClientOnly } from './contexts/ClientOnlyContext'
 import { PersistentQueryProvider } from './contexts/PersistentQueryProvider'
 import { SiteFooter } from './components/Footer'
 import { LinkOut } from './components/LinkOut'
-import { appConfig } from './config/appConfig'
+import { appConfig, githubPersonalUrl } from './config/appConfig'
 import './App.css'
 import './styles/liquid-background.css'
 
@@ -62,6 +62,13 @@ function App() {
                   allowReferrer={true}
                 >
                   Learn More
+                </LinkOut>
+                <LinkOut
+                  className="hero-cta-secondary"
+                  href={githubPersonalUrl}
+                  allowReferrer={false}
+                >
+                  Software
                 </LinkOut>
               </div>
             </section>
