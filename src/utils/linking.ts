@@ -43,3 +43,39 @@ export function openLink(url: string, { allowReferrer, newTab = true }: LinkPref
     window.open(url, target);
   }
 }
+
+/**
+ * Shared in-page scroll + temporary highlight used by hero CTAs that jump to
+ * footer sections (e.g. Contact -> #connect-column, Explore -> #explore-columns).
+ * Keeps the smooth-scroll, delayed highlight, and scroll-away dismissal logic in
+ * one place so call sites stay declarative. Returns false when the target is
+ * missing so callers can fall back (e.g. mailto:).
+ */
+export function scrollToHighlightedSection(
+  targetId: string,
+  highlightClassName = 'highlight-connect',
+): boolean {
+  const target = document.getElementById(targetId);
+  if (!target) {
+    return false;
+  }
+
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  window.setTimeout(() => {
+    target.classList.add(highlightClassName);
+
+    const ignoreScrollUntil = Date.now() + 3000;
+
+    const onScroll = () => {
+      if (Date.now() < ignoreScrollUntil) {
+        return;
+      }
+      target.classList.remove(highlightClassName);
+      window.removeEventListener('scroll', onScroll);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }, 800);
+
+  return true;
+}

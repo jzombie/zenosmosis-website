@@ -25,30 +25,32 @@ export function SiteFooter() {
         </div>
 
         <div className="footer-columns">
-          <div className="footer-column">
-            <h4>Explore</h4>
-            <LinkOut className="footer-link" href={blogUrl} allowReferrer={true}>
-              Blog
-            </LinkOut>
+          <div id="explore-columns" className="footer-explore-group footer-highlightable">
+            <div className="footer-column">
+              <h4>Explore</h4>
+              <LinkOut className="footer-link" href={blogUrl} allowReferrer={true}>
+                Blog
+              </LinkOut>
+            </div>
+
+            <div className="footer-column">
+              <h4>Profiles</h4>
+              <LinkOut className="footer-link" href={githubPersonalUrl} allowReferrer={false}>
+                <GitHubMark aria-hidden />
+                GitHub · Research
+              </LinkOut>
+              <LinkOut className="footer-link" href={githubOrganizationUrl} allowReferrer={false}>
+                <GitHubMark aria-hidden />
+                GitHub · Studio
+              </LinkOut>
+              <LinkOut className="footer-link" href={cratesPersonalUrl} allowReferrer={false}>
+                <CratesMark aria-hidden />
+                crates.io
+              </LinkOut>
+            </div>
           </div>
 
-          <div className="footer-column">
-            <h4>Profiles</h4>
-            <LinkOut className="footer-link" href={githubPersonalUrl} allowReferrer={false}>
-              <GitHubMark aria-hidden />
-              GitHub · Research
-            </LinkOut>
-            <LinkOut className="footer-link" href={githubOrganizationUrl} allowReferrer={false}>
-              <GitHubMark aria-hidden />
-              GitHub · Studio
-            </LinkOut>
-            <LinkOut className="footer-link" href={cratesPersonalUrl} allowReferrer={false}>
-              <CratesMark aria-hidden />
-              crates.io
-            </LinkOut>
-          </div>
-
-          <div className="footer-column" id="connect-column">
+          <div className="footer-column footer-highlightable" id="connect-column">
             <h4>Connect</h4>
             <a className="footer-link" href={`mailto:${site.contactEmail}`}>
               {site.contactEmail}

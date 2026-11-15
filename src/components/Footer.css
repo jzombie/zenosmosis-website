@@ -63,16 +63,25 @@
 
 #connect-column {
   transition: all 0.3s ease;
+  position: relative;
 }
 
-#connect-column.highlight-connect {
+#explore-columns {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.footer-highlightable.highlight-connect {
   outline: 4px solid #ff3333;
   outline-offset: 12px;
   border-radius: 16px;
   background: rgba(255, 51, 51, 0.05);
 }
 
-#connect-column.highlight-connect::after {
+.footer-highlightable.highlight-connect::after {
   content: '↓';
   position: absolute;
   left: 50%;
@@ -159,6 +168,10 @@
     gap: 1.75rem;
     justify-content: flex-start;
   }
+
+  #explore-columns {
+    gap: 1.75rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -168,6 +181,11 @@
   }
 
   .footer-columns {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  #explore-columns {
     flex-direction: column;
     gap: 1.5rem;
   }
