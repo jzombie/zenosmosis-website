@@ -9,6 +9,7 @@ export const projects: Project[] = [
     category: 'Infrastructure & Ops',
     languages: ['Rust'],
     technologies: ['WASM', 'WebSocket', 'Real-time Networking'],
+    crates: ['muxio'],
   },
   {
     name: 'OxDock',
@@ -18,6 +19,7 @@ export const projects: Project[] = [
     category: 'Infrastructure & Ops',
     languages: ['Rust'],
     technologies: ['MCP', 'SSH', 'Remote Execution'],
+    crates: ['oxdock'],
   },
   {
     name: 'reqwest-drive',
@@ -26,6 +28,7 @@ export const projects: Project[] = [
     category: 'Infrastructure & Ops',
     languages: ['Rust'],
     technologies: ['HTTP', 'Caching', 'Middleware'],
+    crates: ['reqwest-drive'],
   },
   {
     name: 'Mosquitto Cloudflare Tunnel',
@@ -52,6 +55,7 @@ export const projects: Project[] = [
     category: 'Virtualization & Terminal',
     languages: ['Rust'],
     technologies: ['PTY', 'SSH', 'TUI'],
+    crates: ['term-wm'],
   },
   {
     name: 'windows-headless',
@@ -60,6 +64,7 @@ export const projects: Project[] = [
     category: 'Virtualization & Terminal',
     languages: ['Rust'],
     technologies: ['QEMU', 'Windows 11', 'OpenSSH'],
+    crates: ['windows-headless'],
   },
   {
     name: 'lab-qemu-portable',
@@ -76,6 +81,7 @@ export const projects: Project[] = [
     category: 'Filesystems & Databases',
     languages: ['Rust'],
     technologies: ['SIMD', 'Storage Engine'],
+    crates: ['simd-r-drive'],
   },
   {
     name: 'LLKV',
@@ -85,6 +91,7 @@ export const projects: Project[] = [
     category: 'Filesystems & Databases',
     languages: ['Rust', 'SQL'],
     technologies: ['Apache Arrow', 'sqllogictest'],
+    crates: ['llkv'],
   },
   {
     name: 'SQLite sqllogictest Corpus',
@@ -109,6 +116,7 @@ export const projects: Project[] = [
     category: 'AI & ML',
     languages: ['Rust'],
     technologies: ['SQLite', 'Hyperparameter Tuning'],
+    crates: ['argtuner'],
   },
   {
     name: 'triplets',
@@ -117,6 +125,7 @@ export const projects: Project[] = [
     category: 'AI & ML',
     languages: ['Rust'],
     technologies: ['Hugging Face', 'BM25', 'Embeddings'],
+    crates: ['triplets'],
   },
   {
     name: 'SEC Fetcher',
@@ -125,5 +134,6 @@ export const projects: Project[] = [
     category: 'Research & Data Analysis',
     languages: ['Rust', 'Python'],
     technologies: [],
+    crates: ['sec-fetcher'],
   },
 ];

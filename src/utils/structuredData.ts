@@ -128,6 +128,9 @@ export function generateStructuredData() {
         const keywords = Array.from(
           new Set([...project.languages, ...project.technologies])
         )
+        const crateUrls = (project.crates ?? []).map(
+          (crate) => `https://crates.io/crates/${crate}`
+        )
 
         return {
           '@type': 'SoftwareSourceCode',
@@ -135,6 +138,8 @@ export function generateStructuredData() {
           name: project.name,
           description: project.description,
           url: project.repoUrl,
+          codeRepository: project.repoUrl,
+          ...(crateUrls.length > 0 ? { sameAs: crateUrls } : {}),
           ...(project.languages.length > 0
             ? { programmingLanguage: project.languages }
             : {}),
