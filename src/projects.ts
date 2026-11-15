@@ -34,7 +34,7 @@ export const projects: Project[] = [
       'Dockerized Mosquitto broker pre-wired with Cloudflare Tunnel, ACLs, and optional message encryption for remote-first MQTT.',
     category: 'Infrastructure & Ops',
     languages: [],
-    technologies: ['Docker', 'MQTT'],
+    technologies: ['Docker', 'MQTT', 'Message Brokering'],
   },
   {
     name: 'sshfs-mac-docker',
@@ -116,7 +116,7 @@ export const projects: Project[] = [
     description: 'Composable deterministic text data pipeline for building reproducible triplets and pairs with BM25 hard negatives.',
     category: 'AI & ML',
     languages: ['Rust'],
-    technologies: ['HuggingFace', 'BM25', 'Embeddings'],
+    technologies: ['Hugging Face', 'BM25', 'Embeddings'],
   },
   {
     name: 'SEC Fetcher',
