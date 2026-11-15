@@ -65,6 +65,13 @@ function App() {
                 </LinkOut>
                 <LinkOut
                   className="hero-cta-secondary"
+                  href={`${site.blogPath.replace(/\/$/, '')}/posts`}
+                  allowReferrer={true}
+                >
+                  Blog Posts
+                </LinkOut>
+                <LinkOut
+                  className="hero-cta-secondary"
                   href={githubPersonalUrl}
                   allowReferrer={false}
                 >
