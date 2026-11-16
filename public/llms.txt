@@ -1,8 +1,8 @@
 # zenOSmosis
 
-> Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open for systems engineers and curious builders.
+> Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open. Built for systems engineers and curious builders.
 
-zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zenosmosis.com, with long-form notes at https://blog.zenosmosis.com. The hub lists actively maintained systems across infrastructure, virtualization, storage, developer tooling, AI/ML, and research pipelines. Contact: info@zenosmosis.com.
+zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zenosmosis.com, with long-form notes at https://blog.zenosmosis.com. The hub lists actively maintained systems across Infrastructure & Ops, Virtualization & Terminal, Filesystems & Databases, Developer Tooling, AI & ML, Research & Data Analysis. Contact: info@zenosmosis.com.
 
 ## Main
 
@@ -16,7 +16,7 @@ zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zeno
 - [OxDock](https://github.com/jzombie/rust-oxdock): Dockerfile-inspired DSL for native builds, multi-node pipelines, and sealed remote execution with guarded workspaces and managed pipes.
 - [reqwest-drive](https://github.com/jzombie/rust-reqwest-drive): Caching, throttling, and backoff middleware for reqwest backed by a SIMD single-file store.
 - [Mosquitto Cloudflare Tunnel](https://github.com/jzombie/docker-mqtt-mosquitto-cloudflare-tunnel): Dockerized Mosquitto broker pre-wired with Cloudflare Tunnel, ACLs, and optional message encryption for remote-first MQTT.
-- [sshfs-mac-docker](https://github.com/jzombie/sshfs-mac-docker): Containerized SSHFS plus Samba bridge that mounts remote filesystems on macOS without macFUSE hacks.
+- [sshfs-mac-docker](https://github.com/jzombie/sshfs-mac-docker): Containerized SSHFS + Samba bridge that mounts remote filesystems on macOS without macFUSE hacks.
 - [term-wm](https://github.com/jzombie/term-wm): Spatial terminal desktop environment for remote workspaces: floating windows, tiling, and persistent multi-viewer sessions over plain SSH.
 - [windows-headless](https://github.com/jzombie/windows-headless): Turns a Microsoft ISO into an SSH-ready Windows 11 VM in one command via portable QEMU.
 - [lab-qemu-portable](https://github.com/jzombie/lab-qemu-portable): Portable zero-install builds of QEMU and wimlib for Windows, Linux, and macOS, plus a mirrored virtio-win driver pack.
@@ -39,4 +39,5 @@ zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zeno
 - [Activity RSS](https://blog.zenosmosis.com/activity.xml): Blog activity feed in RSS format.
 - [Activity Atom](https://blog.zenosmosis.com/activity.atom): Blog activity feed in Atom format.
 - [Activity JSON](https://blog.zenosmosis.com/activity.json): Blog activity feed in JSON format.
+- [Full portfolio content](https://zenosmosis.com/llms-full.txt): Complete version of this index with full per-project detail by category.
 - [Contact](mailto:info@zenosmosis.com): Email the studio for questions or collaboration.

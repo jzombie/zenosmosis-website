@@ -1,20 +1,25 @@
 /**
  * Build-time generator for public/llms.txt and public/llms-full.txt.
  *
- * Sources of truth:
- *   1. src/config/appConfig.ts  — site header, URLs, contact (parsed, not imported: this runs as plain node).
- *   2. src/projects.ts           — curated hub projects, in hub order (parsed, see above).
- *   3. portfolio-graph.json      — nightly jzombie-graph export (fetched live; spliced in by repo URL).
+ * Backbone is OUR OWN internal data representation — the same modules that
+ * drive the site and the JSON-LD @graph in src/utils/structuredData.ts:
+ *   1. src/config/appConfig.ts — site header, URLs, contact
+ *   2. src/projects.ts          — curated hub projects, in hub order
+ * (Parsed as text rather than imported: this runs as plain node inside
+ * build.mjs, before the Vite/TS pipeline exists.)
  *
- * Splice rules:
+ * Spliced in at build time per the portfolio graph
+ * (https://github.com/jzombie/jzombie-graph, data/portfolio-graph.json):
  *   - Curated projects keep their hand-written descriptions (presentation copy wins).
- *   - The graph contributes stars, topics, docs/crates homepage links, license, layer, pushed_at.
- *   - Graph-visible repos NOT in the curated list appear only in llms-full.txt ("More ..."),
+ *   - The graph contributes topics, docs/crates homepage links, license, layer,
+ *     and per-project dependency relations ("connects to" / "used by").
+ *   - Graph-visible repos NOT in the curated list appear only in llms-full.txt,
  *     so llms.txt stays token-lean and mirrors the human hub 1:1.
- *   - Dependency edges where both ends are visible are listed in llms-full.txt.
  *
- * Offline safety: if the fetch fails and both output files already exist, warn and
- * keep the last-known-good files (exit 0). If they are missing, fail loudly.
+ * Offline safety: if the fetch fails, warn and generate from internal data only.
+ *
+ * llms.txt      — token-lean index. Mirrors the human hub 1:1.
+ * llms-full.txt — complete variant. Full per-project detail, grouped by category.
  */
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -42,7 +47,8 @@ function arrField(block, key) {
 /** Split the top-level object literals of a `[...] = [...]` array in a .ts source file. */
 function parseTsArray(source, constName) {
   const anchor = source.indexOf(constName);
-  const start = source.indexOf('[', anchor);
+  const eq = source.indexOf('=', anchor);
+  const start = source.indexOf('[', eq);
   let depth = 0;
   let current = '';
   const blocks = [];
@@ -67,6 +73,14 @@ function loadLocal() {
   const projectsSrc = readFileSync(join(ROOT, 'src', 'projects.ts'), 'utf-8');
   const configSrc = readFileSync(join(ROOT, 'src', 'config', 'appConfig.ts'), 'utf-8');
 
+  // No silent hardcoded fallbacks: if a required field can't be parsed,
+  // fail the build loudly instead of emitting stale copy.
+  const required = (re, label) => {
+    const m = configSrc.match(re);
+    if (!m) throw new Error(`could not parse ${label} from src/config/appConfig.ts`);
+    return m[1];
+  };
+
   const projects = parseTsArray(projectsSrc, 'projects').map((b) => ({
     name: strField(b, 'name'),
     repoUrl: strField(b, 'repoUrl'),
@@ -78,23 +92,21 @@ function loadLocal() {
   }));
 
   const site = {
-    name: strField(configSrc, "name: 'zenOSmosis'") || 'zenOSmosis',
-    baseUrl: configSrc.match(/baseUrl:\s*'([^']+)'/)?.[1] ?? 'https://zenosmosis.com',
-    blogPath: configSrc.match(/blogPath:\s*'([^']+)'/)?.[1] ?? 'https://blog.zenosmosis.com',
-    contactEmail:
-      configSrc.match(/contactEmail:\s*'([^']+)'/)?.[1] ?? 'info@zenosmosis.com',
-    title:
-      configSrc.match(/title:\s*'([^']+)'/)?.[1] ??
-      'zenOSmosis — Open-Source Systems That Fit Together',
-    description:
-      configSrc.match(/description:\s*\n?\s*'([^']+)'/)?.[1] ??
-      'Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open.',
-    author: configSrc.match(/author:\s*'([^']+)'/)?.[1] ?? 'Jeremy Harris',
-    personalUsername:
-      configSrc.match(/personalUsername:\s*'([^']+)'/)?.[1] ?? 'jzombie',
-    organizationUsername:
-      configSrc.match(/organizationUsername:\s*'([^']+)'/)?.[1] ?? 'zenOSmosis',
-    personalCrateUser: configSrc.match(/crates:\s*\{[^}]*personalUsername:\s*'([^']+)'/)?.[1] ?? 'jzombie',
+    name: required(/site:\s*\{\s*name:\s*'([^']+)'/, 'site name'),
+    baseUrl: required(/baseUrl:\s*'([^']+)'/, 'baseUrl'),
+    blogPath: required(/blogPath:\s*'([^']+)'/, 'blogPath'),
+    contactEmail: required(/contactEmail:\s*'([^']+)'/, 'contactEmail'),
+    description: required(/description:\s*\n?\s*'([^']+)'/, 'site description'),
+    author: required(/author:\s*'([^']+)'/, 'author'),
+    personalUsername: required(/personalUsername:\s*'([^']+)'/, 'personal GitHub username'),
+    organizationUsername: required(
+      /organizationUsername:\s*'([^']+)'/,
+      'organization GitHub username',
+    ),
+    personalCrateUser: required(
+      /crates:\s*\{[^}]*personalUsername:\s*'([^']+)'/,
+      'crates.io username',
+    ),
   };
   return { projects, site };
 }
@@ -112,33 +124,42 @@ async function loadGraph() {
 }
 
 const repoId = (url) => url.replace(/^https:\/\/github\.com\//, '');
+const repoUrl = (id) => `https://github.com/${id}`;
+const shortName = (id) => id.replace(/^[^/]+\//, '');
 
-function starsSuffix(n) {
-  return n > 0 ? ` (${n} star${n === 1 ? '' : 's'})` : '';
+/** Comma list of `[name](url) (kind)` for one side of an edge list. */
+function edgeList(edges, pick) {
+  return edges
+    .map((e) => `[${shortName(pick(e))}](${repoUrl(pick(e))}) (${e.kind})`)
+    .join(', ');
 }
 
 async function main() {
   const { projects, site } = loadLocal();
   if (projects.length === 0) throw new Error('parsed 0 projects from src/projects.ts');
+  const { baseUrl, blogPath } = site;
+  const postsUrl = `${blogPath.replace(/\/$/, '')}/posts`;
 
   let graph = null;
   try {
     graph = await loadGraph();
   } catch (err) {
     if (existsSync(LLMS_PATH) && existsSync(FULL_PATH)) {
-      console.warn(`[llms] fetch failed (${err.message}); keeping existing files.`);
+      console.warn(`[llms] graph fetch failed (${err.message}); keeping existing files.`);
       return;
     }
     throw new Error(`graph fetch failed and no existing files: ${err.message}`);
   }
 
-  const nodes = new Map((graph.nodes ?? []).map((n) => [n.id, n]));
-  const visible = (graph.nodes ?? []).filter((n) => n.visible);
+  const nodes = new Map((graph?.nodes ?? []).map((n) => [n.id, n]));
+  const visible = (graph?.nodes ?? []).filter((n) => n.visible);
   const curatedIds = new Set(projects.map((p) => repoId(p.repoUrl)));
 
-  for (const p of projects) {
-    if (!nodes.has(repoId(p.repoUrl))) {
-      console.warn(`[llms] curated project has no graph node: ${p.repoUrl}`);
+  if (graph) {
+    for (const p of projects) {
+      if (!nodes.has(repoId(p.repoUrl))) {
+        console.warn(`[llms] curated project has no graph node: ${p.repoUrl}`);
+      }
     }
   }
 
@@ -147,11 +168,23 @@ async function main() {
     .sort((a, b) => a.id.localeCompare(b.id));
 
   const visibleIds = new Set(visible.map((n) => n.id));
-  const edges = (graph.edges ?? [])
+  const edges = (graph?.edges ?? [])
     .filter((e) => visibleIds.has(e.source) && visibleIds.has(e.target))
     .sort((a, b) => a.source.localeCompare(b.source) || a.target.localeCompare(b.target));
 
-  const { baseUrl, blogPath } = site;
+  const outgoing = new Map();
+  const incoming = new Map();
+  for (const e of edges) {
+    if (!outgoing.has(e.source)) outgoing.set(e.source, []);
+    if (!incoming.has(e.target)) incoming.set(e.target, []);
+    outgoing.get(e.source).push(e);
+    incoming.get(e.target).push(e);
+  }
+
+  // Derived from the curated data, not hand-enumerated: stays correct
+  // when project categories change in src/projects.ts.
+  const categories = [...new Set(projects.map((p) => p.category || 'Other'))];
+  const scope = `across ${categories.join(', ')}`;
 
   // ---------------- llms.txt (token-lean index; mirrors the hub) ----------------
   const llms = [];
@@ -161,22 +194,19 @@ async function main() {
     '',
   );
   llms.push(
-    `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}. The hub lists actively maintained systems across infrastructure, virtualization, storage, developer tooling, AI/ML, and research pipelines. Contact: ${site.contactEmail}.`,
+    `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}. The hub lists actively maintained systems ${scope}. Contact: ${site.contactEmail}.`,
     '',
   );
   llms.push('## Main', '');
   llms.push(
     `- [${site.name} home](${baseUrl}): Project hub, hero intro, and live GitHub and crates.io activity.`,
     `- [Blog](${blogPath}): Long-form engineering notes, systems design, and Magnet Vector essays.`,
-    `- [All posts](${blogPath.replace(/\/$/, '')}/posts): Full post index for the garden and notes.`,
+    `- [All posts](${postsUrl}): Full post index for the garden and notes.`,
     '',
   );
   llms.push('## Projects', '');
   for (const p of projects) {
-    const node = nodes.get(repoId(p.repoUrl));
-    llms.push(
-      `- [${p.name}](${p.repoUrl}): ${p.description}${node ? starsSuffix(node.stars) : ''}`,
-    );
+    llms.push(`- [${p.name}](${p.repoUrl}): ${p.description}`);
   }
   llms.push('', '## Profiles', '');
   llms.push(
@@ -190,12 +220,12 @@ async function main() {
     `- [Activity RSS](${blogPath}/activity.xml): Blog activity feed in RSS format.`,
     `- [Activity Atom](${blogPath}/activity.atom): Blog activity feed in Atom format.`,
     `- [Activity JSON](${blogPath}/activity.json): Blog activity feed in JSON format.`,
-    `- [Full portfolio content](${baseUrl}/llms-full.txt): Complete version of this index with all portfolio repos, topics, docs links, and dependency edges.`,
+    `- [Full portfolio content](${baseUrl}/llms-full.txt): Complete version of this index with full per-project detail by category.`,
     `- [Contact](mailto:${site.contactEmail}): Email the studio for questions or collaboration.`,
     '',
   );
 
-  // ---------------- llms-full.txt (complete version) ----------------
+  // ---------------- llms-full.txt (complete variant) ----------------
   const full = [];
   full.push(`# ${site.name}`, '');
   full.push(
@@ -203,53 +233,58 @@ async function main() {
     '',
   );
   full.push(
-    `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}.`,
-    '',
-    `Source: portfolio-graph.json schema v${graph.schema_version}, generated ${graph.generated_at}. Curated descriptions mirror the hub at ${baseUrl}; graph fields (stars, topics, docs, license, layer) are spliced in at build time.`,
+    `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}. This is the complete version of ${baseUrl}/llms.txt, generated at build time from the site's own data (src/projects.ts, src/config/appConfig.ts) — the same sources behind the homepage and its JSON-LD graph${graph ? ` — spliced with portfolio-graph.json schema v${graph.schema_version}, generated ${graph.generated_at}` : ' (portfolio graph unreachable at build time; internal data only)'}.`,
     '',
   );
-  full.push('## Curated projects', '');
-  for (const p of projects) {
-    const node = nodes.get(repoId(p.repoUrl));
-    full.push(`- [${p.name}](${p.repoUrl}): ${p.description}`);
-    const detail = [];
-    if (p.languages.length) detail.push(`languages: ${p.languages.join(', ')}`);
-    if (p.technologies.length) detail.push(`stack: ${p.technologies.join(', ')}`);
-    for (const c of p.crates) detail.push(`crate: https://crates.io/crates/${c}`);
-    if (node) {
-      if (node.homepage && !node.homepage.includes('crates.io')) {
-        detail.push(`docs: ${node.homepage}`);
+  full.push('## Main', '');
+  full.push(
+    `- [${site.name} home](${baseUrl}): Project hub, hero intro, and live GitHub and crates.io activity.`,
+    `- [Blog](${blogPath}): Long-form engineering notes, systems design, and Magnet Vector essays.`,
+    `- [All posts](${postsUrl}): Full post index for the garden and notes.`,
+    '',
+  );
+  for (const cat of categories) {
+    full.push(`## ${cat}`, '');
+    for (const p of projects.filter((x) => (x.category || 'Other') === cat)) {
+      full.push(`- [${p.name}](${p.repoUrl}): ${p.description}`);
+      const node = nodes.get(repoId(p.repoUrl));
+      if (p.languages.length) full.push(`  - languages: ${p.languages.join(', ')}`);
+      if (p.technologies.length)
+        full.push(`  - stack: ${p.technologies.join(', ')}`);
+      for (const c of p.crates) full.push(`  - crate: https://crates.io/crates/${c}`);
+      if (node) {
+        if (node.homepage && !node.homepage.includes('crates.io')) {
+          full.push(`  - docs: ${node.homepage}`);
+        }
+        if (node.topics?.length) full.push(`  - topics: ${node.topics.join(', ')}`);
+        if (node.license) full.push(`  - license: ${node.license}`);
+        if (node.layer?.length) full.push(`  - layer: ${node.layer.join('+')}`);
       }
-      if (node.topics?.length) detail.push(`topics: ${node.topics.join(', ')}`);
-      if (node.stars > 0) detail.push(`stars: ${node.stars}`);
-      if (node.license) detail.push(`license: ${node.license}`);
-      if (node.layer?.length) detail.push(`layer: ${node.layer.join('+')}`);
+      const out = outgoing.get(repoId(p.repoUrl)) ?? [];
+      const inc = incoming.get(repoId(p.repoUrl)) ?? [];
+      if (out.length) full.push(`  - connects to: ${edgeList(out, (e) => e.target)}`);
+      if (inc.length) full.push(`  - used by: ${edgeList(inc, (e) => e.source)}`);
     }
-    for (const d of detail) full.push(`  - ${d}`);
+    full.push('');
   }
-  full.push('', '## More visible in the portfolio graph', '');
-  if (extra.length === 0) {
-    full.push('None beyond the curated projects.');
-  }
-  for (const n of extra) {
-    const url = `https://github.com/${n.id}`;
-    full.push(`- [${n.name}](${url}): ${n.description || 'No description.'}`);
-    const detail = [];
-    if (n.language) detail.push(`language: ${n.language}`);
-    if (n.homepage) detail.push(`homepage: ${n.homepage}`);
-    if (n.topics?.length) detail.push(`topics: ${n.topics.join(', ')}`);
-    if (n.stars > 0) detail.push(`stars: ${n.stars}`);
-    if (n.license) detail.push(`license: ${n.license}`);
-    if (n.layer?.length) detail.push(`layer: ${n.layer.join('+')}`);
-    for (const d of detail) full.push(`  - ${d}`);
-  }
-  if (edges.length > 0) {
-    full.push('', '## Dependency edges', '');
-    for (const e of edges) {
-      full.push(`- ${e.source} -> ${e.target} (${e.kind})`);
+  if (extra.length > 0) {
+    full.push('## More visible in the portfolio graph', '');
+    for (const n of extra) {
+      const url = `https://github.com/${n.id}`;
+      full.push(`- [${n.name}](${url}): ${n.description || 'No description.'}`);
+      if (n.language) full.push(`  - language: ${n.language}`);
+      if (n.homepage) full.push(`  - homepage: ${n.homepage}`);
+      if (n.topics?.length) full.push(`  - topics: ${n.topics.join(', ')}`);
+      if (n.license) full.push(`  - license: ${n.license}`);
+      if (n.layer?.length) full.push(`  - layer: ${n.layer.join('+')}`);
+      const out = outgoing.get(n.id) ?? [];
+      const inc = incoming.get(n.id) ?? [];
+      if (out.length) full.push(`  - connects to: ${edgeList(out, (e) => e.target)}`);
+      if (inc.length) full.push(`  - used by: ${edgeList(inc, (e) => e.source)}`);
     }
+    full.push('');
   }
-  full.push('', '## Profiles', '');
+  full.push('## Profiles', '');
   full.push(
     `- [GitHub Research](https://github.com/${site.personalUsername}): Personal repositories, systems experiments, and research prototypes.`,
     `- [GitHub Studio](https://github.com/${site.organizationUsername}): Studio organization and cohesive system pieces.`,
@@ -261,7 +296,7 @@ async function main() {
   writeFileSync(LLMS_PATH, llms.join('\n'));
   writeFileSync(FULL_PATH, full.join('\n'));
   console.log(
-    `[llms] wrote llms.txt (${projects.length} curated) and llms-full.txt (${visible.length} visible, ${edges.length} edges) from graph generated ${graph.generated_at}`,
+    `[llms] wrote llms.txt (${projects.length} curated) and llms-full.txt (${categories.length} categories${graph ? `, ${extra.length} extra visible, ${edges.length} edges` : ', graph unreachable'})`,
   );
 }
 

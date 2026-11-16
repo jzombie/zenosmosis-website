@@ -1,0 +1,237 @@
+# zenOSmosis
+
+> Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open. Built for systems engineers and curious builders.
+
+zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zenosmosis.com, with long-form notes at https://blog.zenosmosis.com. This is the complete version of https://zenosmosis.com/llms.txt, generated at build time from the site's own data (src/projects.ts, src/config/appConfig.ts) — the same sources behind the homepage and its JSON-LD graph — spliced with portfolio-graph.json schema v7, generated 2026-11-16T04:42:03.173620424Z.
+
+## Main
+
+- [zenOSmosis home](https://zenosmosis.com): Project hub, hero intro, and live GitHub and crates.io activity.
+- [Blog](https://blog.zenosmosis.com): Long-form engineering notes, systems design, and Magnet Vector essays.
+- [All posts](https://blog.zenosmosis.com/posts): Full post index for the garden and notes.
+
+## Infrastructure & Ops
+
+- [Muxio](https://github.com/jzombie/rust-muxio): High-performance multiplexing and RPC toolkit for Rust with transport-agnostic framing and lightweight extensible RPC primitives.
+  - languages: Rust
+  - stack: WASM, WebSocket, Real-time Networking
+  - crate: https://crates.io/crates/muxio
+  - topics: rpc-framework, wasm-rpc, websocket-client, websocket-server
+  - license: Apache-2.0
+  - layer: foundation
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (workflow)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [rust-oxdock](https://github.com/jzombie/rust-oxdock) (manifest), [rust-simd-r-drive](https://github.com/jzombie/rust-simd-r-drive) (manifest), [term-wm](https://github.com/jzombie/term-wm) (manifest)
+- [OxDock](https://github.com/jzombie/rust-oxdock): Dockerfile-inspired DSL for native builds, multi-node pipelines, and sealed remote execution with guarded workspaces and managed pipes.
+  - languages: Rust
+  - stack: MCP, SSH, Remote Execution
+  - crate: https://crates.io/crates/oxdock
+  - topics: build-tools, containerless-build, dockerfile-syntax, dsl, mcp-server, process-orchestration, rust-macro
+  - license: Apache-2.0
+  - layer: middleware
+  - connects to: [rust-line-ending](https://github.com/jzombie/rust-line-ending) (manifest), [rust-muxio](https://github.com/jzombie/rust-muxio) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (workflow), [jzombie](https://github.com/jzombie/jzombie) (docs), [jzombie-graph](https://github.com/jzombie/jzombie-graph) (manifest), [jzombie-graph](https://github.com/jzombie/jzombie-graph) (workflow), [jzombie-graph](https://github.com/jzombie/jzombie-graph) (docs), [term-wm](https://github.com/jzombie/term-wm) (manifest)
+- [reqwest-drive](https://github.com/jzombie/rust-reqwest-drive): Caching, throttling, and backoff middleware for reqwest backed by a SIMD single-file store.
+  - languages: Rust
+  - stack: HTTP, Caching, Middleware
+  - crate: https://crates.io/crates/reqwest-drive
+  - topics: cache-storage, caching-library, http-cache, reqwest-middleware, rust-http, rust-reqwest, storage-container
+  - license: Apache-2.0
+  - layer: middleware
+  - connects to: [rust-cache-manager](https://github.com/jzombie/rust-cache-manager) (manifest), [rust-simd-r-drive](https://github.com/jzombie/rust-simd-r-drive) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [jzombie-graph](https://github.com/jzombie/jzombie-graph) (manifest), [rust-sec-fetcher](https://github.com/jzombie/rust-sec-fetcher) (manifest), [rust-triplets](https://github.com/jzombie/rust-triplets) (manifest)
+- [Mosquitto Cloudflare Tunnel](https://github.com/jzombie/docker-mqtt-mosquitto-cloudflare-tunnel): Dockerized Mosquitto broker pre-wired with Cloudflare Tunnel, ACLs, and optional message encryption for remote-first MQTT.
+  - stack: Docker, MQTT, Message Brokering
+  - docs: https://docs.docker-mqtt-mosquitto-cloudflare-tunnel.zenosmosis.com/
+  - topics: cloudflared, docker, docker-compose, mosquitto-mqtt-broker, mqtt-broker
+  - layer: isolated
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (workflow)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+- [sshfs-mac-docker](https://github.com/jzombie/sshfs-mac-docker): Containerized SSHFS + Samba bridge that mounts remote filesystems on macOS without macFUSE hacks.
+  - stack: Docker, Linux, macOS, Samba
+  - docs: https://docs.sshfs-mac-docker.zenosmosis.com/
+  - topics: docker, macos, sshfs-mounting
+  - layer: isolated
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (workflow)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+
+## Virtualization & Terminal
+
+- [term-wm](https://github.com/jzombie/term-wm): Spatial terminal desktop environment for remote workspaces: floating windows, tiling, and persistent multi-viewer sessions over plain SSH.
+  - languages: Rust
+  - stack: PTY, SSH, TUI
+  - crate: https://crates.io/crates/term-wm
+  - topics: gui, spatial-desktop, ssh, terminal-ui, window-managers, workspace
+  - license: Apache-2.0
+  - layer: middleware+application
+  - connects to: [live-assets](https://github.com/jzombie/live-assets) (docs), [rust-line-ending](https://github.com/jzombie/rust-line-ending) (manifest), [rust-muxio](https://github.com/jzombie/rust-muxio) (manifest), [rust-oxdock](https://github.com/jzombie/rust-oxdock) (manifest), [term-wm-vt100](https://github.com/jzombie/term-wm-vt100) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [live-assets](https://github.com/jzombie/live-assets) (docs), [rust-argtuner](https://github.com/jzombie/rust-argtuner) (manifest)
+- [windows-headless](https://github.com/jzombie/windows-headless): Turns a Microsoft ISO into an SSH-ready Windows 11 VM in one command via portable QEMU.
+  - languages: Rust
+  - stack: QEMU, Windows 11, OpenSSH
+  - crate: https://crates.io/crates/windows-headless
+  - topics: command-line-utilities, headless, provisioning, ssh, unattended-installation, virtualization, windows-11, windows-headless
+  - license: Apache-2.0
+  - layer: application
+  - connects to: [lab-qemu-portable](https://github.com/jzombie/lab-qemu-portable) (docs), [rust-cache-manager](https://github.com/jzombie/rust-cache-manager) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [lab-qemu-portable](https://github.com/jzombie/lab-qemu-portable) (docs)
+- [lab-qemu-portable](https://github.com/jzombie/lab-qemu-portable): Portable zero-install builds of QEMU and wimlib for Windows, Linux, and macOS, plus a mirrored virtio-win driver pack.
+  - languages: Shell, Python, YAML
+  - stack: QEMU, KVM, HVF, wimlib
+  - topics: emulation, headless, hvf, kvm, portable, qemu, unattended-installation, virtio-win, virtualization, whpx, wimlib, windows
+  - layer: isolated
+  - connects to: [windows-headless](https://github.com/jzombie/windows-headless) (docs)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [windows-headless](https://github.com/jzombie/windows-headless) (docs)
+
+## Filesystems & Databases
+
+- [SIMD R Drive](https://github.com/jzombie/rust-simd-r-drive): Single-file SIMD-optimized storage engine that guarantees aligned, zero-copy binary reads across platforms.
+  - languages: Rust
+  - stack: SIMD, Storage Engine
+  - crate: https://crates.io/crates/simd-r-drive
+  - topics: append-only, binary-storage, key-value-store, mmap, simd-optimized, storage-backend, storage-container, storage-engine, zero-copy
+  - license: Apache-2.0
+  - layer: middleware+application
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (workflow), [rust-muxio](https://github.com/jzombie/rust-muxio) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [rust-llkv](https://github.com/jzombie/rust-llkv) (manifest), [rust-reqwest-drive](https://github.com/jzombie/rust-reqwest-drive) (manifest), [rust-sec-fetcher](https://github.com/jzombie/rust-sec-fetcher) (manifest), [rust-triplets](https://github.com/jzombie/rust-triplets) (manifest)
+- [LLKV](https://github.com/jzombie/rust-llkv): Experimental SQL engine that layers Apache Arrow buffers, a streaming executor, and MVCC over pluggable key-value pagers.
+  - languages: Rust, SQL
+  - stack: Apache Arrow, sqllogictest
+  - crate: https://crates.io/crates/llkv
+  - docs: https://docs.llkv.zenosmosis.com/
+  - topics: apache-arrow, database-systems, embedded-sql-database, rust, sqllogictest
+  - license: Apache-2.0
+  - layer: application
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (workflow), [rust-simd-r-drive](https://github.com/jzombie/rust-simd-r-drive) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+
+## Developer Tooling
+
+- [SQLite sqllogictest Corpus](https://github.com/jzombie/sqlite-sqllogictest-corpus): Docker helper that snapshots the official sqllogictest Fossil repo and extracts the full SQLite regression corpus.
+  - languages: SQL
+  - stack: Docker, Fossil
+  - docs: https://docs.sqlite-sqllogictest-corpus.zenosmosis.com/overview.html
+  - topics: docker, sql, sql-testing, sqllogictest
+  - layer: isolated
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (workflow)
+- [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook): Transforms DeepWiki spaces into polished mdBook documentation sites through a repeatable Rust pipeline.
+  - languages: Rust, Python
+  - stack: Docker
+  - docs: https://docs.deepwiki-to-mdbook.zenosmosis.com/
+  - topics: deepwiki, docker, mdbook
+  - layer: isolated
+  - used by: [docker-mqtt-mosquitto-cloudflare-tunnel](https://github.com/jzombie/docker-mqtt-mosquitto-cloudflare-tunnel) (workflow), [jzombie](https://github.com/jzombie/jzombie) (docs), [rust-llkv](https://github.com/jzombie/rust-llkv) (workflow), [rust-muxio](https://github.com/jzombie/rust-muxio) (workflow), [rust-sec-fetcher](https://github.com/jzombie/rust-sec-fetcher) (workflow), [rust-simd-r-drive](https://github.com/jzombie/rust-simd-r-drive) (workflow), [sqlite-sqllogictest-corpus](https://github.com/jzombie/sqlite-sqllogictest-corpus) (workflow), [sshfs-mac-docker](https://github.com/jzombie/sshfs-mac-docker) (workflow)
+
+## AI & ML
+
+- [argtuner](https://github.com/jzombie/rust-argtuner): Language-agnostic black-box hyperparameter tuner CLI with PSO and successive halving over a TOML spec.
+  - languages: Rust
+  - stack: SQLite, Hyperparameter Tuning
+  - crate: https://crates.io/crates/argtuner
+  - topics: black-box-optimization, cli, hyperparameter-optimization, particle-swarm-optimization, rust, successive-halving, tui
+  - license: Apache-2.0
+  - layer: application
+  - connects to: [rust-line-ending](https://github.com/jzombie/rust-line-ending) (manifest), [term-wm](https://github.com/jzombie/term-wm) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+- [triplets](https://github.com/jzombie/rust-triplets): Composable deterministic text data pipeline for building reproducible triplets and pairs with BM25 hard negatives.
+  - languages: Rust
+  - stack: Hugging Face, BM25, Embeddings
+  - crate: https://crates.io/crates/triplets
+  - topics: algorithms, artificial-intelligence, bm25, dataset-sampling, science, text-processing, train-test-split, training-data, triplet-mining
+  - license: Apache-2.0
+  - layer: middleware
+  - connects to: [rust-cache-manager](https://github.com/jzombie/rust-cache-manager) (manifest), [rust-line-ending](https://github.com/jzombie/rust-line-ending) (manifest), [rust-reqwest-drive](https://github.com/jzombie/rust-reqwest-drive) (manifest), [rust-simd-r-drive](https://github.com/jzombie/rust-simd-r-drive) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+
+## Research & Data Analysis
+
+- [SEC Fetcher](https://github.com/jzombie/rust-sec-fetcher): Research-grade Rust tooling experimenting with efficient retrieval pipelines for SEC filings data.
+  - languages: Rust, Python
+  - crate: https://crates.io/crates/sec-fetcher
+  - topics: api-bindings, edgar-api, filings, finance, sec, stocks
+  - layer: application
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (workflow), [rust-reqwest-drive](https://github.com/jzombie/rust-reqwest-drive) (manifest), [rust-simd-r-drive](https://github.com/jzombie/rust-simd-r-drive) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+
+## More visible in the portfolio graph
+
+- [jzombie](https://github.com/jzombie/jzombie): No description.
+  - language: Go Template
+  - layer: isolated
+  - connects to: [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook) (docs), [docker-mqtt-mosquitto-cloudflare-tunnel](https://github.com/jzombie/docker-mqtt-mosquitto-cloudflare-tunnel) (docs), [jzombie-graph](https://github.com/jzombie/jzombie-graph) (docs), [lab-qemu-portable](https://github.com/jzombie/lab-qemu-portable) (docs), [rust-argtuner](https://github.com/jzombie/rust-argtuner) (docs), [rust-cache-manager](https://github.com/jzombie/rust-cache-manager) (docs), [rust-line-ending](https://github.com/jzombie/rust-line-ending) (docs), [rust-llkv](https://github.com/jzombie/rust-llkv) (docs), [rust-muxio](https://github.com/jzombie/rust-muxio) (docs), [rust-oxdock](https://github.com/jzombie/rust-oxdock) (workflow), [rust-oxdock](https://github.com/jzombie/rust-oxdock) (docs), [rust-reqwest-drive](https://github.com/jzombie/rust-reqwest-drive) (docs), [rust-sec-fetcher](https://github.com/jzombie/rust-sec-fetcher) (docs), [rust-simd-r-drive](https://github.com/jzombie/rust-simd-r-drive) (docs), [rust-triplets](https://github.com/jzombie/rust-triplets) (docs), [sshfs-mac-docker](https://github.com/jzombie/sshfs-mac-docker) (docs), [term-wm](https://github.com/jzombie/term-wm) (docs), [term-wm-vt100](https://github.com/jzombie/term-wm-vt100) (docs), [windows-headless](https://github.com/jzombie/windows-headless) (docs), [zenosmosis-blog](https://github.com/jzombie/zenosmosis-blog) (docs), [zenosmosis-website](https://github.com/jzombie/zenosmosis-website) (docs)
+- [jzombie-graph](https://github.com/jzombie/jzombie-graph): Nightly map of my GitHub portfolio: real dependency edges plus a self-normalized Developer Focus gauge ranking where attention is going.
+  - language: Rust
+  - topics: automation, command-line, data-visualization, dependency-graph, developer-tools, github-actions, github-api, graphql, portfolio, productivity, rust, svg
+  - license: Apache-2.0
+  - layer: application
+  - connects to: [rust-oxdock](https://github.com/jzombie/rust-oxdock) (manifest), [rust-oxdock](https://github.com/jzombie/rust-oxdock) (workflow), [rust-oxdock](https://github.com/jzombie/rust-oxdock) (docs), [rust-reqwest-drive](https://github.com/jzombie/rust-reqwest-drive) (manifest)
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+- [live-assets](https://github.com/jzombie/live-assets): No description.
+  - layer: isolated
+  - connects to: [term-wm](https://github.com/jzombie/term-wm) (docs)
+  - used by: [term-wm](https://github.com/jzombie/term-wm) (docs)
+- [rust-cache-manager](https://github.com/jzombie/rust-cache-manager): Managed caches, with optional eviction, for Rust project artifacts.
+  - language: Rust
+  - homepage: https://crates.io/crates/cache-manager
+  - topics: artifact-cache, cache, caching, development-tools, eviction-policy, filesystem, workspace
+  - license: Apache-2.0
+  - layer: foundation
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [rust-reqwest-drive](https://github.com/jzombie/rust-reqwest-drive) (manifest), [rust-triplets](https://github.com/jzombie/rust-triplets) (manifest), [windows-headless](https://github.com/jzombie/windows-headless) (manifest)
+- [rust-cargo-pkg-info-struct-builder](https://github.com/jzombie/rust-cargo-pkg-info-struct-builder): A Rust build-time dependency injector that provides structured access to Cargo package metadata at runtime.
+  - language: Rust
+  - homepage: https://crates.io/crates/cargo-pkg-info-struct-builder
+  - topics: cargo-build, cargo-pkg-info, rust
+  - license: MIT
+  - layer: application
+  - connects to: [rust-string-auto-indent](https://github.com/jzombie/rust-string-auto-indent) (manifest)
+- [rust-embed-bytes](https://github.com/jzombie/rust-embed-bytes): No description.
+  - language: Rust
+  - homepage: https://crates.io/crates/embed-bytes
+  - license: MIT
+  - layer: foundation
+  - used by: [rust-ticker-sniffer](https://github.com/jzombie/rust-ticker-sniffer) (manifest)
+- [rust-line-ending](https://github.com/jzombie/rust-line-ending): A Rust crate to detect, normalize, and convert line endings across platforms. Ensures consistent handling of LF, CRLF, and CR line endings in text processing.
+  - language: Rust
+  - homepage: https://crates.io/crates/line-ending
+  - topics: line-ending-conversion, line-ending-normalization, line-endings, rust
+  - license: Apache-2.0
+  - layer: foundation
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [rust-argtuner](https://github.com/jzombie/rust-argtuner) (manifest), [rust-oxdock](https://github.com/jzombie/rust-oxdock) (manifest), [rust-string-auto-indent](https://github.com/jzombie/rust-string-auto-indent) (manifest), [rust-triplets](https://github.com/jzombie/rust-triplets) (manifest), [term-wm](https://github.com/jzombie/term-wm) (manifest)
+- [rust-string-auto-indent](https://github.com/jzombie/rust-string-auto-indent): A Rust utility for automatically normalizing multi-line string indentation while preserving platform-specific line endings.
+  - language: Rust
+  - homepage: https://crates.io/crates/string-auto-indent
+  - topics: auto-indent, multi-line-string, rust, string-utils
+  - license: MIT
+  - layer: middleware
+  - connects to: [rust-line-ending](https://github.com/jzombie/rust-line-ending) (manifest)
+  - used by: [rust-cargo-pkg-info-struct-builder](https://github.com/jzombie/rust-cargo-pkg-info-struct-builder) (manifest)
+- [rust-ticker-sniffer](https://github.com/jzombie/rust-ticker-sniffer): Rust crate to extract stock tickers from news documents.
+  - language: Rust
+  - homepage: https://crates.io/crates/ticker-sniffer
+  - topics: rust, stock-symbol-detection, stock-ticker-extractor, stock-ticker-parser, wasm-capable
+  - license: MIT
+  - layer: application
+  - connects to: [rust-embed-bytes](https://github.com/jzombie/rust-embed-bytes) (manifest)
+- [term-wm-vt100](https://github.com/jzombie/term-wm-vt100): A fork of vt100 specifically for usage in term-wm.
+  - language: Rust
+  - homepage: https://crates.io/crates/term-wm-vt100
+  - topics: terminal, vt100
+  - license: MIT
+  - layer: foundation
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs), [term-wm](https://github.com/jzombie/term-wm) (manifest)
+- [zenosmosis-blog](https://github.com/jzombie/zenosmosis-blog): No description.
+  - language: CSS
+  - homepage: https://blog.zenosmosis.com/
+  - layer: isolated
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+- [zenosmosis-website](https://github.com/jzombie/zenosmosis-website): No description.
+  - language: TypeScript
+  - homepage: https://zenosmosis.com
+  - layer: isolated
+  - used by: [jzombie](https://github.com/jzombie/jzombie) (docs)
+
+## Profiles
+
+- [GitHub Research](https://github.com/jzombie): Personal repositories, systems experiments, and research prototypes.
+- [GitHub Studio](https://github.com/zenOSmosis): Studio organization and cohesive system pieces.
+- [crates.io](https://crates.io/users/jzombie?sort=downloads): Published Rust crates by download count.
+- [Contact](mailto:info@zenosmosis.com): Email the studio for questions or collaboration.

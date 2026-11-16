@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && node build.mjs",
+    "generate:llms": "node scripts/generate-llms.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
