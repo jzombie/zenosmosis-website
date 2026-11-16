@@ -1,6 +1,6 @@
 # zenOSmosis
 
-> Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open. Built for systems engineers and curious builders.
+> Open-source infrastructure, terminals, storage, and ML pipelines - reusable pieces of one cohesive system, built in the open. Built for systems engineers and curious builders.
 
 zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zenosmosis.com, with long-form notes at https://blog.zenosmosis.com. The hub lists actively maintained systems across Infrastructure & Ops, Virtualization & Terminal, Filesystems & Databases, Developer Tooling, AI & ML, Research & Data Analysis. Contact: info@zenosmosis.com.
 

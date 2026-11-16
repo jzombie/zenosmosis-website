@@ -1,8 +1,8 @@
 # zenOSmosis
 
-> Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open. Built for systems engineers and curious builders.
+> Open-source infrastructure, terminals, storage, and ML pipelines - reusable pieces of one cohesive system, built in the open. Built for systems engineers and curious builders.
 
-zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zenosmosis.com, with long-form notes at https://blog.zenosmosis.com. This is the complete version of https://zenosmosis.com/llms.txt, generated at build time from the site's own data (src/projects.ts, src/config/appConfig.ts) — the same sources behind the homepage and its JSON-LD graph — spliced with portfolio-graph.json schema v7, generated 2026-11-16T04:42:03.173620424Z.
+zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zenosmosis.com, with long-form notes at https://blog.zenosmosis.com. This is the complete version of https://zenosmosis.com/llms.txt, generated at build time from the site's own data (src/projects.ts, src/config/appConfig.ts) - the same sources behind the homepage and its JSON-LD graph - spliced with portfolio-graph.json schema v7, generated 2026-11-16T04:42:03.173620424Z.
 
 ## Main
 

@@ -96,6 +96,31 @@ function edgeList(edges, pick) {
     .join(', ');
 }
 
+/**
+ * Transport-safe ASCII fold. Served .txt files carry no charset header on
+ * static hosting, so any non-ASCII byte risks mojibake in charset-guessing
+ * viewers; ASCII-only output renders everywhere and keeps machine ingestion
+ * clean (no BOM needed). Word-for-word identical apart from punctuation encoding.
+ */
+const ASCII_MAP = new Map([
+  ["\u2014", "-"],
+  ["\u2013", "-"],
+  ["\u2012", "-"],
+  ["\u2018", "'"],
+  ["\u2019", "'"],
+  ["\u201C", '"'],
+  ["\u201D", '"'],
+  ["\u2026", "..."],
+  ["\u00A0", " "],
+]);
+
+function toAscii(s) {
+  return s
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\x00-\x7F]/g, (ch) => ASCII_MAP.get(ch) ?? '');
+}
+
 export async function generateLlms() {
   const [{ projects }, { appConfig }] = await Promise.all([
     loadTsModule('src/projects.ts'),
@@ -152,6 +177,35 @@ export async function generateLlms() {
     contact: needCopy(copy.contactBlurb, 'contactBlurb'),
     noDescription: needCopy(copy.noDescription, 'noDescription'),
   };
+  const fmt = (template, vars) =>
+    Object.entries(vars).reduce((s, [k, v]) => s.replaceAll(`{${k}}`, v), template);
+  const text = (key) => needCopy(copy[key], key);
+  const headings = {
+    main: text('mainHeading'),
+    projects: text('projectsHeading'),
+    profiles: text('profilesHeading'),
+    optional: text('optionalHeading'),
+    more: text('moreHeading'),
+  };
+  const labels = {
+    languages: text('languagesLabel'),
+    stack: text('stackLabel'),
+    crate: text('crateLabel'),
+    docs: text('docsLabel'),
+    topics: text('topicsLabel'),
+    license: text('licenseLabel'),
+    layer: text('layerLabel'),
+    language: text('languageLabel'),
+    homepage: text('homepageLabel'),
+    connectsTo: text('connectsToLabel'),
+    usedBy: text('usedByLabel'),
+  };
+  const templates = {
+    intro: text('introTemplate'),
+    fullIntro: text('fullIntroTemplate'),
+    graphNote: text('graphNoteTemplate'),
+    graphOffline: text('graphOfflineNote'),
+  };
   const { baseUrl, blogPath } = site;
   const postsUrl = `${blogPath.replace(/\/$/, '')}/posts`;
 
@@ -196,35 +250,42 @@ export async function generateLlms() {
   // Derived from the curated data, not hand-enumerated: stays correct
   // when project categories change in src/projects.ts.
   const categories = [...new Set(projects.map((p) => p.category || 'Other'))];
-  const scope = `across ${categories.join(', ')}`;
+  const scope = categories.join(', ');
 
   // ---------------- llms.txt (token-lean index; mirrors the hub) ----------------
   const llms = [];
   llms.push(`# ${site.name}`, '');
   llms.push(`> ${site.description} ${audience}`, '');
   llms.push(
-    `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}. The hub lists actively maintained systems ${scope}. Contact: ${site.contactEmail}.`,
+    fmt(templates.intro, {
+      name: site.name,
+      author: site.author,
+      baseUrl,
+      blogPath,
+      scope,
+      contactEmail: site.contactEmail,
+    }),
     '',
   );
-  llms.push('## Main', '');
+  llms.push(`## ${headings.main}`, '');
   llms.push(
     `- [${site.name} home](${baseUrl}): ${blurbs.home}`,
     `- [Blog](${blogPath}): ${blurbs.blog}`,
     `- [All posts](${postsUrl}): ${blurbs.posts}`,
     '',
   );
-  llms.push('## Projects', '');
+  llms.push(`## ${headings.projects}`, '');
   for (const p of projects) {
     llms.push(`- [${p.name}](${p.repoUrl}): ${p.description}`);
   }
-  llms.push('', '## Profiles', '');
+  llms.push('', `## ${headings.profiles}`, '');
   llms.push(
     `- [GitHub Research](https://github.com/${site.personalUsername}): ${blurbs.research}`,
     `- [GitHub Studio](https://github.com/${site.organizationUsername}): ${blurbs.studio}`,
     `- [crates.io](https://crates.io/users/${site.personalCrateUser}?sort=downloads): ${blurbs.crates}`,
     '',
   );
-  llms.push('## Optional', '');
+  llms.push(`## ${headings.optional}`, '');
   llms.push(
     `- [Activity RSS](${blogPath}/activity.xml): ${blurbs.rss}`,
     `- [Activity Atom](${blogPath}/activity.atom): ${blurbs.atom}`,
@@ -238,11 +299,23 @@ export async function generateLlms() {
   const full = [];
   full.push(`# ${site.name}`, '');
   full.push(`> ${site.description} ${audience}`, '');
+  const graphNote = graph
+    ? fmt(templates.graphNote, {
+        schemaVersion: String(graph.schema_version),
+        generatedAt: graph.generated_at,
+      })
+    : templates.graphOffline;
   full.push(
-    `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}. This is the complete version of ${baseUrl}/llms.txt, generated at build time from the site's own data (src/projects.ts, src/config/appConfig.ts) — the same sources behind the homepage and its JSON-LD graph${graph ? ` — spliced with portfolio-graph.json schema v${graph.schema_version}, generated ${graph.generated_at}` : ' (portfolio graph unreachable at build time; internal data only)'}.`,
+    fmt(templates.fullIntro, {
+      name: site.name,
+      author: site.author,
+      baseUrl,
+      blogPath,
+      graphNote,
+    }),
     '',
   );
-  full.push('## Main', '');
+  full.push(`## ${headings.main}`, '');
   full.push(
     `- [${site.name} home](${baseUrl}): ${blurbs.home}`,
     `- [Blog](${blogPath}): ${blurbs.blog}`,
@@ -254,43 +327,43 @@ export async function generateLlms() {
     for (const p of projects.filter((x) => (x.category || 'Other') === cat)) {
       full.push(`- [${p.name}](${p.repoUrl}): ${p.description}`);
       const node = nodes.get(repoId(p.repoUrl));
-      if (p.languages.length) full.push(`  - languages: ${p.languages.join(', ')}`);
+      if (p.languages.length) full.push(`  - ${labels.languages}: ${p.languages.join(', ')}`);
       if (p.technologies.length)
-        full.push(`  - stack: ${p.technologies.join(', ')}`);
-      for (const c of p.crates) full.push(`  - crate: https://crates.io/crates/${c}`);
+        full.push(`  - ${labels.stack}: ${p.technologies.join(', ')}`);
+      for (const c of p.crates) full.push(`  - ${labels.crate}: https://crates.io/crates/${c}`);
       if (node) {
         if (node.homepage && !node.homepage.includes('crates.io')) {
-          full.push(`  - docs: ${node.homepage}`);
+          full.push(`  - ${labels.docs}: ${node.homepage}`);
         }
-        if (node.topics?.length) full.push(`  - topics: ${node.topics.join(', ')}`);
-        if (node.license) full.push(`  - license: ${node.license}`);
-        if (node.layer?.length) full.push(`  - layer: ${node.layer.join('+')}`);
+        if (node.topics?.length) full.push(`  - ${labels.topics}: ${node.topics.join(', ')}`);
+        if (node.license) full.push(`  - ${labels.license}: ${node.license}`);
+        if (node.layer?.length) full.push(`  - ${labels.layer}: ${node.layer.join('+')}`);
       }
       const out = outgoing.get(repoId(p.repoUrl)) ?? [];
       const inc = incoming.get(repoId(p.repoUrl)) ?? [];
-      if (out.length) full.push(`  - connects to: ${edgeList(out, (e) => e.target)}`);
-      if (inc.length) full.push(`  - used by: ${edgeList(inc, (e) => e.source)}`);
+      if (out.length) full.push(`  - ${labels.connectsTo}: ${edgeList(out, (e) => e.target)}`);
+      if (inc.length) full.push(`  - ${labels.usedBy}: ${edgeList(inc, (e) => e.source)}`);
     }
     full.push('');
   }
   if (extra.length > 0) {
-    full.push('## More visible in the portfolio graph', '');
+    full.push(`## ${headings.more}`, '');
     for (const n of extra) {
       const url = `https://github.com/${n.id}`;
       full.push(`- [${n.name}](${url}): ${n.description || blurbs.noDescription}`);
-      if (n.language) full.push(`  - language: ${n.language}`);
-      if (n.homepage) full.push(`  - homepage: ${n.homepage}`);
-      if (n.topics?.length) full.push(`  - topics: ${n.topics.join(', ')}`);
-      if (n.license) full.push(`  - license: ${n.license}`);
-      if (n.layer?.length) full.push(`  - layer: ${n.layer.join('+')}`);
+      if (n.language) full.push(`  - ${labels.language}: ${n.language}`);
+      if (n.homepage) full.push(`  - ${labels.homepage}: ${n.homepage}`);
+      if (n.topics?.length) full.push(`  - ${labels.topics}: ${n.topics.join(', ')}`);
+      if (n.license) full.push(`  - ${labels.license}: ${n.license}`);
+      if (n.layer?.length) full.push(`  - ${labels.layer}: ${n.layer.join('+')}`);
       const out = outgoing.get(n.id) ?? [];
       const inc = incoming.get(n.id) ?? [];
-      if (out.length) full.push(`  - connects to: ${edgeList(out, (e) => e.target)}`);
-      if (inc.length) full.push(`  - used by: ${edgeList(inc, (e) => e.source)}`);
+      if (out.length) full.push(`  - ${labels.connectsTo}: ${edgeList(out, (e) => e.target)}`);
+      if (inc.length) full.push(`  - ${labels.usedBy}: ${edgeList(inc, (e) => e.source)}`);
     }
     full.push('');
   }
-  full.push('## Profiles', '');
+  full.push(`## ${headings.profiles}`, '');
   full.push(
     `- [GitHub Research](https://github.com/${site.personalUsername}): ${blurbs.research}`,
     `- [GitHub Studio](https://github.com/${site.organizationUsername}): ${blurbs.studio}`,
@@ -299,8 +372,8 @@ export async function generateLlms() {
     '',
   );
 
-  writeFileSync(LLMS_PATH, llms.join('\n'));
-  writeFileSync(FULL_PATH, full.join('\n'));
+  writeFileSync(LLMS_PATH, toAscii(llms.join('\n')));
+  writeFileSync(FULL_PATH, toAscii(full.join('\n')));
   console.log(
     `[llms] wrote llms.txt (${projects.length} curated) and llms-full.txt (${categories.length} categories${graph ? `, ${extra.length} extra visible, ${edges.length} edges` : ', graph unreachable'})`,
   );
