@@ -1,0 +1,42 @@
+# zenOSmosis
+
+> Open-source infrastructure, terminals, storage, and ML pipelines — reusable pieces of one cohesive system, built in the open for systems engineers and curious builders.
+
+zenOSmosis is Jeremy Harris's open-source studio and project hub at https://zenosmosis.com, with long-form notes at https://blog.zenosmosis.com. The hub lists actively maintained systems across infrastructure, virtualization, storage, developer tooling, AI/ML, and research pipelines. Contact: info@zenosmosis.com.
+
+## Main
+
+- [zenOSmosis home](https://zenosmosis.com): Project hub, hero intro, and live GitHub and crates.io activity.
+- [Blog](https://blog.zenosmosis.com): Long-form engineering notes, systems design, and Magnet Vector essays.
+- [All posts](https://blog.zenosmosis.com/posts): Full post index for the garden and notes.
+
+## Projects
+
+- [Muxio](https://github.com/jzombie/rust-muxio): High-performance multiplexing and RPC toolkit for Rust with transport-agnostic framing and lightweight extensible RPC primitives.
+- [OxDock](https://github.com/jzombie/rust-oxdock): Dockerfile-inspired DSL for native builds, multi-node pipelines, and sealed remote execution with guarded workspaces and managed pipes.
+- [reqwest-drive](https://github.com/jzombie/rust-reqwest-drive): Caching, throttling, and backoff middleware for reqwest backed by a SIMD single-file store.
+- [Mosquitto Cloudflare Tunnel](https://github.com/jzombie/docker-mqtt-mosquitto-cloudflare-tunnel): Dockerized Mosquitto broker pre-wired with Cloudflare Tunnel, ACLs, and optional message encryption for remote-first MQTT.
+- [sshfs-mac-docker](https://github.com/jzombie/sshfs-mac-docker): Containerized SSHFS plus Samba bridge that mounts remote filesystems on macOS without macFUSE hacks.
+- [term-wm](https://github.com/jzombie/term-wm): Spatial terminal desktop environment for remote workspaces: floating windows, tiling, and persistent multi-viewer sessions over plain SSH.
+- [windows-headless](https://github.com/jzombie/windows-headless): Turns a Microsoft ISO into an SSH-ready Windows 11 VM in one command via portable QEMU.
+- [lab-qemu-portable](https://github.com/jzombie/lab-qemu-portable): Portable zero-install builds of QEMU and wimlib for Windows, Linux, and macOS, plus a mirrored virtio-win driver pack.
+- [SIMD R Drive](https://github.com/jzombie/rust-simd-r-drive): Single-file SIMD-optimized storage engine that guarantees aligned, zero-copy binary reads across platforms.
+- [LLKV](https://github.com/jzombie/rust-llkv): Experimental SQL engine that layers Apache Arrow buffers, a streaming executor, and MVCC over pluggable key-value pagers.
+- [SQLite sqllogictest Corpus](https://github.com/jzombie/sqlite-sqllogictest-corpus): Docker helper that snapshots the official sqllogictest Fossil repo and extracts the full SQLite regression corpus.
+- [deepwiki-to-mdbook](https://github.com/jzombie/deepwiki-to-mdbook): Transforms DeepWiki spaces into polished mdBook documentation sites through a repeatable Rust pipeline.
+- [argtuner](https://github.com/jzombie/rust-argtuner): Language-agnostic black-box hyperparameter tuner CLI with PSO and successive halving over a TOML spec.
+- [triplets](https://github.com/jzombie/rust-triplets): Composable deterministic text data pipeline for building reproducible triplets and pairs with BM25 hard negatives.
+- [SEC Fetcher](https://github.com/jzombie/rust-sec-fetcher): Research-grade Rust tooling experimenting with efficient retrieval pipelines for SEC filings data.
+
+## Profiles
+
+- [GitHub Research](https://github.com/jzombie): Personal repositories, systems experiments, and research prototypes.
+- [GitHub Studio](https://github.com/zenOSmosis): Studio organization and cohesive system pieces.
+- [crates.io](https://crates.io/users/jzombie?sort=downloads): Published Rust crates by download count.
+
+## Optional
+
+- [Activity RSS](https://blog.zenosmosis.com/activity.xml): Blog activity feed in RSS format.
+- [Activity Atom](https://blog.zenosmosis.com/activity.atom): Blog activity feed in Atom format.
+- [Activity JSON](https://blog.zenosmosis.com/activity.json): Blog activity feed in JSON format.
+- [Contact](mailto:info@zenosmosis.com): Email the studio for questions or collaboration.
