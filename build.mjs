@@ -2,10 +2,18 @@ import { build } from 'vite';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { generateLlms } from './scripts/generate-llms.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function buildProduction() {
+  console.log('Step 0: Generating llms.txt / llms-full.txt (internal data + portfolio graph)...');
+
+  // Regenerate the machine-readable index from src/projects.ts + appConfig.ts,
+  // spliced with portfolio-graph.json, before the client build, so Vite copies
+  // the fresh files from public/ to dist/.
+  await generateLlms();
+
   console.log('Step 1: Building SSR bundle...');
   
   // First, build the SSR bundle
