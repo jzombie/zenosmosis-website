@@ -76,6 +76,26 @@ export const appConfig = {
     /** Maximum age (ms) for persisted cache entries in localStorage. */
     persistedMaxAgeMs: 1000 * 60 * 60 * 12,
   },
+  llms: {
+    /** Audience line appended to the generated llms.txt summary blockquote. */
+    audience: 'Built for systems engineers and curious builders.',
+    /** Link notes for the generated llms.txt / llms-full.txt index sections. */
+    homeBlurb: 'Project hub, hero intro, and live GitHub and crates.io activity.',
+    blogBlurb: 'Long-form engineering notes, systems design, and Magnet Vector essays.',
+    postsBlurb: 'Full post index for the garden and notes.',
+    researchBlurb:
+      'Personal repositories, systems experiments, and research prototypes.',
+    studioBlurb: 'Studio organization and cohesive system pieces.',
+    cratesBlurb: 'Published Rust crates by download count.',
+    rssBlurb: 'Blog activity feed in RSS format.',
+    atomBlurb: 'Blog activity feed in Atom format.',
+    jsonBlurb: 'Blog activity feed in JSON format.',
+    fullBlurb:
+      'Complete version of this index with full per-project detail by category.',
+    contactBlurb: 'Email the studio for questions or collaboration.',
+    /** Fallback when a graph node has no description. */
+    noDescription: 'No description.',
+  },
 } as const;
 
 export type AppConfig = typeof appConfig;

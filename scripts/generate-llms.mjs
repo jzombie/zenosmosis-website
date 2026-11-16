@@ -1,12 +1,13 @@
 /**
  * Build-time generator for public/llms.txt and public/llms-full.txt.
  *
- * Backbone is OUR OWN internal data representation — the same modules that
+ * Data comes from OUR OWN internal representation — the same modules that
  * drive the site and the JSON-LD @graph in src/utils/structuredData.ts:
  *   1. src/config/appConfig.ts — site header, URLs, contact
  *   2. src/projects.ts          — curated hub projects, in hub order
- * (Parsed as text rather than imported: this runs as plain node inside
- * build.mjs, before the Vite/TS pipeline exists.)
+ * Loaded by transpiling those files with the project's own TypeScript
+ * compiler (no regex parsing, no new dependencies), so formatting changes
+ * in the sources can never break this script.
  *
  * Spliced in at build time per the portfolio graph
  * (https://github.com/jzombie/jzombie-graph, data/portfolio-graph.json):
@@ -16,14 +17,17 @@
  *   - Graph-visible repos NOT in the curated list appear only in llms-full.txt,
  *     so llms.txt stays token-lean and mirrors the human hub 1:1.
  *
- * Offline safety: if the fetch fails, warn and generate from internal data only.
+ * Offline safety: if the fetch fails, warn and generate from local data only.
+ * The build never fails on graph availability.
  *
  * llms.txt      — token-lean index. Mirrors the human hub 1:1.
  * llms-full.txt — complete variant. Full per-project detail, grouped by category.
  */
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'fs';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { createRequire } from 'module';
+import { tmpdir } from 'os';
+import { dirname, join, resolve } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -33,82 +37,40 @@ const GRAPH_URL =
 const LLMS_PATH = join(ROOT, 'public', 'llms.txt');
 const FULL_PATH = join(ROOT, 'public', 'llms-full.txt');
 
-function strField(block, key) {
-  const m = block.match(new RegExp(key + `\\s*:\\s*'((?:[^'\\\\]|\\\\.)*)'`, 's'));
-  return m ? m[1] : '';
-}
-
-function arrField(block, key) {
-  const m = block.match(new RegExp(key + '\\s*:\\s*\\[([^\\]]*)\\]', 's'));
-  if (!m) return [];
-  return [...m[1].matchAll(/'((?:[^'\\]|\\.)*)'/g)].map((x) => x[1]);
-}
-
-/** Split the top-level object literals of a `[...] = [...]` array in a .ts source file. */
-function parseTsArray(source, constName) {
-  const anchor = source.indexOf(constName);
-  const eq = source.indexOf('=', anchor);
-  const start = source.indexOf('[', eq);
-  let depth = 0;
-  let current = '';
-  const blocks = [];
-  for (let i = start; i < source.length; i++) {
-    const ch = source[i];
-    if (ch === '[' || ch === '{') depth++;
-    if (depth === 2 && ch === '{') current = '{';
-    else if (depth >= 2) current += ch;
-    if (ch === ']' || ch === '}') {
-      depth--;
-      if (depth === 1 && ch === '}' && current) {
-        blocks.push(current);
-        current = '';
-      }
-      if (depth === 0) break;
-    }
+/**
+ * Load a .ts data module by transpiling it with the project's own
+ * TypeScript compiler, then importing the result. Works with native objects —
+ * no static parsing, so source formatting is irrelevant.
+ */
+async function loadTsModule(relPath) {
+  const require = createRequire(join(ROOT, 'package.json'));
+  const ts = require('typescript');
+  const src = readFileSync(join(ROOT, relPath), 'utf-8');
+  const { outputText, diagnostics } = ts.transpileModule(src, {
+    compilerOptions: {
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ES2022,
+    },
+    reportDiagnostics: true,
+  });
+  const errors = (diagnostics ?? []).filter(
+    (d) => d.category === ts.DiagnosticCategory.Error,
+  );
+  if (errors.length > 0) {
+    throw new Error(
+      `failed to transpile ${relPath}: ${errors
+        .map((d) => ts.flattenDiagnosticMessageText(d.messageText, ' '))
+        .join('; ')}`,
+    );
   }
-  return blocks;
-}
-
-function loadLocal() {
-  const projectsSrc = readFileSync(join(ROOT, 'src', 'projects.ts'), 'utf-8');
-  const configSrc = readFileSync(join(ROOT, 'src', 'config', 'appConfig.ts'), 'utf-8');
-
-  // No silent hardcoded fallbacks: if a required field can't be parsed,
-  // fail the build loudly instead of emitting stale copy.
-  const required = (re, label) => {
-    const m = configSrc.match(re);
-    if (!m) throw new Error(`could not parse ${label} from src/config/appConfig.ts`);
-    return m[1];
-  };
-
-  const projects = parseTsArray(projectsSrc, 'projects').map((b) => ({
-    name: strField(b, 'name'),
-    repoUrl: strField(b, 'repoUrl'),
-    description: strField(b, 'description'),
-    category: strField(b, 'category'),
-    languages: arrField(b, 'languages'),
-    technologies: arrField(b, 'technologies'),
-    crates: arrField(b, 'crates'),
-  }));
-
-  const site = {
-    name: required(/site:\s*\{\s*name:\s*'([^']+)'/, 'site name'),
-    baseUrl: required(/baseUrl:\s*'([^']+)'/, 'baseUrl'),
-    blogPath: required(/blogPath:\s*'([^']+)'/, 'blogPath'),
-    contactEmail: required(/contactEmail:\s*'([^']+)'/, 'contactEmail'),
-    description: required(/description:\s*\n?\s*'([^']+)'/, 'site description'),
-    author: required(/author:\s*'([^']+)'/, 'author'),
-    personalUsername: required(/personalUsername:\s*'([^']+)'/, 'personal GitHub username'),
-    organizationUsername: required(
-      /organizationUsername:\s*'([^']+)'/,
-      'organization GitHub username',
-    ),
-    personalCrateUser: required(
-      /crates:\s*\{[^}]*personalUsername:\s*'([^']+)'/,
-      'crates.io username',
-    ),
-  };
-  return { projects, site };
+  const dir = mkdtempSync(join(tmpdir(), 'zenosmosis-llms-'));
+  try {
+    const outPath = join(dir, relPath.replaceAll('/', '_').replace(/\.ts$/, '.mjs'));
+    writeFileSync(outPath, outputText);
+    return await import(pathToFileURL(outPath).href);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 async function loadGraph() {
@@ -134,21 +96,71 @@ function edgeList(edges, pick) {
     .join(', ');
 }
 
-async function main() {
-  const { projects, site } = loadLocal();
-  if (projects.length === 0) throw new Error('parsed 0 projects from src/projects.ts');
+export async function generateLlms() {
+  const [{ projects }, { appConfig }] = await Promise.all([
+    loadTsModule('src/projects.ts'),
+    loadTsModule('src/config/appConfig.ts'),
+  ]);
+  if (!Array.isArray(projects) || projects.length === 0) {
+    throw new Error('src/projects.ts exported no projects');
+  }
+  // Optional array fields may be absent on some projects — normalize.
+  for (const p of projects) {
+    p.languages ??= [];
+    p.technologies ??= [];
+    p.crates ??= [];
+  }
+
+  // No silent hardcoded fallbacks: fail loudly on missing config.
+  const need = (value, label) => {
+    if (!value) throw new Error(`src/config/appConfig.ts is missing ${label}`);
+    return value;
+  };
+  const site = {
+    name: need(appConfig.site?.name, 'site.name'),
+    baseUrl: need(appConfig.site?.baseUrl, 'site.baseUrl'),
+    blogPath: need(appConfig.site?.blogPath, 'site.blogPath'),
+    contactEmail: need(appConfig.site?.contactEmail, 'site.contactEmail'),
+    description: need(appConfig.site?.description, 'site.description'),
+    author: need(appConfig.site?.author, 'site.author'),
+    personalUsername: need(appConfig.github?.personalUsername, 'github.personalUsername'),
+    organizationUsername: need(
+      appConfig.github?.organizationUsername,
+      'github.organizationUsername',
+    ),
+    personalCrateUser: need(appConfig.crates?.personalUsername, 'crates.personalUsername'),
+  };
+  // All authored copy lives in appConfig.llms — the script renders, never writes, prose.
+  const copy = need(appConfig.llms, 'llms copy');
+  const needCopy = (value, label) => {
+    if (typeof value !== 'string' || value.length === 0)
+      throw new Error(`src/config/appConfig.ts is missing llms.${label}`);
+    return value;
+  };
+  const audience = needCopy(copy.audience, 'audience');
+  const blurbs = {
+    home: needCopy(copy.homeBlurb, 'homeBlurb'),
+    blog: needCopy(copy.blogBlurb, 'blogBlurb'),
+    posts: needCopy(copy.postsBlurb, 'postsBlurb'),
+    research: needCopy(copy.researchBlurb, 'researchBlurb'),
+    studio: needCopy(copy.studioBlurb, 'studioBlurb'),
+    crates: needCopy(copy.cratesBlurb, 'cratesBlurb'),
+    rss: needCopy(copy.rssBlurb, 'rssBlurb'),
+    atom: needCopy(copy.atomBlurb, 'atomBlurb'),
+    json: needCopy(copy.jsonBlurb, 'jsonBlurb'),
+    full: needCopy(copy.fullBlurb, 'fullBlurb'),
+    contact: needCopy(copy.contactBlurb, 'contactBlurb'),
+    noDescription: needCopy(copy.noDescription, 'noDescription'),
+  };
   const { baseUrl, blogPath } = site;
   const postsUrl = `${blogPath.replace(/\/$/, '')}/posts`;
 
+  // Graceful degradation: local data alone is always enough for a good build.
   let graph = null;
   try {
     graph = await loadGraph();
   } catch (err) {
-    if (existsSync(LLMS_PATH) && existsSync(FULL_PATH)) {
-      console.warn(`[llms] graph fetch failed (${err.message}); keeping existing files.`);
-      return;
-    }
-    throw new Error(`graph fetch failed and no existing files: ${err.message}`);
+    console.warn(`[llms] graph fetch failed (${err.message}); local data only.`);
   }
 
   const nodes = new Map((graph?.nodes ?? []).map((n) => [n.id, n]));
@@ -189,19 +201,16 @@ async function main() {
   // ---------------- llms.txt (token-lean index; mirrors the hub) ----------------
   const llms = [];
   llms.push(`# ${site.name}`, '');
-  llms.push(
-    `> ${site.description} Built for systems engineers and curious builders.`,
-    '',
-  );
+  llms.push(`> ${site.description} ${audience}`, '');
   llms.push(
     `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}. The hub lists actively maintained systems ${scope}. Contact: ${site.contactEmail}.`,
     '',
   );
   llms.push('## Main', '');
   llms.push(
-    `- [${site.name} home](${baseUrl}): Project hub, hero intro, and live GitHub and crates.io activity.`,
-    `- [Blog](${blogPath}): Long-form engineering notes, systems design, and Magnet Vector essays.`,
-    `- [All posts](${postsUrl}): Full post index for the garden and notes.`,
+    `- [${site.name} home](${baseUrl}): ${blurbs.home}`,
+    `- [Blog](${blogPath}): ${blurbs.blog}`,
+    `- [All posts](${postsUrl}): ${blurbs.posts}`,
     '',
   );
   llms.push('## Projects', '');
@@ -210,37 +219,34 @@ async function main() {
   }
   llms.push('', '## Profiles', '');
   llms.push(
-    `- [GitHub Research](https://github.com/${site.personalUsername}): Personal repositories, systems experiments, and research prototypes.`,
-    `- [GitHub Studio](https://github.com/${site.organizationUsername}): Studio organization and cohesive system pieces.`,
-    `- [crates.io](https://crates.io/users/${site.personalCrateUser}?sort=downloads): Published Rust crates by download count.`,
+    `- [GitHub Research](https://github.com/${site.personalUsername}): ${blurbs.research}`,
+    `- [GitHub Studio](https://github.com/${site.organizationUsername}): ${blurbs.studio}`,
+    `- [crates.io](https://crates.io/users/${site.personalCrateUser}?sort=downloads): ${blurbs.crates}`,
     '',
   );
   llms.push('## Optional', '');
   llms.push(
-    `- [Activity RSS](${blogPath}/activity.xml): Blog activity feed in RSS format.`,
-    `- [Activity Atom](${blogPath}/activity.atom): Blog activity feed in Atom format.`,
-    `- [Activity JSON](${blogPath}/activity.json): Blog activity feed in JSON format.`,
-    `- [Full portfolio content](${baseUrl}/llms-full.txt): Complete version of this index with full per-project detail by category.`,
-    `- [Contact](mailto:${site.contactEmail}): Email the studio for questions or collaboration.`,
+    `- [Activity RSS](${blogPath}/activity.xml): ${blurbs.rss}`,
+    `- [Activity Atom](${blogPath}/activity.atom): ${blurbs.atom}`,
+    `- [Activity JSON](${blogPath}/activity.json): ${blurbs.json}`,
+    `- [Full portfolio content](${baseUrl}/llms-full.txt): ${blurbs.full}`,
+    `- [Contact](mailto:${site.contactEmail}): ${blurbs.contact}`,
     '',
   );
 
   // ---------------- llms-full.txt (complete variant) ----------------
   const full = [];
   full.push(`# ${site.name}`, '');
-  full.push(
-    `> ${site.description} Built for systems engineers and curious builders.`,
-    '',
-  );
+  full.push(`> ${site.description} ${audience}`, '');
   full.push(
     `${site.name} is ${site.author}'s open-source studio and project hub at ${baseUrl}, with long-form notes at ${blogPath}. This is the complete version of ${baseUrl}/llms.txt, generated at build time from the site's own data (src/projects.ts, src/config/appConfig.ts) — the same sources behind the homepage and its JSON-LD graph${graph ? ` — spliced with portfolio-graph.json schema v${graph.schema_version}, generated ${graph.generated_at}` : ' (portfolio graph unreachable at build time; internal data only)'}.`,
     '',
   );
   full.push('## Main', '');
   full.push(
-    `- [${site.name} home](${baseUrl}): Project hub, hero intro, and live GitHub and crates.io activity.`,
-    `- [Blog](${blogPath}): Long-form engineering notes, systems design, and Magnet Vector essays.`,
-    `- [All posts](${postsUrl}): Full post index for the garden and notes.`,
+    `- [${site.name} home](${baseUrl}): ${blurbs.home}`,
+    `- [Blog](${blogPath}): ${blurbs.blog}`,
+    `- [All posts](${postsUrl}): ${blurbs.posts}`,
     '',
   );
   for (const cat of categories) {
@@ -271,7 +277,7 @@ async function main() {
     full.push('## More visible in the portfolio graph', '');
     for (const n of extra) {
       const url = `https://github.com/${n.id}`;
-      full.push(`- [${n.name}](${url}): ${n.description || 'No description.'}`);
+      full.push(`- [${n.name}](${url}): ${n.description || blurbs.noDescription}`);
       if (n.language) full.push(`  - language: ${n.language}`);
       if (n.homepage) full.push(`  - homepage: ${n.homepage}`);
       if (n.topics?.length) full.push(`  - topics: ${n.topics.join(', ')}`);
@@ -286,10 +292,10 @@ async function main() {
   }
   full.push('## Profiles', '');
   full.push(
-    `- [GitHub Research](https://github.com/${site.personalUsername}): Personal repositories, systems experiments, and research prototypes.`,
-    `- [GitHub Studio](https://github.com/${site.organizationUsername}): Studio organization and cohesive system pieces.`,
-    `- [crates.io](https://crates.io/users/${site.personalCrateUser}?sort=downloads): Published Rust crates by download count.`,
-    `- [Contact](mailto:${site.contactEmail}): Email the studio for questions or collaboration.`,
+    `- [GitHub Research](https://github.com/${site.personalUsername}): ${blurbs.research}`,
+    `- [GitHub Studio](https://github.com/${site.organizationUsername}): ${blurbs.studio}`,
+    `- [crates.io](https://crates.io/users/${site.personalCrateUser}?sort=downloads): ${blurbs.crates}`,
+    `- [Contact](mailto:${site.contactEmail}): ${blurbs.contact}`,
     '',
   );
 
@@ -300,7 +306,10 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error(`[llms] ${err.message}`);
-  process.exit(1);
-});
+// CLI entry: `node scripts/generate-llms.mjs`. No-op when imported.
+if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+  generateLlms().catch((err) => {
+    console.error(`[llms] ${err.message}`);
+    process.exit(1);
+  });
+}

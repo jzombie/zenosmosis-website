@@ -1,11 +1,8 @@
 import { build } from 'vite';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-
-const execFileAsync = promisify(execFile);
+import { generateLlms } from './scripts/generate-llms.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -15,7 +12,7 @@ async function buildProduction() {
   // Regenerate the machine-readable index from src/projects.ts + appConfig.ts,
   // spliced with portfolio-graph.json, before the client build, so Vite copies
   // the fresh files from public/ to dist/.
-  await execFileAsync('node', ['scripts/generate-llms.mjs'], { cwd: __dirname });
+  await generateLlms();
 
   console.log('Step 1: Building SSR bundle...');
   
