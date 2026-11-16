@@ -99,9 +99,9 @@ export const appConfig = {
     introTemplate:
       "{name} is {author}'s open-source studio and project hub at {baseUrl}, with long-form notes at {blogPath}. The hub lists actively maintained systems across {scope}. Contact: {contactEmail}.",
     fullIntroTemplate:
-      '{name} is {author}\u2019s open-source studio and project hub at {baseUrl}, with long-form notes at {blogPath}. This is the complete version of {baseUrl}/llms.txt, generated at build time from the site\u2019s own data (src/projects.ts, src/config/appConfig.ts) \u2014 the same sources behind the homepage and its JSON-LD graph{graphNote}.',
+      '{name} is {author}’s open-source studio and project hub at {baseUrl}, with long-form notes at {blogPath}. This is the complete version of {baseUrl}/llms.txt, generated at build time from the site’s own data (src/projects.ts, src/config/appConfig.ts) — the same sources behind the homepage and its JSON-LD graph{graphNote}.',
     graphNoteTemplate:
-      ' \u2014 spliced with portfolio-graph.json schema v{schemaVersion}, generated {generatedAt}',
+      ' — spliced with portfolio-graph.json schema v{schemaVersion}, generated {generatedAt}',
     graphOfflineNote:
       ' (portfolio graph unreachable at build time; internal data only)',
     /** Section headings for the generated files. */
