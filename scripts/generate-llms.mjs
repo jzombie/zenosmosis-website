@@ -96,30 +96,7 @@ function edgeList(edges, pick) {
     .join(', ');
 }
 
-/**
- * Transport-safe ASCII fold. Served .txt files carry no charset header on
- * static hosting, so any non-ASCII byte risks mojibake in charset-guessing
- * viewers; ASCII-only output renders everywhere and keeps machine ingestion
- * clean (no BOM needed). Word-for-word identical apart from punctuation encoding.
- */
-const ASCII_MAP = new Map([
-  ["\u2014", "-"],
-  ["\u2013", "-"],
-  ["\u2012", "-"],
-  ["\u2018", "'"],
-  ["\u2019", "'"],
-  ["\u201C", '"'],
-  ["\u201D", '"'],
-  ["\u2026", "..."],
-  ["\u00A0", " "],
-]);
 
-function toAscii(s) {
-  return s
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^\x00-\x7F]/g, (ch) => ASCII_MAP.get(ch) ?? '');
-}
 
 export async function generateLlms() {
   const [{ projects }, { appConfig }] = await Promise.all([
@@ -372,8 +349,8 @@ export async function generateLlms() {
     '',
   );
 
-  writeFileSync(LLMS_PATH, toAscii(llms.join('\n')));
-  writeFileSync(FULL_PATH, toAscii(full.join('\n')));
+  writeFileSync(LLMS_PATH, llms.join('\n'));
+  writeFileSync(FULL_PATH, full.join('\n'));
   console.log(
     `[llms] wrote llms.txt (${projects.length} curated) and llms-full.txt (${categories.length} categories${graph ? `, ${extra.length} extra visible, ${edges.length} edges` : ', graph unreachable'})`,
   );
