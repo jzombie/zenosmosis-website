@@ -17,8 +17,9 @@
  *   - Graph-visible repos NOT in the curated list appear only in llms-full.txt,
  *     so llms.txt stays token-lean and mirrors the human hub 1:1.
  *
- * Offline safety: if the fetch fails, warn and generate from local data only.
- * The build never fails on graph availability.
+ * Offline safety: a failed fetch degrades to local-only data for ad-hoc builds,
+ * but fails loudly under CI (`CI=true`, set by GitHub Actions) so a degraded
+ * artifact can never deploy silently.
  *
  * llms.txt      — token-lean index. Mirrors the human hub 1:1.
  * llms-full.txt — complete variant. Full per-project detail, grouped by category.
@@ -186,11 +187,14 @@ export async function generateLlms() {
   const { baseUrl, blogPath } = site;
   const postsUrl = `${blogPath.replace(/\/$/, '')}/posts`;
 
-  // Graceful degradation: local data alone is always enough for a good build.
+  // Graceful degradation locally; fatal under CI so degraded output can't deploy silently.
   let graph = null;
   try {
     graph = await loadGraph();
   } catch (err) {
+    if (process.env.CI) {
+      throw new Error(`portfolio graph fetch failed: ${err.message}`);
+    }
     console.warn(`[llms] graph fetch failed (${err.message}); local data only.`);
   }
 
